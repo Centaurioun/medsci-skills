@@ -25,3 +25,7 @@ dist/
 
 # Installer logs (timestamped, per-machine)
 *-medsci-skills-install-log.txt
+
+# Personal session handoff notes (root-level only; skills/*/HANDOFF.md are skill docs)
+/HANDOFF.md
+/HANDOFF_*.md
