@@ -1,89 +1,158 @@
-# awesome-claude-code Resubmission — v3.0 Update (2026-05-13)
+# awesome-claude-code Resubmission — v3.0.1 + Zenodo DOI (2026-05-13)
 
-Updated for v3.0.0 release (39 skills, 3 demos, Zenodo DOI). Eligible to resubmit (extension period expired 2026-04-27).
+**⚠️ CRITICAL — Manual Web UI submission only**
 
-## Issue Template Fields
+This repo's issue template explicitly **bans gh CLI submission** ("automatically closed", "violates Code of Conduct"). The user MUST submit via:
 
-**Title:** [Resource]: MedSci Skills
+> https://github.com/hesreallyhim/awesome-claude-code/issues/new/choose
+> → "🚀 Recommend New Resource"
 
-**Display Name:** MedSci Skills
-
-**Category:** Agent Skills
-
-**Sub-Category:** General
-
-**Primary Link:** https://github.com/Aperivue/medsci-skills
-
-**Author Name:** Aperivue
-
-**Author Link:** https://github.com/Aperivue
-
-**License:** MIT
-
-**Description:**
-
-39 Claude Code skills for the full medical research lifecycle — from PubMed literature search with anti-hallucination citation verification (every reference cross-checked via PubMed/CrossRef API) to submission-ready IMRAD manuscripts with reporting compliance audits against 33 EQUATOR guidelines (STARD-AI, TRIPOD+AI, CLAIM, PRISMA-DTA, STROBE, CONSORT, etc.). Includes three end-to-end demos that each produce a complete manuscript, 300-dpi figures, compliance report, and presentation slides from public datasets in under 10 minutes. Built by a practicing radiologist and tested on real publications. v3.0.0 archived on Zenodo for academic citation.
-
-**Validate Claims:**
-
-Run Demo 1 end-to-end in under 10 minutes:
-
-```bash
-git clone https://github.com/Aperivue/medsci-skills.git
-cd medsci-skills
-python3 installers/install.py --target claude
-cd demo/01_wisconsin_bc
-```
-
-Then in Claude Code: `/orchestrate --e2e` — produces a full IMRAD manuscript, ROC curves with DeLong CIs, STARD 2015 compliance audit (28 items), self-review (scores 74→83 across 2 fix iterations), DOCX, and 12-slide presentation with speaker notes.
-
-For a quick single-skill test: `/check-reporting any_manuscript.md --guideline STARD` produces an item-by-item compliance report (PRESENT/PARTIAL/MISSING).
-
-For new users: `/setup-medsci` runs a read-only diagnostic of Python/R/Claude Code/MCP installation and prints a checklist.
-
-**Specific Task(s):**
-
-1. Run Demo 1 (Wisconsin BC) — produces manuscript + ROC curves + STARD audit + slides from `sklearn.datasets.load_breast_cancer()`. Output viewable at `demo/01_wisconsin_bc/`.
-2. Run Demo 2 (BCG meta-analysis) — pooled RR = 0.489 (95% CI 0.344–0.696) across 13 RCTs from `metafor::dat.bcg`, with PRISMA 2020 audit (77.8% compliance, 21/27 PRESENT).
-3. Run Demo 3 (NHANES obesity) — STROBE-compliant epidemiology manuscript from CDC NHANES 2017-18 with survey weights.
-4. `/check-reporting` against any manuscript — supports 33 EQUATOR guidelines.
-5. `/search-lit` PubMed query — verify every citation has a real PMID (anti-hallucination).
-6. `/setup-medsci` diagnostic — verifies environment without modifying anything.
-
-**Specific Prompt(s):**
-
-1. `/check-reporting manuscript.md --guideline STARD-AI`
-2. `/search-lit "diagnostic accuracy of AI for lung nodule detection" --database pubmed --limit 10`
-3. `/make-figures prisma --identified 500 --screened 350 --eligible 45 --included 23`
-
-**Additional Comments:**
-
-Resubmission of #1389 (closed for 7-day cooldown) and #1518 (closed same day, 14-day extension applied, eligible after 2026-04-27).
-
-**v3.0.0 updates since the prior submission:**
-- 22 → 39 skills (covers full lifecycle: topic discovery, IRB, data cleaning, de-identification, presentation, peer review, revision response)
-- Three end-to-end demos (Wisconsin BC, BCG MA, NHANES) with public datasets and reproducible output artifacts
-- 33 EQUATOR reporting guidelines (added STARD-AI, TRIPOD+AI, CLAIM 2024, MI-CLEAR-LLM, PROBAST+AI, etc.)
-- New `setup-medsci` skill — read-only diagnostic for clinicians new to Python/R/Claude Code
-- New `docs/setup/` clinician onboarding guide (mac, windows, MCP, common-issues)
-- v3.0.0 archived on Zenodo (DOI: pending — to be filled in upon issue review)
-- CITATION.cff for academic citation
-- Anti-Reviewer-2 tone audit integrated into peer-review skill (Aczel 2021 patterns)
-
-All reporting guideline checklists retain original CC licenses. No network requests except public APIs (PubMed, Semantic Scholar, CrossRef). Repository renamed from `medical-research-skills` to `medsci-skills` (old URL auto-redirects).
+Below are the form field values to copy-paste into the web UI. Do NOT use `gh issue create`.
 
 ---
 
+## Form Field Values (copy-paste into web UI)
+
+### Title (auto-prefixed `[Resource]:`)
+
+```
+MedSci Skills
+```
+
+### Display Name
+
+```
+MedSci Skills
+```
+
+### Category (dropdown)
+
+```
+Agent Skills
+```
+
+### Sub-Category (dropdown)
+
+```
+General
+```
+
+### Primary Link
+
+```
+https://github.com/Aperivue/medsci-skills
+```
+
+### Author Name
+
+```
+Yoojin Nam
+```
+
+### Author Link
+
+```
+https://github.com/Aperivue
+```
+
+### License (dropdown)
+
+```
+MIT
+```
+
+### Description (1-3 sentences, no emojis, descriptive not promotional, do not address reader)
+
+```
+A 39-skill Claude Code collection covering the medical research lifecycle from PubMed search with anti-hallucination citation verification through IMRAD manuscript drafting, reporting compliance audit against 33 EQUATOR guidelines (STARD-AI, TRIPOD+AI, CLAIM, PRISMA-DTA, STROBE, etc.), peer review, and revision response. Includes three end-to-end demos with public datasets (Wisconsin Breast Cancer, BCG meta-analysis, NHANES obesity) and a read-only setup-medsci diagnostic for clinicians new to Python or R. Archived on Zenodo (DOI 10.5281/zenodo.20155321) for academic citation.
+```
+
+### Validate Claims
+
+```
+Run Demo 1 end-to-end in under 10 minutes. Clone the repo, install with `python3 installers/install.py --target claude`, then in the demo/01_wisconsin_bc/ directory ask Claude Code:
+
+  /orchestrate --e2e
+
+This produces a complete IMRAD manuscript with ROC curves, STARD 2015 compliance audit (28 items, ~82% compliance), self-review iteration, DOCX export, and 12-slide presentation with speaker notes. All input data is sklearn's load_breast_cancer() built-in (zero download), and all output artifacts are committed to the repo at demo/01_wisconsin_bc/ for direct inspection.
+
+For a focused single-skill test that requires only Claude Code installed:
+
+  /check-reporting any_manuscript.md --guideline STARD
+
+This produces an item-by-item PRESENT / PARTIAL / MISSING audit against the STARD 2015 checklist with fix recommendations.
+
+For new users who haven't installed Python or R:
+
+  /setup-medsci
+
+Reads-only. Runs `which python3 / Rscript / claude / node` and `claude mcp list`, prints a checklist with status (passing / missing / disconnected) and a link to the matching docs/setup/ guide for any failure. Does not install anything.
+
+No network requests except public APIs (PubMed E-utilities, Semantic Scholar, CrossRef, OpenAlex/Unpaywall for OA-only PDF retrieval). No paywall bypass. No `--dangerously-skip-permissions` required.
+```
+
+### Specific Task(s)
+
+```
+1. Run Demo 1 (Wisconsin BC, sklearn built-in dataset): produces manuscript + ROC curves + STARD audit + slides at demo/01_wisconsin_bc/.
+
+2. Run Demo 2 (BCG meta-analysis, R metafor::dat.bcg): produces pooled RR=0.489 (95% CI 0.344-0.696) across 13 RCTs with PRISMA 2020 audit (77.8% compliance, 21/27 PRESENT) at demo/02_metafor_bcg/.
+
+3. Run Demo 3 (NHANES obesity, public CDC NHANES 2017-18): produces STROBE-compliant epidemiology manuscript with survey weights at demo/03_nhanes_obesity/.
+
+4. /check-reporting against any existing manuscript markdown — supports 33 EQUATOR guidelines including STARD, STARD-AI, TRIPOD, TRIPOD+AI, CLAIM, PRISMA, PRISMA-DTA, STROBE, CONSORT, MI-CLEAR-LLM, PROBAST, PROBAST+AI.
+
+5. /search-lit for any PubMed query — every returned reference is verified via PubMed/CrossRef API before inclusion (anti-hallucination).
+
+6. /setup-medsci on a fresh machine — read-only diagnostic, prints checklist of Python / R / Claude Code / MCP server status with links to setup docs for any missing component.
+```
+
+### Specific Prompt(s)
+
+```
+1. /check-reporting manuscript.md --guideline STARD-AI
+
+2. /search-lit "diagnostic accuracy of AI for lung nodule detection" --database pubmed --limit 10
+
+3. /make-figures prisma --identified 500 --screened 350 --eligible 45 --included 23
+```
+
+### Additional Comments
+
+```
+Resubmission of #1389 (closed 2026-04-06, 7-day cooldown) and #1518 (closed 2026-04-13, 14-day extension applied). Both cooldowns expired (eligible after 2026-04-27).
+
+Updates since the prior submission:
+- 22 skills → 39 skills (now covers full lifecycle: topic discovery, IRB protocol, data cleaning, de-identification, IMRAD writing, AI-pattern humanization, journal selection, peer review, revision response, presentation generation)
+- Three end-to-end demos with public datasets and reproducible output artifacts (Wisconsin Breast Cancer, BCG meta-analysis, NHANES obesity)
+- 33 EQUATOR reporting guidelines (added STARD-AI, TRIPOD+AI, CLAIM 2024, MI-CLEAR-LLM, PROBAST+AI, RoB NMA, ROBINS-E, ROB-ME, etc.)
+- New setup-medsci skill — read-only diagnostic for clinicians new to Python / R / Claude Code (no install logic, just verifies the environment and points to setup docs)
+- New docs/setup/ — five-file clinician onboarding guide (Mac, Windows, MCP servers, common issues)
+- v3.0.1 archived on Zenodo (concept DOI 10.5281/zenodo.20155321) for academic citation
+- Anti-Reviewer-2 tone audit integrated into the peer-review skill (Aczel 2021 patterns)
+- CITATION.cff for academic citation
+- Repository renamed from medical-research-skills to medsci-skills (old URL auto-redirects)
+
+All reporting guideline checklists retain original CC licenses. No paywall bypass. No `--dangerously-skip-permissions`. Network requests limited to public APIs (PubMed E-utilities, Semantic Scholar, CrossRef, Unpaywall, OpenAlex). Built and maintained by a practicing radiologist (Yoojin Nam, MD, ORCID 0000-0001-8565-1360, Aperivue), tested on real publications.
+```
+
+---
+
+## Step-by-step submission
+
+1. Open https://github.com/hesreallyhim/awesome-claude-code/issues/new/choose
+2. Click **"🚀 Recommend New Resource"**
+3. For each form field, copy-paste the value from the corresponding section above
+4. Carefully review each field before submit (especially Description and Validate Claims — those are the most-scrutinized)
+5. Submit
+6. After submit: automated validation comment will appear within 1-5 minutes. If validation fails, the comment tells you which field is malformed — fix and edit the issue body
+7. Manual review by the maintainer follows (no SLA, usually 1-7 days)
+
 ## 제출 메모 (한국어 작업 노트)
 
-- 제출일: 2026-05-13 (v3.0.0 release 직후)
-- 이전 issues: #1389 (7-day cooldown closed), #1518 (14-day extension)
-- 두 cooldown 모두 만료 (2026-04-27 이후)
-- v3.0.0 release URL: https://github.com/Aperivue/medsci-skills/releases/tag/v3.0.0
-- Zenodo DOI: 첫 archive 후 본문에 update
-- 체크리스트 재확인:
-  - License (MIT) ✓
-  - 활동 (commits this week) ✓
-  - 구조 (SKILL.md frontmatter, validator PASS) ✓
-  - 데모 (3종 end-to-end) ✓
-  - 이전 issue reference (#1389, #1518 명시) ✓
+- 제출일 권장: 2026-05-13 (DOI 받은 직후, v3.0.1 release 직후, momentum)
+- 자동 close 위험 회피: gh CLI 절대 사용 금지. Web UI만
+- 이전 issues #1389, #1518 명시적으로 reference 했음 ("Resubmission of...")
+- DOI는 concept DOI (10.5281/zenodo.20155321)로 통일 (always-latest, badge URL과 일치)
+- 검토자 (maintainer)가 Claude Code로 내부 evaluate-repository 명령 실행하므로 README + CITATION.cff + setup 흐름이 깨끗해야 통과
+- 제출 후 24-48h 모니터링 → validation 실패 시 즉시 수정
