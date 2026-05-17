@@ -40,7 +40,7 @@ Use it when:
 
 ### Step 0a — Load design references (read before drafting outline)
 
-Before collecting inputs, the skill loads two reference files:
+Before collecting inputs, the skill loads three reference files:
 
 1. **`references/slide_design_principles.md`** — Reynolds (Presentation Zen) +
    Duarte (Slide:ology Glance Test™) + Knaflic (Storytelling with Data preattentive
@@ -50,9 +50,16 @@ Before collecting inputs, the skill loads two reference files:
    outline from "what content fits" to "what should the audience remember 10 seconds
    after each slide."
 2. **`references/medical_presentation_templates.md`** — Section structure, slide counts,
-   and design seeds for the 4 contexts: journal club, grand rounds, conference talk,
-   lecture. Pick the matching template after Phase 0 inputs are collected, then
-   customize.
+   and design seeds for the 5 contexts: journal club, grand rounds, conference talk,
+   lecture, and academic lecture multi-paper survey. Pick the matching template after
+   Phase 0 inputs are collected, then customize.
+3. **`references/slide_visual_styles/`** — visual style specs (color palette, typography,
+   layout grid, slide-type templates) callable from any of the 5 context templates.
+   Currently available: `nature_lancet.md` (Nature/Lancet aesthetic — white background,
+   navy primary, coral accent, Inter/Pretendard). Default for academic lectures per
+   `~/.claude/rules/academic-lecture-style.md`. Paired with the generic builder
+   `templates/build_pptx_nature_lancet.py` and the PDF figure extractor
+   `scripts/extract_pdf_figures.py`.
 
 These two files mirror the entry-point pattern used in
 `make-figures/references/design_principles.md` (Step 1 "Specify"). Both skills share
@@ -225,10 +232,24 @@ Only include if user requested in Phase 0. Examples:
 
 **Mode A: Generate new slide deck**
 
-Generate a fully-editable PPTX from structured inline data using `python-pptx`. Use the
-template library at `${CLAUDE_SKILL_DIR}/references/generate_pptx_templates.py` as the
-canonical pattern — it ships a working showcase of every template type and a smoke-tested
-`main()`.
+Generate a fully-editable PPTX from structured inline data using `python-pptx`. Two
+canonical template libraries:
+
+- `${CLAUDE_SKILL_DIR}/references/generate_pptx_templates.py` — generic T_lead /
+  T_text / T_table / T_image_right / etc. templates with smoke-tested `main()`. Use
+  for journal club, grand rounds, conference talk, and short paper talks.
+- `${CLAUDE_SKILL_DIR}/templates/build_pptx_nature_lancet.py` — Nature/Lancet visual
+  style (white + navy + coral, Inter/Pretendard, 47-slide academic lecture proven).
+  Use for **academic lecture multi-paper survey** (template #5). Functions:
+  `new_presentation`, `add_title_slide`, `add_toc_slide`, `add_section_divider`,
+  `add_transition_slide`, `add_content_slide`, `add_glossary_slide`,
+  `add_closing_slide`, plus `fix_app_xml()` helper. Style spec:
+  `references/slide_visual_styles/nature_lancet.md`.
+
+For lecture decks pulling figures from PDFs (rather than from `/make-figures`
+output), use `${CLAUDE_SKILL_DIR}/scripts/extract_pdf_figures.py` — pdftoppm + PIL
+crop with normalized (0–1) box coordinates. Supports both single-crop CLI and YAML
+batch config.
 
 ### Architecture
 
