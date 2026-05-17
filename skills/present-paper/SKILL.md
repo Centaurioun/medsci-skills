@@ -251,6 +251,29 @@ output), use `${CLAUDE_SKILL_DIR}/scripts/extract_pdf_figures.py` — pdftoppm +
 crop with normalized (0–1) box coordinates. Supports both single-crop CLI and YAML
 batch config.
 
+After raw extraction, run `${CLAUDE_SKILL_DIR}/scripts/trim_caption.py` to
+**auto-remove journal headers / figure captions / surrounding whitespace** so
+that only the figure body remains — the Adobe-Acrobat-crop equivalent in
+automation. The script uses horizontal-projection segmentation plus
+text-band detection (height + density + gap + line-pattern signature) and
+preserves multi-panel figures intact:
+
+```bash
+python3 "${CLAUDE_SKILL_DIR}/scripts/trim_caption.py" \
+  --in-dir  figures/extracted \
+  --out-dir figures/cropped
+```
+
+Handles four common journal layouts: top running-head bar, bottom multi-line
+caption (sparse text), bottom caption *fused* with figure body (no clear gap,
+detected via narrow dark/light alternation), and multi-row tables with
+footnotes (footnote cut, table rows preserved). No tesseract / OCR
+dependency — Pillow + numpy only. Verified on 12-figure academic deck
+(80–95% height retention; captions, journal banners, and CellPress-style
+headers all removed). When the deck slot expects only the figure body
+(default for `build_pptx_nature_lancet.py`), point `FIG_DIR` at the cropped
+output dir.
+
 ### Architecture
 
 ```
