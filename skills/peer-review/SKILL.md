@@ -33,7 +33,16 @@ methodology and study design.
 
 1. **Read the manuscript PDF** thoroughly — Abstract, Methods, Results, Discussion, Tables, Figures.
 2. **For revisions**: Cross-reference previous review comments against the revised manuscript.
-3. **Identify key issues** using this systematic checklist:
+3. **Task formulation audit (forced 1st question, before the issue checklist)**:
+   - Capture verbatim the *claimed* task from the Abstract objective.
+   - Capture verbatim the *measured* task from Methods (inputs → outputs).
+   - Do the two match? Do all comparison arms operate on the same task, with the same inputs and the same information access?
+   - Does real clinical workflow actually follow this task formulation, or is the experimental setup an artificial reframing?
+   - If a mismatch exists, register it as the Major #1 candidate. Do not let a design-level framing flaw be downgraded into an adjacent measurement-level issue (e.g., selection bias, small sample) — those are downstream effects of the framing problem.
+   - **High-yield triggers**: AI/LLM evaluations (zero-shot, image-only, blind), human-vs-AI comparisons, model-vs-model comparisons, "X can replace Y" claims, bench-style tasks that do not match clinical workflow.
+   - **Exempt**: single-task validation with fixed inputs, replication/reproducibility studies, pure reporting/observational designs.
+4. **Identify key issues** using this systematic checklist:
+   - Task formulation (carry forward from step 3 if a candidate was found)
    - Data splitting / leakage (patient-level vs image-level)
    - Reference standard validity
    - Validation strategy / confidence intervals / calibration
@@ -44,9 +53,9 @@ methodology and study design.
    - Overclaiming relative to evidence level
    - Sample size adequacy
    - Statistical methodology appropriateness
-4. **Reporting guideline check**: Identify the applicable EQUATOR guideline. Flag MISSING items as candidate comments. If `/check-reporting` is available, delegate.
-5. **Prioritize**: Rank issues by impact on validity. Select top 3-5 for Major, 3-4 for Minor.
-6. **Gate**: Present findings to user — "Here are the key issues I found — do you agree with this prioritization?"
+5. **Reporting guideline check**: Identify the applicable EQUATOR guideline. Flag MISSING items as candidate comments. If `/check-reporting` is available, delegate.
+6. **Prioritize**: Rank issues by impact on validity. Select top 3-5 for Major, 3-4 for Minor. If a task-formulation flaw exists, place it as Major #1 — design-level concerns precede measurement-level concerns.
+7. **Gate**: Present findings to user — "Here are the key issues I found — do you agree with this prioritization?"
 
 ### Phase 3: Draft Review
 
