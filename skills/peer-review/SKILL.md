@@ -120,10 +120,12 @@ Suggested revisions:
 {2-3 sentences, constructive.}
 ```
 
-**Conciseness targets:**
-- Author section: 500-800 words (max 1000)
-- Major: 3-5 items, each 5-8 lines
-- Minor: 3-4 items, each 1 sentence
+**Length targets (3-tier)**:
+- **Tier 1 Minimal (≤800w)**: R1 revisions, Minor Revision recommendations, reporting-only manuscripts. Major 1-3, Minor 3-5.
+- **Tier 2 Standard (800-1100w)**: typical first-round reviews with 1-2 design-level concerns. Major 3-5, Minor 5-8.
+- **Tier 3 Extended (1100-1500w)**: justified only when (a) fatal-flaw hierarchy required (≥2 design-level limitations), (b) cross-domain methodology (medical AI × radiology × biostatistics), (c) task-formulation misframing critique, or (d) AI/LLM evaluation requiring model-spec + prompt + selection-bias + framing 4-layer audit. Major 3-5, Minor 5-9.
+- **Hard cap 1500 words**. Measure with `awk + wc` (no estimation) — at Phase 3 mid-checkpoint and Phase 6 final.
+- Each Major: 5-8 lines (Tier 1-2) or 10-15 lines (Tier 3, with Why it matters + alternative framings).
 
 ### Phase 4: Self-QC
 
@@ -132,9 +134,11 @@ After drafting, verify mechanically:
 1. **Numerical accuracy**: All cited numbers (sample size, p-value, AUC) match the manuscript.
 2. **Citation accuracy**: Section/Table/Figure references match manuscript.
 3. **Feasibility**: All suggested revisions achievable with existing data.
-4. **Word count**: Author section within 500-1000 words (Minor Revision ≤ 600).
+4. **Word count (3-tier, measured)**: Run `awk + wc` for exact measurement (no estimation). Identify which tier the Author section falls in (Tier 1 ≤800w / Tier 2 800-1100w / Tier 3 1100-1500w). If above 1100w, justify with a one-line rationale (which design-level concern warrants the extra length). Hard cap 1500w. Also run measurement once at Phase 3 mid-checkpoint, not only at final.
 5. **Forbidden words**: No recommendation words (accept/reject/minor/major revision) in Comments to Authors.
-6. **Aczel tone audit** (`references/aczel_2021_reviewer2_patterns.md`):
+6. **Major #1 = task formulation flaw** (if present): if §3C-1 audit found framing mismatch, place it as Major #1. Do not let it be downgraded into adjacent measurement-level issues (selection bias, sample size).
+7. **AI pattern density (quantified threshold)**: em-dash ≤2 per 1000 words, structural rule-of-three ≤2 per Major comment, significance inflation ("genuinely", "truly", "indeed") 0 per Major, hedged Minor proportion ≥50% ("could", "would help", "I'd suggest" vs bare "Please [verb]").
+8. **Aczel tone audit** (`references/aczel_2021_reviewer2_patterns.md`):
    - 0 attitude markers (reject/absurd/ridiculous/naive/oblivious/fail)
    - 0 personal attacks ("the authors seem...", "the authors do not understand")
    - ≥2 first-person rapport instances in General Comments / Closing Remark
@@ -158,10 +162,13 @@ Fix all issues found, then present to user.
 
 - [ ] No recommendation words in Comments to Authors
 - [ ] All cited numbers match the manuscript
-- [ ] Major comments ranked by impact
+- [ ] Major comments ranked by impact (Task formulation flaw, if present, as Major #1)
 - [ ] All suggestions feasible with existing data
-- [ ] Author section within 500-1000 word range
+- [ ] Author section word count measured (awk + wc), tier identified (Tier 1 ≤800w / Tier 2 800-1100w / Tier 3 1100-1500w); 1100w+ justified
+- [ ] Hard cap 1500 words not exceeded
+- [ ] AI pattern density within thresholds (em-dash ≤2/1000w; structural rule-of-three ≤2/Major; significance inflation 0/Major; hedged Minor ≥50%)
 - [ ] Fatal flaw hierarchy stated in Confidential Comments (if applicable)
+- [ ] Reject recommendations (if used): §1C condition checklist (design-level flaw + speculative practical value 3-trigger + novelty gap) explicitly verified — at least 2 of 3 conditions met
 
 ## Tone and Calibration
 
