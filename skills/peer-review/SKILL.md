@@ -120,12 +120,16 @@ Suggested revisions:
 {2-3 sentences, constructive.}
 ```
 
-**Length targets (3-tier)**:
-- **Tier 1 Minimal (≤800w)**: R1 revisions, Minor Revision recommendations, reporting-only manuscripts. Major 1-3, Minor 3-5.
-- **Tier 2 Standard (800-1100w)**: typical first-round reviews with 1-2 design-level concerns. Major 3-5, Minor 5-8.
-- **Tier 3 Extended (1100-1500w)**: justified only when (a) fatal-flaw hierarchy required (≥2 design-level limitations), (b) cross-domain methodology (medical AI × radiology × biostatistics), (c) task-formulation misframing critique, or (d) AI/LLM evaluation requiring model-spec + prompt + selection-bias + framing 4-layer audit. Major 3-5, Minor 5-9.
-- **Hard cap 1500 words**. Measure with `awk + wc` (no estimation) — at Phase 3 mid-checkpoint and Phase 6 final.
-- Each Major: 5-8 lines (Tier 1-2) or 10-15 lines (Tier 3, with Why it matters + alternative framings).
+**Length targets (3-tier, data-grounded)**:
+
+> **Reference baseline (from peer-comment empirical analysis, n=21 reviewer blocks across 13 decision letters)**: median ≈ 545 words, central 50% range 366-856w, 90th percentile ≈ 870w, only 5% exceed 1000w. Most peer reviewers cluster below 900w.
+
+- **Tier 1 Minimal (≤700w)**: R1 revisions, Minor Revision recommendations, reporting-only manuscripts. Major 1-3, Minor 3-5.
+- **Tier 2 Standard (700-1000w) ★ default — most reviews should land here**: typical first-round reviews with 1-2 design-level concerns. Major 3-5, Minor 4-6. Sweet spot 800-950w — sits just above the 90th percentile of peer reviewers, expressing design-level rigor without overwhelming editor parsimony.
+- **Tier 3 Extended (1000-1400w)**: justified only when (a) fatal-flaw hierarchy required (≥2 design-level limitations), (b) cross-domain methodology (medical AI × radiology × biostatistics), (c) task-formulation misframing critique, or (d) AI/LLM evaluation requiring model-spec + prompt + selection-bias + framing 4-layer audit. Major 3-5, Minor 5-7. Frequency cap: ≤20% of reviews rolling — if every review trends Tier 3, the niche signal dilutes.
+- **Hard cap 1400 words**. Measure with `awk + wc` (no estimation) — at Phase 3 mid-checkpoint and Phase 6 final.
+- Each Major: 5-8 lines (Tier 1-2) or 8-12 lines (Tier 3, with Why it matters + alternative framings).
+- **Reference-baseline ratio** (self-QC metric): compute `your_wc / 545` and report. Ratio > 2.0 (above 1090w) flags trim candidate. Ratio < 1.0 may indicate insufficient design-level rigor for AI/methodology critique reviews.
 
 ### Phase 4: Self-QC
 
@@ -134,7 +138,7 @@ After drafting, verify mechanically:
 1. **Numerical accuracy**: All cited numbers (sample size, p-value, AUC) match the manuscript.
 2. **Citation accuracy**: Section/Table/Figure references match manuscript.
 3. **Feasibility**: All suggested revisions achievable with existing data.
-4. **Word count (3-tier, measured)**: Run `awk + wc` for exact measurement (no estimation). Identify which tier the Author section falls in (Tier 1 ≤800w / Tier 2 800-1100w / Tier 3 1100-1500w). If above 1100w, justify with a one-line rationale (which design-level concern warrants the extra length). Hard cap 1500w. Also run measurement once at Phase 3 mid-checkpoint, not only at final.
+4. **Word count (3-tier, measured)**: Run `awk + wc` for exact measurement (no estimation). Identify which tier the Author section falls in (Tier 1 ≤700w / Tier 2 700-1000w ★ default / Tier 3 1000-1400w). Most reviews should land in Tier 2. If Tier 3, justify with a one-line rationale (which design-level concern warrants the extra length) and verify Tier 3 frequency stays ≤20% rolling. Hard cap 1400w. Also measure at Phase 3 mid-checkpoint, not only at final. Report **reference-baseline ratio** (`wc / 545w`) — ratio > 2.0 flags trim candidate.
 5. **Forbidden words**: No recommendation words (accept/reject/minor/major revision) in Comments to Authors.
 6. **Major #1 = task formulation flaw** (if present): if §3C-1 audit found framing mismatch, place it as Major #1. Do not let it be downgraded into adjacent measurement-level issues (selection bias, sample size).
 7. **AI pattern density (quantified threshold)**: em-dash ≤2 per 1000 words, structural rule-of-three ≤2 per Major comment, significance inflation ("genuinely", "truly", "indeed") 0 per Major, hedged Minor proportion ≥50% ("could", "would help", "I'd suggest" vs bare "Please [verb]").
@@ -164,8 +168,9 @@ Fix all issues found, then present to user.
 - [ ] All cited numbers match the manuscript
 - [ ] Major comments ranked by impact (Task formulation flaw, if present, as Major #1)
 - [ ] All suggestions feasible with existing data
-- [ ] Author section word count measured (awk + wc), tier identified (Tier 1 ≤800w / Tier 2 800-1100w / Tier 3 1100-1500w); 1100w+ justified
-- [ ] Hard cap 1500 words not exceeded
+- [ ] Author section word count measured (awk + wc), tier identified (Tier 1 ≤700w / Tier 2 700-1000w ★ default / Tier 3 1000-1400w); Tier 3 justified + ≤20% rolling frequency
+- [ ] Reference-baseline ratio (`wc / 545w`) reported; ratio > 2.0 trimmed
+- [ ] Hard cap 1400 words not exceeded
 - [ ] AI pattern density within thresholds (em-dash ≤2/1000w; structural rule-of-three ≤2/Major; significance inflation 0/Major; hedged Minor ≥50%)
 - [ ] Fatal flaw hierarchy stated in Confidential Comments (if applicable)
 - [ ] Reject recommendations (if used): §1C condition checklist (design-level flaw + speculative practical value 3-trigger + novelty gap) explicitly verified — at least 2 of 3 conditions met
