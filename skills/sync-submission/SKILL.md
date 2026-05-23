@@ -73,6 +73,7 @@ The registry is a project-local YAML mapping author identifiers (full names, nat
 - Gate 6 (double-blind journals): before freeze, export the portal's blinded review PDF and grep for all author identifiers across the entire upload set — manuscript, supplementary, cover letter, registry record PDFs (PROSPERO/ClinicalTrials), portal Letter-field text. A clean manuscript blind does not imply a clean portal blind.
 - Gate 7 (text-only docx rebuilds): never use `pandoc --reference-doc=manuscript.docx` for response/cover/supplementary text-only docx — the reference docx ships its embedded media (figure files) into the new docx, bloating size 50–100×. Use plain `pandoc input.md -o output.docx` for text-only artifacts.
 - Gate 8 (Phase 5 cross-document N consistency): before freeze, run `scripts/cross_document_n_check.py` over the manuscript bundle (abstract, body, PROSPERO record, cover letter, supplementary, INDEX, PRISMA flow caption). Any N category with >1 distinct integer value is a P0 drift. When a `FINAL_POOL_LOCK.yaml` is present, supply `--pool-lock` to make the locked counts the authoritative baseline. See "Phase 5 — Cross-document N consistency" below.
+- Gate 9 (Phase 6 intra-manuscript scope drift): run `scripts/scope_drift_check.py` against the manuscript (and optionally the PROSPERO record). Numeric anchors (AUC, OR/HR/RR, sensitivity/specificity) appearing in Limitations / Discussion but absent from Methods + Results are P0 SCOPE_DRIFT. PROSPERO ↔ Methods synthesis-method disagreement is a P0 PROSPERO_DRIFT.
 - Gate 10 (Phase 7 v_(N+1) docx regeneration): when building a new submission from a frozen prior version, run `scripts/verify_package_integrity.py --assert-vN-docx-changed --vN-docx <prev>.docx --new-docx <next>.docx`. Identical MD5 = unmodified seed copy = block submission. Defense-in-depth — required even when the upstream pipeline appears to have regenerated the docx.
 
 ## Phase 5 — Cross-document N consistency
@@ -129,6 +130,54 @@ Output `qc/cross_document_n.json`:
 Treat `submission_safe: false` as a halt. Resolve drift by tracing each
 location to its data artifact (extraction sheet, PRISMA cascade TSVs) and
 correcting the document(s) that disagree with the locked count.
+
+## Phase 6 — Intra-manuscript scope drift
+
+Late-revision sensitivity analyses sometimes get introduced in the
+Discussion or Limitations subsection without ever propagating back to
+Methods + Results. The manuscript then makes claims (with explicit AUC,
+OR, sensitivity numbers) whose primary report never exists. Reviewers
+read this as a fabrication-grade red flag, and editors desk-reject.
+
+A second variant of the same anti-pattern: the PROSPERO record commits to
+a synthesis method (Freeman-Tukey, random-effects DerSimonian-Laird,
+bivariate, HSROC, Bayesian, etc.) but the Methods section uses a
+different one — or the PROSPERO record was updated and Methods stayed
+behind. When accompanied by a Methods line saying "no amendment lodged",
+this becomes a documented silent protocol deviation.
+
+`scripts/scope_drift_check.py` detects both patterns:
+
+```bash
+python "${CLAUDE_SKILL_DIR}/scripts/scope_drift_check.py" \
+    --manuscript manuscript.md \
+    --prospero prospero/prospero_v2.md \
+    --out qc/scope_drift.json
+```
+
+Output:
+
+```json
+{
+  "submission_safe": false,
+  "limitations_only_anchors": [
+    {
+      "anchor": "0.869",
+      "kind": "AUC",
+      "found_in": ["Limitations:31"],
+      "missing_from": ["Methods", "Results"]
+    }
+  ],
+  "synthesis_method_drift": [
+    {"method": "Freeman-Tukey", "prospero": true, "methods": false}
+  ]
+}
+```
+
+Resolution: either (a) propagate the anchor into Methods + Results as a
+primary report or (b) remove it from Limitations / Discussion. For
+synthesis-method drift, file a PROSPERO amendment and update Methods to
+match — both must agree before submission.
 
 ## Phase 7 — v_(N+1) docx regeneration gate
 
