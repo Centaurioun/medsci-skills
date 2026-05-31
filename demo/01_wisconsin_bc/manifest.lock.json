@@ -1,0 +1,102 @@
+{
+  "schema_version": 1,
+  "seed": null,
+  "provenance": "demo reproducibility lock: input data + deterministic result tables (timestamped .docx/.pptx excluded)",
+  "files": {
+    "analysis/tables/diagnostic_accuracy.csv": {
+      "sha256": "b961da457022961d0df47008f3f8695d367935b4e9b7b8ddcc7defb8b95d6519",
+      "bytes": 269,
+      "tabular": {
+        "n_rows": 3,
+        "n_cols": 8,
+        "column_hashes": {
+          "Model": "ba4c0929fa5458257f3f66892405074f779ed6a243248e209b19462e8f5e7d9c",
+          "AUC (95% CI)": "85f12eb815630880cda49f43077613cdc5ba50c8f8c1ee9a534ccc4579310d75",
+          "Sensitivity": "9b2b1ed8fdd08d24f86c3fbd199ed5395e18021e3166c16d99c317d57630fe9f",
+          "Specificity": "d1ec3c86fb59fcbb5a287b6ee8283c9d4aef743b82c7388df11a07a04ae5f236",
+          "PPV": "765d68d433b143a222bf80b860f7c4f4157171925ac8d7bc74a4c781e0c33e55",
+          "NPV": "1310f4d73a94fbc083756ffe644a464f7a64eccb4798ac76bc74061a5815373b",
+          "Accuracy": "1bfd364e0ff546106e827455f2289874fc7228df70f5afdf589fa90a2ad3a2c6",
+          "F1": "25829219ae505c9fc692b8967621321193ae95509402e07b78d92ded31d9c738"
+        }
+      }
+    },
+    "analysis/tables/predictions.csv": {
+      "sha256": "723b7aec178c19bd06da5a7cc0f91147ff8e37d0f9dbdba251ac74654f416a12",
+      "bytes": 7232,
+      "tabular": {
+        "n_rows": 114,
+        "n_cols": 8,
+        "column_hashes": {
+          "patient_id": "32329b618e7ba918f356e164960e482033fd92e6e3201cf3f9005c8cb22c6529",
+          "true_label": "970fe49efd808d7de6c9671342fd9135999d1962af30ae06f811b3fda36e6211",
+          "lr_prob": "6661325bbfbc7a01f8fd28f62947440d904ca2248d6c3b0b333a88cbd505412e",
+          "rf_prob": "03f4f95828384de0d27f710b2170415fc96c1976eb8646c0f5d91bedfe3fe612",
+          "svm_prob": "d31e679a7eac834dcceede7f158014db1370a1b272d6bca7f223276d924bb734",
+          "lr_pred": "a8e53d03a724d679b71fcb3d02b42b249d373bb15afa768325d0df65ff364588",
+          "rf_pred": "46d0af7368fa1b517731654797b59f087fb7eaa5e2bc754ea3c0863284b806ff",
+          "svm_pred": "952f01fee67ddb745b9b602ad70609a01724bad2df096b3beb7acf35a6881636"
+        }
+      }
+    },
+    "analysis/tables/table1_demographics.csv": {
+      "sha256": "3e5102cc095d7136ad07736d566063bd136f141e6d1e2ca2c69364090908ba25",
+      "bytes": 159,
+      "tabular": {
+        "n_rows": 3,
+        "n_cols": 4,
+        "column_hashes": {
+          "Characteristic": "51803141cbdf2f87c0c895766fabe14dca44f709f6bb2c90522287e35f598c62",
+          "Malignant (n=212)": "0aaf684bf8b0a206d7dc7f5303cc613c5163cd975e3233835cacbbff0eb38bf8",
+          "Benign (n=357)": "2cf27ab39dda78841400db2025df18cf4fb28086286e7d508ced70b59eb885ff",
+          "P value": "5f4e4a39febe0293f53a01165b63f0086d92fb3690032850b86e4e3999916e8c"
+        }
+      }
+    },
+    "data/breast_cancer_clinical.csv": {
+      "sha256": "b63a202828c4f92e6ba9e27f590603c76543e4c146795ab6f01f1e8596757821",
+      "bytes": 140268,
+      "tabular": {
+        "n_rows": 569,
+        "n_cols": 35,
+        "column_hashes": {
+          "patient_id": "cdc5ff16a1576697c8fa0fc55591798c27d7bea93391b60bb27a4869a53b035d",
+          "age": "724408280bfd4be767383be36d27cdd6286da5d42f20d1c3739b3ca777f9c176",
+          "sex": "e3d0d1174c38dc17665102e7853a6dc4cbac638a973403b560b4ecea9909a636",
+          "imaging_modality": "d5569e41c0407ea33a2640ea67b02dd9be9502d74af9a48ab018e50a34026e6d",
+          "diagnosis": "0f40110ef89ec607175a6643fbec9aab408101a320cfd78e8665c8d73b90a858",
+          "mean radius": "fae2e5fcacf08b5432f7e5fc8674d3eb57b1f2e4bfa11882fc3a25a7ed580c31",
+          "mean texture": "9890a0daa0277ec81e85a96a052b791aac2848eb6599bcb3bdf44cf17c16ba90",
+          "mean perimeter": "d6e8a4a123d836c3168f98020768ee37d1a13aee0075b8054d1c3fb44062a4bb",
+          "mean area": "9c93e33f4eb51871b479a9ead8da53b71e583212286354f39060c76136d0dba3",
+          "mean smoothness": "977d6b404bcb71764604d4a9e6dabb78b2a77fe9d7b48ff9f73afbefe66a088a",
+          "mean compactness": "8b12589ab768b45a8fb0849524826d8a62a4331e9a5567a186a64bbce5e63fcc",
+          "mean concavity": "3647593d05bb011507911dcd976bfc899d9570a9278261f455ae9648e70c19a1",
+          "mean concave points": "bde4fb83108234038db34fe02fd1a0667439cbda28c16812c9de7021c03ba78c",
+          "mean symmetry": "1137eba5002eaa988ee39c4922d58bf0f9ea1ed2f211b89f1a8c4045811f5aa2",
+          "mean fractal dimension": "d5f3421ddf372b45f21a4f3444b348220cdf1177029c2dccca061029e293ea84",
+          "radius error": "32d00fe94bb6f363a704e0eaf10b3d97fe326b7e0c94dd00db453a0cf99e16d1",
+          "texture error": "13c0b3c518987fdd2c45c1a30b98f9bac02475c06035eb09a21966e62c1640dc",
+          "perimeter error": "c5a124e5a881efd41e31c26111223871efdce1d58be1d4e6aa94be2fb1132014",
+          "area error": "47c9eac6d24cc09eea183da94284a863e54cad03a8c166da5ad532077962357e",
+          "smoothness error": "809ef994e850309c404bfe88dfadf61649b9f61b640201cffbf1726d79e8eec9",
+          "compactness error": "e4cf6474cbe390a4bbe7247cc48368b6b477327d726a5970b16ab69d4fba7854",
+          "concavity error": "c31775347f4e799b4f79449af86f0f936975de2fcb8d9af5e972e20c50734de2",
+          "concave points error": "117e63a0eb22f2b44012b3207971903f23f04e2e68d6c6f9a90995609f4b89da",
+          "symmetry error": "98719c87a669d4eb2fb8dc0c212a30216e23b83f30ff083db151482ce1a4f85b",
+          "fractal dimension error": "6dc93f7bdd9ce72ba00221333a7403ba56bdc639a24a9df0a1d9f0efddd6e4ac",
+          "worst radius": "f60fb23fa3906fc7febc2a786432a2cbcf7432524079d91893712f6971eedb37",
+          "worst texture": "f047f8ac913144d2070c774669830db5ba4cf52842266d2058a8ed17d2be5e64",
+          "worst perimeter": "925cdebbd50c6d4344a6a3e5b8432499b66a17029e4aaf612a93d6fa02fbbce1",
+          "worst area": "a0b734c330177e64a614a36beeebe02d57d03df3ff251e1ee1d69fc6ed26db8f",
+          "worst smoothness": "33febfebb93dda629a0c5be3c0c9e324f57dd0ea9853ee1141d0a4b21272da7a",
+          "worst compactness": "a79828238429f6d6bb97726a927953ea67711b0f1cdb85d2f0117e62bb182606",
+          "worst concavity": "2e6ed0fda9cbb61b9331fba9665264448a3f597af4a5181beb4be7ca0b341491",
+          "worst concave points": "1ff1abe52ea643c915746345dae61d92464fba41a59d34957df2aaa6877fa537",
+          "worst symmetry": "6bd8c9ef442533fa498882e6b62e7a63df8b5e0aaf5d53f94de65f92158fb60e",
+          "worst fractal dimension": "6638db2f128f5180dbd8fcb95cc2f701d84acd6424d1aa709e445f7478f37965"
+        }
+      }
+    }
+  }
+}

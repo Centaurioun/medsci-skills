@@ -1,0 +1,90 @@
+{
+  "schema_version": 1,
+  "seed": null,
+  "provenance": "demo reproducibility lock: input data + deterministic result tables (timestamped .docx/.pptx excluded)",
+  "files": {
+    "analysis/tables/leave_one_out.csv": {
+      "sha256": "efee02a1eafd5961c48f886e1ee49c59809371669411b1e14729c0fc1aedced7",
+      "bytes": 653,
+      "tabular": {
+        "n_rows": 13,
+        "n_cols": 5,
+        "column_hashes": {
+          "Study": "359996273473648c83f327d5b75dd44c80840b449e69ae5d3335cb0c94f2f19b",
+          "RR": "1fedcf7131dd63455d2100783ebec29321f8301e5dc09868ad98d343415104b4",
+          "CI_lower": "1a139d4b4e288a489f0d7bba1128ea67ca335f2253d7e2dec5c2326fda8b97bb",
+          "CI_upper": "45cf0eb4d2920084bdb6fb9818baeec3a85b190d7f1440f7f7bc3679659bfe9b",
+          "I2": "a09df117d8352f61380420c8fc6acf7f3768849b6ca6c6e72278972b7f12db8f"
+        }
+      }
+    },
+    "analysis/tables/metaregression_table.csv": {
+      "sha256": "3cb6ac7e5b1751ccccedcb86ed93efe9c46ddf78661e62df7b619a758eb5de9d",
+      "bytes": 127,
+      "tabular": {
+        "n_rows": 2,
+        "n_cols": 5,
+        "column_hashes": {
+          "Covariate": "4888be8793c7bb6deae82be6272670c8933c7f8856ef645a1303e72c5f40f522",
+          "Estimate": "220b4c71f5c412cffd485c58a39e8231ad955133c17ddcb25a9378c035642aff",
+          "SE": "2c0089cc52455c00dfdd998d76084959375957e0b1f642cdb531e58a7bd0d0fd",
+          "z": "e059b4ee1cbd8e7dceab32a1e05b52406bc535a7a83b039c686574258e73661c",
+          "p": "6d565f10a9bfa91c8b1c499efec938d2170499b9a3461972de3a51254f49f7b5"
+        }
+      }
+    },
+    "analysis/tables/study_results.csv": {
+      "sha256": "f6949a0cd2a60fcb41114f7a6c07836e0a58cf13d60b9208486bace8c124a6f3",
+      "bytes": 854,
+      "tabular": {
+        "n_rows": 13,
+        "n_cols": 7,
+        "column_hashes": {
+          "Study": "359996273473648c83f327d5b75dd44c80840b449e69ae5d3335cb0c94f2f19b",
+          "RR": "8aeeeb62175d20167c8669fce5aa60cbf6e3a3b5ef0952abfbda08c680463d6b",
+          "CI_lower": "6d901658886e8567cb4a789e3062d28694a66832f6d8e82459e8fff488ef1746",
+          "CI_upper": "0509817973279ea9bd3fc3e5892423cb20006bd058899242825a52d0bc1cd1f0",
+          "Weight": "63ddd2cd59203040c672104447e9d4b481aa39197f712f208fb41c88e3f70e46",
+          "Latitude": "b13fe6b70c48af64e5dbf675c234cfa2e5490734c920cfb3b36677487610420c",
+          "Allocation": "bb422503d29005511ff7c70cd2e5671757348ba8f2ce45fbb6ad98bfea058895"
+        }
+      }
+    },
+    "analysis/tables/summary_table.csv": {
+      "sha256": "3f4fe17c072b30d215b297514f3251e10126aa091aa8aec2b6f31af55798f35f",
+      "bytes": 319,
+      "tabular": {
+        "n_rows": 5,
+        "n_cols": 7,
+        "column_hashes": {
+          "Analysis": "7d12a108ff2d44e4f99b8900aa5205dacc220064f37b8b00affd9978de3cf73e",
+          "k": "f0fda70d2a076c421ee655aaeb357032d4cc1c9bf2382283bee703c699e2d85e",
+          "RR": "e80ae14770dc8b0082131d9f1602890a46ef5e4471815a3a785e9dd007b1e179",
+          "CI_lower": "72b1df74c9317992ab9f72b0e1c3c5775267d1dc84ce559d265f91a523587863",
+          "CI_upper": "fbf2653068e0270db7f7a7dc6a38dcd0904eea8d67131c51a81188eafb3e7ae5",
+          "I2": "802a3d7e9812ddc9025ec16fc94932d44935af9414a0babc8cf63d27a9dbbb4d",
+          "tau2": "7c1f582ad568ac895ffd2f3572e326476b64a53a1ab6fa43dbfe1a0a3e59a2ab"
+        }
+      }
+    },
+    "data/bcg_raw.csv": {
+      "sha256": "21fe27b2e2f68ab042d9897c01f731256a7f15acd48b3fa427a6d1f4f9f1b87b",
+      "bytes": 783,
+      "tabular": {
+        "n_rows": 13,
+        "n_cols": 9,
+        "column_hashes": {
+          "trial": "c5023dfe30ac5b2d1d4b90dbfcf3ec42e382ed644d3eb82a855996bb471748cf",
+          "author": "0e97396d0ab9419ad8a696460fd40c6a0aa34f82c8eae5c8bd4c8ebe5872fee1",
+          "year": "290118a436fe9641f5911d9ac0d52f8d14266fdfa508fc839a4b8fad5102a46e",
+          "tpos": "ead3f403bb5e70c5f03eefaa806cff412f70a868112f5bc0a3f39abc78629e83",
+          "tneg": "1520c7cc0560010453ba70c4e204c93796cfb3b270160844046dea7c242b92c1",
+          "cpos": "ef883b0543afc1f9b47cdcde5a098ac57b7d77074c69309181098bc36bf28735",
+          "cneg": "cec59029eb3cf7e5fafa767dc50a8fb2f91c637f0bc8b94a6f5641457d54441d",
+          "ablat": "b13fe6b70c48af64e5dbf675c234cfa2e5490734c920cfb3b36677487610420c",
+          "alloc": "bb422503d29005511ff7c70cd2e5671757348ba8f2ce45fbb6ad98bfea058895"
+        }
+      }
+    }
+  }
+}
