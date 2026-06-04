@@ -263,8 +263,8 @@ The original-research probes (Phase 2 issue checklist, Phase 2A/2B/2C) do not tr
 **RV7 — Load-bearing figures/tables** *(editorial value-add axis; SANRA item 6 secondary)*: Are there standardized comparison tables, a landscape figure, or a concrete clinical worked example? Assess whether figures/tables carry synthesis weight or are decorative — strong radiology-AI reviews tend to use standardized comparison matrices and a worked example.
 
 **RV8 — Constructive gap-filling & additions** *(the expected-role probe)*: Identify missing topics/frameworks/key references and propose them as **"consider adding X because it directly supports Y"** — never "must cite." Tier candidates by publication status:
-- *Peer-reviewed guidelines*: TRIPOD-LLM, STARD-AI, CLAIM (2024)
-- *Preprint (label as such)*: MI-CLAIM-GEN (arXiv) — do not place at the same level as peer-reviewed guidelines
+- *Peer-reviewed guidelines*: TRIPOD-LLM, MI-CLAIM-GEN, and STARD-AI (all Nature Medicine), and the CLAIM 2024 update (Radiology: AI)
+- *Preprint (label as such)*: any not-yet-peer-reviewed arXiv/medRxiv item — name it as a preprint and do not place it at the same level as peer-reviewed guidelines. Verify status before citing, since preprints are frequently published later (a checklist first posted to arXiv may since have appeared in a journal)
 - *Concepts/tools*: RAG specifics (retrieval failure vs fabrication), uncertainty/confidence calibration, radiology-specific evaluation (RadGraph, CheXbert/CheXpert-F1, ReXTrust), regulatory context (FDA 510(k)/CE, RADAR)
 
 Keep additions **proportionate** (≈ ≤1 new reference per page, each motivated; no wholesale rewrite). Suggesting missing *literature/topics* is expected; demanding new *studies* is not.
@@ -273,7 +273,7 @@ Keep additions **proportionate** (≈ ≤1 new reference per page, each motivate
 > "The topic of LLM hallucinations is now addressed by several recent reviews, so it would strengthen the manuscript to state explicitly what this primer adds beyond them — for example, a radiology-specific failure taxonomy, a worked clinical example, or an actionable verification workflow that existing general-purpose reviews do not provide. As written, the Introduction does not position the contribution against the current review literature, which makes the incremental value difficult to judge."
 
 **Output template (RV8 example)**:
-> "The mitigation section would benefit from engaging with emerging reporting standards for generative models, as these directly support the manuscript's call for controlled deployment. Consider adding a brief discussion of TRIPOD-LLM (peer-reviewed) and, as an early-stage proposal, MI-CLAIM-GEN (preprint), and clarifying how retrieval-augmented generation shifts the dominant failure mode from fabrication toward retrieval error rather than eliminating hallucination — a distinction the current text conflates."
+> "The mitigation section would benefit from engaging with emerging reporting standards for generative models, as these directly support the manuscript's call for controlled deployment. Consider adding a brief discussion of TRIPOD-LLM and MI-CLAIM-GEN (both peer-reviewed reporting guidelines for LLM/generative studies), and clarifying how retrieval-augmented generation shifts the dominant failure mode from fabrication toward retrieval error rather than eliminating hallucination, a distinction the current text conflates."
 
 This module was added to give review/narrative manuscripts a dedicated audit gate, on the principle that constructive gap-filling is expected of review-article reviewers (its first review-article audit motivation).
 

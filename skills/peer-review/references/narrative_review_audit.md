@@ -47,12 +47,13 @@ Domain-specific (AI/LLM reviews):
 These are **candidate additions** a reviewer may raise with "consider adding X because it directly supports Y" phrasing — never "must cite," and proportionate to length. Items are tiered by publication status so a preprint is not equated with a peer-reviewed guideline. Verify each against the manuscript's existing coverage before suggesting it (do not request additions already present).
 
 **Reporting frameworks (peer-reviewed):**
-- TRIPOD-LLM — reporting for studies using large language models.
-- STARD-AI — diagnostic-accuracy reporting for AI.
-- CLAIM (2024 update) — checklist for AI in medical imaging.
+- TRIPOD-LLM — reporting for studies using large language models (Nature Medicine).
+- MI-CLAIM-GEN — minimum-information checklist for generative clinical AI (Nature Medicine).
+- STARD-AI — diagnostic-accuracy reporting for AI (Nature Medicine).
+- CLAIM (2024 update) — checklist for AI in medical imaging (Radiology: Artificial Intelligence).
 
 **Reporting frameworks (preprint — label as such):**
-- MI-CLAIM-GEN — generative-AI extension; an early-stage proposal, cite as a preprint.
+- Treat any not-yet-peer-reviewed arXiv/medRxiv checklist as a preprint and label it as such; do not equate it with a peer-reviewed guideline. Verify status before citing, since such items are frequently published later (the example above, MI-CLAIM-GEN, first appeared on arXiv and was subsequently published in Nature Medicine).
 
 **Concepts and tooling commonly expected in a hallucination-in-radiology review:**
 - Hallucination taxonomy: intrinsic vs extrinsic; faithfulness vs factuality.
