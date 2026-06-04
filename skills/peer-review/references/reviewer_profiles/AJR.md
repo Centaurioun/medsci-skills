@@ -7,7 +7,9 @@
 
 ## Required Structure
 
-Section-by-section review with continuous numbering across sections:
+Section-by-section review with continuous numbering across sections.
+
+**For original research (IMRAD):**
 
 1. Title
 2. Abstract
@@ -19,7 +21,18 @@ Section-by-section review with continuous numbering across sections:
 8. Tables
 9. Figures
 
-Each section lists numbered comments; numbering continues across sections (not reset per section).
+**For Review articles (not IMRAD):** match the manuscript's own structure — use thematic body sections (the manuscript's headings) and Conclusions in place of Methods/Results:
+
+1. Title
+2. Abstract
+3. Introduction
+4. (thematic body sections, using the manuscript's headings)
+5. Conclusions
+6. References
+7. Tables
+8. Figures
+
+Apply the Phase 2D 8-probe audit (RV1–RV8) for Review articles. Each section lists numbered comments; numbering continues across sections (not reset per section).
 
 ## Scorecard
 
