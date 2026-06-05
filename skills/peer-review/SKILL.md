@@ -199,6 +199,44 @@ These probes complement (do not replace) the generic Phase 2 issue checklist and
 **Output template (S5 example)**:
 > "The chosen baseline nomogram was originally designed and validated for prediction of long-horizon endpoints (5- and 10-year). In this study, median follow-up in [external cohort] is substantially shorter than that horizon, so the comparator's apparent underperformance may partly reflect a horizon mismatch rather than intrinsic inferiority. I'd suggest (a) stating explicitly the time horizon at which both models were evaluated, (b) reporting time-dependent C-indices at a clinically anchored horizon, and (c) clarifying whether the comparator was applied as published, recalibrated locally, or refit as a new Cox model with similar variables."
 
+### Phase 2C: Radiomics / Feature-Reproducibility Extension
+
+Apply this 4-probe checklist **only when the manuscript maps radiomic feature reliability/reproducibility or feature stability** (test-retest, noise sensitivity, ICC-based reproducibility), runs an **acquisition–reconstruction parameter sweep** (tube voltage, tube current, bin width, reconstruction kernel, slice thickness, iterative reconstruction), or claims that **reliability/robustness/harmonization-based feature filtering** (e.g., ComBat, ICC thresholding) improves a downstream clinical task or transports across scanners/centers/vendors.
+
+These probes complement (do not replace) the generic Phase 2 issue checklist. Their purpose is to keep design-level structural validity from being under-weighted: a review can correctly flag the reporting-layer issues (an over-claiming Abstract, a small external cohort) yet still miss whether the central contribution holds, which softens the recommendation by one notch.
+
+**Exempt**:
+- Single fixed-protocol radiomic model with no parameter sweep and no reliability-filtering claim
+- Pure deep-learning end-to-end imaging model (handcrafted feature reproducibility not at issue)
+- Replication of a documented prior radiomic pipeline with no new reliability/transportability claim
+
+**R1 — Design-grid circularity (in-domain "prediction" tautology)**:
+- Is an outcome (e.g., feature reliability) predicted from the very grid parameters that were systematically/exhaustively varied to construct the dataset?
+- If so, a high in-domain R² / accuracy is structurally guaranteed by the design ("predicting the construction recipe"), not a discovered relationship — do the predictors simply index the axes of the design grid?
+- Does the manuscript frame in-domain performance as a finding/success and lead the Abstract/Key Points with it?
+- If yes → do **not** endorse the in-domain success. Recommend reframing so the substantive finding is the cross-domain transportability (and, where present, its failure). MAJOR candidate.
+
+**R2 — Construct validity / proxy-target gap**:
+- The clinical rationale typically assumes that features which are reliable/stable/robust in the phantom are also better predictors of a biological/clinical target. A feature can be perfectly stable and biologically uninformative — this link is not logically guaranteed.
+- Is any post-filter performance gain shown to be signal recovery, rather than a by-product of removing a degraded/misaligned baseline feature space?
+- Does the manuscript acknowledge and test the orthogonality of the proxy (reliability) and the target (outcome)? Absent → MAJOR candidate.
+
+**R3 — Transportability framing vs reporting issue**:
+- When cross-phantom / cross-scanner / cross-center failure (negative R² on the target domain, low Jaccard overlap of selected features, calibration slope < 1) is the substantive result, is it nonetheless framed as a generalization success in the Abstract/Key Points/Conclusion?
+- Does the Results text state explicitly that a negative R² on the target domain means the model performs worse than predicting the mean (i.e., the mapping does not transport), rather than reading it as a weak continuous performance metric?
+- **Calibration link**: if in-domain "success" is partly a design artifact and the cross-domain result is a failure, reframing the Abstract will not rescue the central contribution. This is not a reporting fix — escalate the recommendation toward Reject rather than Major Revision.
+
+**R4 — Multiplicity (model × threshold / model × cohort grid)**:
+- Are multiple classifiers × multiple reliability thresholds (or cohorts) compared with one-sided tests, with a few reaching p < 0.05?
+- Is multiple-testing correction applied, and is the expected number of false positives by chance named explicitly (e.g., "5 models × 3 thresholds = 15 tests, ≈1 expected false positive")? Do not defer this to a generic "statistical review needed."
+- For a small external cohort (n ≤ ~30), do bootstrap ΔAUC intervals cross zero? If so, restrict any headline-gain claim accordingly (e.g., to a single classifier family in a small cohort).
+
+**Output template (R1 example)**:
+> "Because the acquisition parameters were varied as a systematic factorial grid, a model that predicts feature reliability from those same parameters is largely recovering the grid by construction; the in-domain R² ≈ 1.0 therefore reflects design structure rather than a discovered relationship. I'd suggest reframing the Abstract and Key Points so the substantive finding is the cross-phantom/cross-scanner transportability (and its failure), and stating explicitly in the Results that a negative R² on the target domain means the model performs worse than predicting the mean — i.e., the reliability mapping does not transport."
+
+**Output template (R4 example)**:
+> "The reported gains come from a grid of [N models] × [M thresholds] one-sided comparisons; with [N×M] tests, roughly one positive is expected by chance alone, and the external cohort (n = [k]) yields bootstrap ΔAUC intervals that cross zero for several thresholds. I'd suggest reporting a multiplicity-adjusted analysis (or stating the expected false-positive count), restricting the headline claim to the classifier family that survives, and marking the ΔAUC intervals that cross zero in the figure."
+
 ### Phase 3: Draft Review
 
 Generate `{manuscript_id}_review_draft.md`:
@@ -292,6 +330,7 @@ After drafting, verify mechanically:
    - General Comments names ≥2 specific strengths before listing concerns
    - At most 1 typo/grammar Minor Comment, only if in formal section or systematic
 9. **SR-MA-specific QC** (if Phase 2A applied): Confirm the P0 internal-consistency gate was run before any fabrication claim. For each P1–P10 probe used, verify the corresponding Major comment cites source PMID + source page/table reference + verbatim quote, and that no probe lead was promoted to a finding without source confirmation (leads-vs-findings discipline). Reviews citing extraction errors without source-page reference are not actionable for authors.
+10. **Radiomics-reproducibility QC** (if Phase 2C applied): If an acquisition-parameter sweep predicts an outcome from its own grid axes (R1 design-grid circularity) or the substantive result is a cross-domain failure framed as success (R3), confirm the recommendation reflects design-level severity and is not softened to a reporting fix. Where a model × threshold/cohort grid yields a few p < 0.05, confirm the multiplicity / expected-false-positive count is named (R4), not deferred to "statistical review needed."
 
 Fix all issues found, then present to user.
 
@@ -339,6 +378,8 @@ Recurring high-yield checks — apply to every manuscript:
 6. **Reproducibility**: Preprocessing, hyperparameters, segmentation protocols reported
 
 For survival / prognostic-model manuscripts, also apply the Phase 2B 7-probe audit (conditioning, censoring, competing risks, cutoff optimism, comparator horizon alignment, C-index variant transparency, calibration beyond discrimination).
+
+For radiomic feature-reproducibility / phantom parameter-sweep / reliability-filtering manuscripts, also apply the Phase 2C 4-probe audit (design-grid circularity, construct validity / proxy-target gap, transportability framing with Reject-escalate calibration, multiplicity).
 
 ## Journal-Specific Formatting
 
