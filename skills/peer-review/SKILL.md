@@ -237,6 +237,48 @@ These probes complement (do not replace) the generic Phase 2 issue checklist. Th
 **Output template (R4 example)**:
 > "The reported gains come from a grid of [N models] × [M thresholds] one-sided comparisons; with [N×M] tests, roughly one positive is expected by chance alone, and the external cohort (n = [k]) yields bootstrap ΔAUC intervals that cross zero for several thresholds. I'd suggest reporting a multiplicity-adjusted analysis (or stating the expected false-positive count), restricting the headline claim to the classifier family that survives, and marking the ΔAUC intervals that cross zero in the figure."
 
+### Phase 2D: Narrative / Review-Article Extension
+
+Apply this 8-probe checklist (RV1–RV8) **only when the manuscript is a Review / narrative review / primer / state-of-the-art / educational review** — i.e., a non-systematic synthesis rather than original research. Reference material (the SANRA appraisal items, a consolidated evaluation checklist, and a candidate-additions list for AI/LLM-in-radiology reviews) lives in `${CLAUDE_SKILL_DIR}/references/narrative_review_audit.md`.
+
+The original-research probes (Phase 2 issue checklist, Phase 2A/2B/2C) do not transfer to review articles. The key inversion: for original research, reviewers are discouraged from scope-expanding requests, but **for narrative reviews, identifying thematic gaps and proportionately suggesting missing content is an expected part of the reviewer's role** — error-spotting alone is necessary but not sufficient. Keep SANRA in its lane: it is a 6-item *critical appraisal tool, not a reporting guideline*, so do not over-enforce it (only RV3 is SANRA-aligned, and as a suggestion; do not demand PRISMA — narrative ≠ systematic).
+
+**Exempt**:
+- Original research / development / validation / trial (→ Phase 2 + 2A/2B/2C)
+- Systematic review **with pooling** (meta-analysis) → Phase 2A
+- Case report / editorial / commentary (opinion form; no recommendation gating)
+
+**RV1 — Novelty & value-add** *(editorial value-add axis)*: Against ≥2–3 recent reviews/primers on the same topic, does the manuscript state explicitly what it adds? For saturated topics, if the authors do not position their contribution against the current review literature, the incremental value is hard to judge — MAJOR candidate. Judge contribution magnitude only; scope-fit is the editor's call.
+
+**RV2 — Scope & aims clarity** (SANRA items 1–2): Is the topic's importance established, and are the review's aims and scope boundaries (what is included/excluded) explicit?
+
+**RV3 — Evidence-gathering transparency** *(SANRA item 3, suggestion-level)*: Even a narrative review benefits from one paragraph on how the literature was identified (databases, time window, selection logic). This is **not a reject criterion** — phrase it as a SANRA-aligned transparency suggestion. Do not require PRISMA.
+
+**RV4 — Technical & medical accuracy** *(reviewer niche strength)*: Engineering correctness (autoregressive decoding, RAG, RLHF, instruction tuning, hallucination mechanisms, evaluation/mitigation methods) and medical correctness (radiology claims, clinical examples, anatomy/imaging detail). Itemize errors with location. This axis is where a domain-literate reviewer adds unique value.
+
+> **Verify-your-own-criticism gate**: before raising a technical inaccuracy or a citation–claim mismatch as a Major, cross-check the reviewer's *own* assertion against a current authoritative source (the full cited paper, CrossRef, arXiv). Fast-moving fields make reviewer critiques go stale: a method dismissed as "not applicable" may have been adapted, and a "preprint" may since have been peer-reviewed. If unverified, downgrade to a hedged "Please verify…"; if confirmed, state it firmly. This applies with extra force to claims about what a cited reference *argues* (a review about hallucination must not itself mis-attribute a source).
+
+**RV5 — Taxonomy / synthesis coherence**: Is the manuscript's classification mutually exclusive and collectively exhaustive, and does it map to established taxonomies (intrinsic vs extrinsic; faithfulness vs factuality; published hallucination surveys)? Ad-hoc categories should be reconciled with an established taxonomy. Is the synthesis integrative rather than a list?
+
+**RV6 — Balance, currency, citation accuracy** (SANRA items 4–5): Is conflicting evidence handled fairly (no cherry-picking)? Are citations current and primary-source-weighted? Spot-check citation accuracy (author/year/claim match) — for a review *about* hallucination, citation errors are thematically critical.
+
+**RV7 — Load-bearing figures/tables** *(editorial value-add axis; SANRA item 6 secondary)*: Are there standardized comparison tables, a landscape figure, or a concrete clinical worked example? Assess whether figures/tables carry synthesis weight or are decorative — strong radiology-AI reviews tend to use standardized comparison matrices and a worked example.
+
+**RV8 — Constructive gap-filling & additions** *(the expected-role probe)*: Identify missing topics/frameworks/key references and propose them as **"consider adding X because it directly supports Y"** — never "must cite." Tier candidates by publication status:
+- *Peer-reviewed guidelines*: TRIPOD-LLM, MI-CLAIM-GEN, and STARD-AI (all Nature Medicine), and the CLAIM 2024 update (Radiology: AI)
+- *Preprint (label as such)*: any not-yet-peer-reviewed arXiv/medRxiv item — name it as a preprint and do not place it at the same level as peer-reviewed guidelines. Verify status before citing, since preprints are frequently published later (a checklist first posted to arXiv may since have appeared in a journal)
+- *Concepts/tools*: RAG specifics (retrieval failure vs fabrication), uncertainty/confidence calibration, radiology-specific evaluation (RadGraph, CheXbert/CheXpert-F1, ReXTrust), regulatory context (FDA 510(k)/CE, RADAR)
+
+Keep additions **proportionate** (≈ ≤1 new reference per page, each motivated; no wholesale rewrite). Suggesting missing *literature/topics* is expected; demanding new *studies* is not.
+
+**Output template (RV1 example)**:
+> "The topic of LLM hallucinations is now addressed by several recent reviews, so it would strengthen the manuscript to state explicitly what this primer adds beyond them — for example, a radiology-specific failure taxonomy, a worked clinical example, or an actionable verification workflow that existing general-purpose reviews do not provide. As written, the Introduction does not position the contribution against the current review literature, which makes the incremental value difficult to judge."
+
+**Output template (RV8 example)**:
+> "The mitigation section would benefit from engaging with emerging reporting standards for generative models, as these directly support the manuscript's call for controlled deployment. Consider adding a brief discussion of TRIPOD-LLM and MI-CLAIM-GEN (both peer-reviewed reporting guidelines for LLM/generative studies), and clarifying how retrieval-augmented generation shifts the dominant failure mode from fabrication toward retrieval error rather than eliminating hallucination, a distinction the current text conflates."
+
+This module was added to give review/narrative manuscripts a dedicated audit gate, on the principle that constructive gap-filling is expected of review-article reviewers (its first review-article audit motivation).
+
 ### Phase 3: Draft Review
 
 Generate `{manuscript_id}_review_draft.md`:
@@ -331,6 +373,8 @@ After drafting, verify mechanically:
    - At most 1 typo/grammar Minor Comment, only if in formal section or systematic
 9. **SR-MA-specific QC** (if Phase 2A applied): Confirm the P0 internal-consistency gate was run before any fabrication claim. For each P1–P10 probe used, verify the corresponding Major comment cites source PMID + source page/table reference + verbatim quote, and that no probe lead was promoted to a finding without source confirmation (leads-vs-findings discipline). Reviews citing extraction errors without source-page reference are not actionable for authors.
 10. **Radiomics-reproducibility QC** (if Phase 2C applied): If an acquisition-parameter sweep predicts an outcome from its own grid axes (R1 design-grid circularity) or the substantive result is a cross-domain failure framed as success (R3), confirm the recommendation reflects design-level severity and is not softened to a reporting fix. Where a model × threshold/cohort grid yields a few p < 0.05, confirm the multiplicity / expected-false-positive count is named (R4), not deferred to "statistical review needed."
+11. **Review-article QC** (if Phase 2D applied): Confirm RV1–RV8 are reflected — in particular that novelty/value-add (RV1) is raised for a saturated topic and that gap-filling (RV8) is present, not just error-spotting. Verify SANRA is used as an appraisal aid, not over-enforced as a reporting guideline (no PRISMA demand on a narrative review; only RV3 is SANRA-aligned and phrased as a suggestion). Verify every suggested addition uses "consider adding" phrasing (no "must cite"), is source-confirmed, and that preprints are labeled as preprints (not equated with peer-reviewed guidelines).
+12. **Verify-your-own-criticism** (all reviews): For each Major framed as a technical inaccuracy or a citation–claim mismatch, confirm the reviewer's own assertion was checked against a current authoritative source (full paper, CrossRef, arXiv). Downgrade unverified technical claims to a hedged "Please verify…"; keep confirmed ones firm. Watch for status drift (a "preprint" since published; a method since adapted) before asserting the manuscript is wrong.
 
 Fix all issues found, then present to user.
 
@@ -380,6 +424,8 @@ Recurring high-yield checks — apply to every manuscript:
 For survival / prognostic-model manuscripts, also apply the Phase 2B 7-probe audit (conditioning, censoring, competing risks, cutoff optimism, comparator horizon alignment, C-index variant transparency, calibration beyond discrimination).
 
 For radiomic feature-reproducibility / phantom parameter-sweep / reliability-filtering manuscripts, also apply the Phase 2C 4-probe audit (design-grid circularity, construct validity / proxy-target gap, transportability framing with Reject-escalate calibration, multiplicity).
+
+For Review / narrative / primer / state-of-the-art manuscripts, apply the Phase 2D 8-probe audit (novelty/value-add, scope/aims, evidence-gathering transparency, technical/medical accuracy, taxonomy/synthesis coherence, balance/currency/citation accuracy, load-bearing figures/tables, constructive gap-filling) in place of the original-research probes — error-spotting plus proportionate gap-filling, with SANRA used as an appraisal aid only.
 
 ## Journal-Specific Formatting
 
