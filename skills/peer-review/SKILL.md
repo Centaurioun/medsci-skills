@@ -80,7 +80,7 @@ Apply this internal-consistency-first gate (P0) plus 10-probe checklist (P1–P1
 
 ### Phase 2B: Survival / Prognostic Model Extension
 
-Apply this 7-probe checklist **only when manuscript involves time-to-event outcomes** (OS, DFS, LRFS, DMFS, RFS, PFS, time-to-recurrence) **or prognostic model development** (Cox proportional hazards, DeepSurv, DeepHit, Random Survival Forest, nomogram development/validation, multi-state or multi-outcome survival cascade, risk-stratification with cutoff-based phenotyping).
+Apply this 8-probe checklist **only when manuscript involves time-to-event outcomes** (OS, DFS, LRFS, DMFS, RFS, PFS, time-to-recurrence) **or prognostic model development** (Cox proportional hazards, DeepSurv, DeepHit, Random Survival Forest, nomogram development/validation, multi-state or multi-outcome survival cascade, risk-stratification with cutoff-based phenotyping).
 
 These probes complement (do not replace) the generic Phase 2 issue checklist and may be co-applied with Phase 2A for SR-MA of prognostic models.
 
@@ -89,7 +89,7 @@ These probes complement (do not replace) the generic Phase 2 issue checklist and
 - Cross-sectional risk model without time-to-event endpoint
 - Replication of a documented prior methodology
 
-**Probe detail (S1–S7), with output templates:** `${CLAUDE_SKILL_DIR}/references/domain-probes/survival_prognostic.md`. Load it and apply each probe when the trigger above fires. In this skill, map each probe finding to the review draft as a Major / Minor comment; route a conditioning/causal-framing or competing-risks design flaw into the Confidential Comments to the Editor and place it as the Major #1 candidate.
+**Probe detail (S1–S8), with output templates:** `${CLAUDE_SKILL_DIR}/references/domain-probes/survival_prognostic.md`. Load it and apply each probe when the trigger above fires. In this skill, map each probe finding to the review draft as a Major / Minor comment; route a conditioning/causal-framing, competing-risks, or estimand-provenance (S8) design flaw into the Confidential Comments to the Editor and place it as the Major #1 candidate.
 
 ### Phase 2C: Radiomics / Feature-Reproducibility Extension
 
@@ -271,7 +271,7 @@ Recurring high-yield checks — apply to every manuscript:
 5. **Overclaiming**: Language should match evidence level (CI overlap, small test sets, single-center)
 6. **Reproducibility**: Preprocessing, hyperparameters, segmentation protocols reported
 
-For survival / prognostic-model manuscripts, also apply the Phase 2B 7-probe audit (conditioning, censoring, competing risks, cutoff optimism, comparator horizon alignment, C-index variant transparency, calibration beyond discrimination).
+For survival / prognostic-model manuscripts, also apply the Phase 2B 8-probe audit (conditioning, censoring, competing risks, cutoff optimism, comparator horizon alignment, C-index variant transparency, calibration beyond discrimination, estimand provenance).
 
 For radiomic feature-reproducibility / phantom parameter-sweep / reliability-filtering manuscripts, also apply the Phase 2C 4-probe audit (design-grid circularity, construct validity / proxy-target gap, transportability framing with Reject-escalate calibration, multiplicity).
 

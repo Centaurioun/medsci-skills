@@ -6,9 +6,9 @@
        - self-review: Anticipated Major / Minor Comments (Fatal / Fixable) mapped to category letters.
      Do NOT edit one copy only — run `python3 scripts/check_domain_probe_sync.py --sync`. -->
 
-# Survival / Prognostic Model probes (S1–S7)
+# Survival / Prognostic Model probes (S1–S8)
 
-A 7-probe checklist for time-to-event outcomes and prognostic model development. These probes complement (do not replace) the generic Phase 2 issue checklist and may be co-applied with the SR-MA probes for a meta-analysis of prognostic models.
+An 8-probe checklist for time-to-event outcomes and prognostic model development. These probes complement (do not replace) the generic Phase 2 issue checklist and may be co-applied with the SR-MA probes for a meta-analysis of prognostic models.
 
 **S1 — Conditioning / causal framing**:
 - Does the manuscript claim a "preoperative" / "screening" / "triage" / "X replaces Y" use case while outcomes are conditioned on the downstream treatment whose value the model is supposed to inform?
@@ -19,6 +19,7 @@ A 7-probe checklist for time-to-event outcomes and prognostic model development.
 **S2 — Censoring handling in training loss**:
 - Cox partial-likelihood loss or DeepSurv-style loss specified? How is censoring handled (right-censoring, interval-censoring, informative censoring by death)?
 - If Methods describe a Cox or partial-likelihood loss but do not specify censoring treatment, register as MAJOR (reproducibility).
+- Covariate incompleteness in the model fit is part of the same disclosure: is a structural-zero covariate (a never-smoker's pack-years = 0 by definition, not missing) handled as a zero, or dropped under complete-case so the unexposed stratum and the events-per-variable silently collapse? An undisclosed complete-case collapse from a dose/duration covariate is a reproducibility + power issue — adjust on the categorical status and reserve the continuous dose for an exposed-only secondary analysis.
 
 **S3 — Competing risks**:
 - 2+ event types (local recurrence + distant metastasis + death, or cause-specific mortality) modeled?
@@ -51,6 +52,12 @@ A 7-probe checklist for time-to-event outcomes and prognostic model development.
 - Brier score / Integrated Brier Score (IBS)?
 - Decision-curve analysis at clinically relevant probability thresholds?
 - For a prognostic model intended to guide surveillance intensity, treatment intensification, or eligibility for adjuvant therapy, discrimination alone is insufficient. If Methods mention calibration but Results/supplement contain no calibration plot or numeric metrics → MAJOR.
+
+**S8 — Estimand provenance**:
+- Is the survival estimand stated explicitly and held consistent across Abstract / Methods / Results — event-free survival, cause-specific cumulative incidence, all-cause mortality — and at the subject vs population level? A subdistribution hazard (Fine-Gray) answers a different question than a cause-specific hazard; quoting an sHR for an etiologic claim, or a cause-specific HR for an absolute-risk claim, is an estimand mismatch.
+- Is the evaluation horizon (2-/3-/5-year) and the primary model fixed in advance and consistent with the registered/pre-specified primary endpoint, or was the primary endpoint, model, or horizon re-designated after the results were known (outcome-dependent primary selection)?
+- Does every derived statistic (E-value, an sHR-vs-cause-specific-HR contrast) trace to the *declared primary* estimand, or is a supporting/non-primary estimate quoted as if it bounded the headline claim?
+- Estimand drift — a primary re-designated post-hoc, or a derived statistic computed on a non-primary estimate but presented as primary → MAJOR. Recommend reporting the pre-specified and revised models coequally, disclosing the change, and recomputing any E-value for the primary estimate. (The self-review skill automates the registration ↔ manuscript and E-value arithmetic checks as Phase 2.5f, `scripts/check_claim_artifact.py`.)
 
 **Output template (S4 example)**:
 > "The Methods (p. X) state that optimal cutoffs for [outcome] were determined via maximally selected log-rank statistics on the internal validation cohort. Two concerns: (a) Hothorn-Lausen correction is cited but it is unclear whether the corrected p-value was used in the cutoff selection; (b) the internal validation cohort appears to have been used for both model selection and cutoff selection, which is a known source of optimism. I'd suggest reporting bootstrap-based optimism estimates or a sensitivity analysis showing how external performance shifts under ±0.5-SD perturbation of the chosen cutoff."

@@ -224,7 +224,7 @@ These four modules carry the same domain-specific critique probes used by `/peer
 | Manuscript type / signal | Probe module |
 |---|---|
 | Systematic Review / Meta-Analysis | `references/domain-probes/sr_ma.md` (P0–P10) |
-| Time-to-event / survival / prognostic model (Cox, Fine-Gray, DeepSurv, nomogram, risk-stratification cutoff) | `references/domain-probes/survival_prognostic.md` (S1–S7) |
+| Time-to-event / survival / prognostic model (Cox, Fine-Gray, DeepSurv, nomogram, risk-stratification cutoff) | `references/domain-probes/survival_prognostic.md` (S1–S8) |
 | Radiomic feature reproducibility / acquisition-parameter sweep / reliability-based feature filtering | `references/domain-probes/radiomics.md` (R1–R4) |
 | Narrative / review article / primer / state-of-the-art | `references/domain-probes/narrative_review.md` (RV1–RV8) |
 
@@ -608,6 +608,63 @@ adjusted exposure–outcome association. Skip for RCTs and descriptive studies.
 adjustment token "smoking"): read the reconciliation table rather than trusting
 the count, and confirm each flagged covariate is a plausible cause of the outcome
 (not a mediator or collider, which O2 covers) before raising it.
+
+### Phase 2.5f: Claim-vs-Artifact Cross-Check
+
+Phases 2.5–2.5e check numbers and adjustment sets. This phase checks **claims
+against the external artifacts they should trace to** — the pre-registration, the
+protocol, the analysis outputs. These are the errors that survive a single-pass
+review because the manuscript prose is internally consistent yet disagrees with
+the registration or the analysis it reports. The first scope is the two highest-
+value, deterministic instances; figure/flow-count reconciliation, Methods-promised-
+analysis completeness, and imputation-input integrity are separate subchecks (run
+`/make-figures` legend reconciliation and `/write-paper`'s Methods-promised gate).
+
+**Precedent failure pattern:**
+> A manuscript reported a null primary association from a multiple-imputation model
+> and described it as "pre-specified," while the registered primary had been the
+> complete-case model that was significant — the primary had been re-designated after
+> the results were known. In the same paper an E-value of 2.79 was attached to the
+> primary HR of 1.34, but 2.79 does not recompute from 1.34 (it came from a different,
+> non-primary estimate), and a second E-value bounded an exploratory cancer-specific
+> hazard, not the headline contrast. None of these tripped the internal-consistency
+> checks; all three are deterministic against the registration and the arithmetic.
+
+**Procedure:**
+
+1. **Run the cross-check** with the manuscript and (if available) the pre-registration
+   / protocol / `project.yaml`:
+
+   ```bash
+   python3 "${CLAUDE_SKILL_DIR}/scripts/check_claim_artifact.py" \
+     --manuscript manuscript.md --prereg prereg.md \
+     --out qc/claim_artifact.json --strict
+   ```
+
+2. **Estimand provenance.** The script flags `PRIMARY_REASSIGNED` when the manuscript
+   admits re-designating the primary after results were known, and `ESTIMAND_DRIFT`
+   when the manuscript's primary statement does not match the registered one. Both are
+   **Anticipated Major Comments** (category: A. Study Design & Data Integrity); a primary
+   re-designated post-hoc is a P0 issue. The fix is to report the pre-specified and the
+   revised models **coequally** and disclose the change in the Abstract and Limitations,
+   not to silently lead with the more favourable estimate.
+
+3. **E-value.** `EVALUE_ARITHMETIC` means the reported E-value does not recompute from
+   its adjacent effect estimate (the value was likely produced for a different estimate);
+   `EVALUE_NON_PRIMARY` means the E-value is attached to a secondary/exploratory estimate
+   but presented as if it bounded the headline claim. Both warrant a Major/Minor comment —
+   recompute the E-value for the **declared primary** estimate and its near-null confidence
+   limit, and quote it there.
+
+4. **Primary-change guard.** Independently of the script, if the manuscript reports two
+   models for the same contrast where one is significant and the other null and the
+   significant one is foregrounded, confirm which was pre-specified; an outcome-dependent
+   choice of primary model is a Major comment even when each model is individually correct.
+
+The script is deterministic but its provenance match is fuzzy (token overlap): read the
+reconciliation in `qc/claim_artifact.json` and confirm against the actual registration
+before raising `ESTIMAND_DRIFT`. For time-to-event manuscripts, also apply probe **S8
+(estimand provenance)** of `references/domain-probes/survival_prognostic.md`.
 
 ### Phase 2.6: Multi-Agent Panel Review (--panel, opt-in)
 
