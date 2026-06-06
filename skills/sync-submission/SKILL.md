@@ -76,6 +76,7 @@ The registry is a project-local YAML mapping author identifiers (full names, nat
 - Gate 8 (Phase 5 cross-document N consistency): before freeze, run `scripts/cross_document_n_check.py` over the manuscript bundle (abstract, body, PROSPERO record, cover letter, supplementary, INDEX, PRISMA flow caption). Any N category with >1 distinct integer value is a P0 drift. When a `FINAL_POOL_LOCK.yaml` is present, supply `--pool-lock` to make the locked counts the authoritative baseline. See "Phase 5 — Cross-document N consistency" below.
 - Gate 9 (Phase 6 intra-manuscript scope drift): run `scripts/scope_drift_check.py` against the manuscript (and optionally the PROSPERO record). Numeric anchors (AUC, OR/HR/RR, sensitivity/specificity) appearing in Limitations / Discussion but absent from Methods + Results are P0 SCOPE_DRIFT. PROSPERO ↔ Methods synthesis-method disagreement is a P0 PROSPERO_DRIFT.
 - Gate 10 (Phase 7 v_(N+1) docx regeneration): when building a new submission from a frozen prior version, run `scripts/verify_package_integrity.py --assert-vN-docx-changed --vN-docx <prev>.docx --new-docx <next>.docx`. Identical MD5 = unmodified seed copy = block submission. Defense-in-depth — required even when the upstream pipeline appears to have regenerated the docx.
+- Gate 11 (Phase 8 multi-copy divergence): when the project hand-maintains more than one manuscript copy (working SSOT, circulation, portal), run `scripts/detect_copy_divergence.py --ssot <ssot>.md --copy <copy>.md ...` before freeze or circulation. Any `STALE_COPY` (an SSOT numeric claim or heading that did not propagate to a copy) is a P0 drift. See "Phase 8 — Multi-copy manuscript divergence" below.
 
 ## Phase 4 — Cover-letter free-text drift
 
@@ -248,6 +249,36 @@ python3 /path/to/medsci-skills/scripts/verify_package_integrity.py \
 
 Identical MD5 → exit 1 with explanatory error. Block submission until
 the regeneration step is fixed.
+
+## Phase 8 — Multi-copy manuscript divergence
+
+When a project keeps several hand-maintained manuscript copies — `manuscript.md`
+(the working SSOT), `manuscript_circulation.md` (co-author feedback), and
+`submission/<journal>/manuscript.md` (portal) — a batch of edits applied to the
+SSOT routinely lands in only some of the copies. The portal then receives a copy
+missing a subset of the edits, and the divergence surfaces (if at all) only when a
+reviewer notices the inconsistency.
+
+Before freezing a package or sending a circulation round, run the directional
+detector (SSOT → each copy):
+
+```bash
+python3 ${CLAUDE_SKILL_DIR}/scripts/detect_copy_divergence.py \
+  --ssot manuscript.md \
+  --copy manuscript_circulation.md \
+  --copy submission/<journal>/manuscript.md \
+  --out qc/copy_divergence.json --strict
+```
+
+It reports, per copy, the SSOT *claims* (numeric assertions — `n = N`, percentages,
+`p`, OR/HR/RR, 95% CI — and section headings) that did not propagate. A `STALE_COPY`
+(`DIVERGENT` overall) is a **P0 blocker**: re-propagate the unpropagated claims, or —
+better — stop hand-maintaining parallel copies and **generate the circulation /
+submission variants from the single SSOT via a build step** (pandoc transform), so
+there is only one editable source. Claims are matched as normalized strings, so
+wording differences do not register — only a changed or absent number/heading does;
+legitimately copy-specific content (a circulation cover note) shows up as `copy_only`
+and can be ignored.
 
 ## Verification Blind Spots
 
