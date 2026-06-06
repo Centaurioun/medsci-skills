@@ -2,6 +2,22 @@
 
 ## [Unreleased]
 
+## [3.4.0] - 2026-06-06
+
+Dual-review consolidation and a multi-agent panel mode for self-review — depth without broadening the catalog (still 43 skills).
+
+### Added
+
+- **`/self-review --panel`**: an opt-in multi-agent panel mode — several domain-expert reviewers run independently (blinded), then an editor consolidates their findings with CONSENSUS (≥2-reviewer) flags and R1/R2/R3 attribution, for a high-stakes pre-submission final pass. The default single-pass review stays the fast path. Portable across hosts: parallel subagents where the host provides them, with an explicit sequential blinded fallback and no `Workflow`-tool dependency. Output maps onto the existing Fatal/Fixable framing and R0 numbering, so `/revise` still consumes it; ships a PII-scrubbed `panel_review_template.md` and a structural + leak test (PR #73).
+- **Shared domain-probe modules**: the SR-MA (P0–P10), survival/prognostic (S1–S7), radiomics (R1–R4), and narrative-review (RV1–RV8) critique probes are now reusable modules under `references/domain-probes/`, vendored byte-identical into both `/peer-review` (canonical) and `/self-review`. This closes the gap where `/self-review` had no survival / time-to-event probe set. A new `scripts/check_domain_probe_sync.py` drift gate (sha256 byte-identity) is wired into CI and `validate_skills.sh` (PR #72).
+- **`/orchestrate`**: routes harsh / top-tier / multi-reviewer requests to `/self-review --panel`; the panel is opt-in and never auto-applied in chains or `--e2e` (PR #73).
+
+### Changed
+
+- **`/peer-review` Phase 2A–2D** now point to the shared domain-probe modules instead of carrying the probe bodies inline; the Major / Minor + Confidential-to-editor routing is applied at the pointer, so review behavior is unchanged. `references/reviewer_profiles/`, the Aczel tone audit, and `narrative_review_audit.md` remain peer-review-only (PR #72).
+
+Catalog unchanged at 43 skills — the panel is a mode of an existing skill, and the probes are reference files inside existing skills.
+
 ## [3.3.0] - 2026-06-03
 
 Packaging, portability, and trust signals — sharpening the "submission-grade clinical manuscript workflow" wedge without broadening scope.

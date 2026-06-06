@@ -181,14 +181,13 @@ The E2E pipeline (`orchestrate --e2e`) produces everything up to `qc/`. The `sub
 
 ## What's New
 
-**v3.3.0** sharpens packaging, portability, and trust without broadening scope:
+**v3.4.0** deepens the review skills without broadening the catalog (still 43 skills):
 
-- **Per-skill Quality Cards** — every skill now ships a contract (`skill.yml`, 43/43), surfaced on its [`docs/skills/`](docs/skills/) page: purpose, safety boundaries, known limitations, validation commands, and an evidence label (demo / CI-validated / bundled-script / manual). A missing contract now fails CI.
-- **Verified cross-agent support** — [`docs/host_compatibility.md`](docs/host_compatibility.md) documents install and discovery on Claude Code, Codex, Cursor, and GitHub Copilot, each with a sourced path. The two install targets (`~/.claude/skills`, `~/.agents/skills`) already cover all four; OpenClaw/Hermes remain unverified roadmap items.
-- **An auditable validation story** — [`docs/skills/AUDIT.md`](docs/skills/AUDIT.md) maps the CI gates and three reproducible demos to explicit trust boundaries (what is automated, what is reviewed by hand, what is not claimed).
-- **Sharper positioning** — a submission-grade clinical manuscript workflow, not a generic catalog; see [`docs/competitive_positioning.md`](docs/competitive_positioning.md).
+- **Multi-agent panel review** — `/self-review --panel` runs several domain-expert reviewers independently (blinded), then an editor consolidates their findings with consensus flags and reviewer attribution, for a high-stakes pre-submission final pass. Opt-in; the single-pass review stays the default. Portable across hosts (parallel subagents where available, a sequential blinded fallback otherwise — no `Workflow`-tool dependency).
+- **Shared domain-probe modules** — the SR-MA, survival/prognostic, radiomics, and narrative-review critique probes are now reusable modules vendored byte-identical into both `/peer-review` and `/self-review` (with a CI drift gate), closing the gap where self-review had no survival / time-to-event probe set.
+- **Sharper routing** — `/orchestrate` sends harsh / top-tier / multi-reviewer requests to `/self-review --panel`, never auto-applying it in autonomous chains.
 
-Earlier in this series: a catalog-count single source of truth (`metadata/catalog_counts.json`) wired into CI, and a PII / precedent guard that scans the full public surface (`templates/`, `scripts/`, root docs).
+Earlier in this series: per-skill Quality Cards (`skill.yml` contracts surfaced on every [`docs/skills/`](docs/skills/) page), verified cross-agent support (Claude Code, Codex, Cursor, GitHub Copilot), and an auditable validation story ([`docs/skills/AUDIT.md`](docs/skills/AUDIT.md)).
 
 ---
 
