@@ -39,6 +39,7 @@
 - `blind_sweep.py`
 - `cover_letter_drift_check.py`
 - `cross_document_n_check.py`
+- `detect_copy_divergence.py`
 - `scope_drift_check.py`
 - `sync_submission.py`
 
