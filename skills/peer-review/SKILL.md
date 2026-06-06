@@ -76,81 +76,7 @@ Apply this internal-consistency-first gate (P0) plus 10-probe checklist (P1–P1
 
 **SR-MA reviews almost always justify Tier 3 word budget** (1000-1400w) — apply ≥3 of P1-P10 triggering = Tier 3 default.
 
-**P0 — Internal-consistency-first gate (run before P1; gates any fabrication claim)**:
-- Before alleging fabrication on a manuscript that "feels AI-generated", reproduce the headline pooled statistics, paired study counts (k), and subgroup counts directly from the extracted data table (or supplement included-studies table).
-- If paired k, pooled medians, and subgroup counts reproduce, fabrication is unlikely — **pivot the review to table-vs-source fidelity (P1), comparator definition (P1), and eligibility**, not to a fabrication framing.
-- Only if the table cannot be reproduced, or is internally inconsistent, escalate to a transparency/integrity MAJOR.
-- Rationale: an "AI-smelling" surface is not evidence of fabrication. Real references can be present and the arithmetic coherent while the substantive flaws are extraction, comparator, eligibility, and overclaiming.
-
-**P1 — Performance-MA value + comparator-existence probe**:
-- For method-comparison MAs reporting accuracy / DSC / AUC / F1 (model-vs-model, AI-vs-reader, two training paradigms) and for DTA MAs reporting sensitivity / specificity, select ≥2 outlier or headline-driving studies.
-- (a) Verify each sampled arm value against the source paper (PubMed abstract or full text). For DTA cells, check for **sens/spec swap** (source sens=A% / spec=B% appearing in the forest as sens=B% / spec=A%).
-- (b) **Comparator-existence check**: verify the comparator arm is consistently defined and actually exists in each source. A baseline mislabeled as the comparator inflates the headline (e.g., a limited single-source baseline reported as a "centralised" comparator when the source paper has no centralised arm).
-- (c) Per-study schema: `Exists | Correct citation | Eligible (domain-specific) | Same comparator (same task/dataset) | Value matches source | Author-derived/averaged | Verdict`.
-- (d) Severity ladder: `<1pp rounding or author-derived average = minor`; `wrong dataset/task/comparator or not domain-specific = major`; `unfindable or wrong-citation = confidential + possible major`.
-- If a confirmed error drives a reported subgroup p-value or a headline claim, register as MAJOR (#1).
-
-**P2 — Cohort / benchmark non-independence probe**:
-- Identify clusters in included studies sharing: (a) institution name, (b) author surname + year proximity, (c) public ICU/EHR database (MIMIC-IV, eICU, MIMIC-III, KNHIS, UK Biobank, Optum, MarketScan, IBM), (d) **public imaging-challenge benchmark** (BraTS, FeTS, TCIA, Kaggle) reused across multiple included studies.
-- For each cluster, fetch PubMed efetch affiliation + abstract Methods database/benchmark source.
-- Flag pairs sharing the same data source + overlapping enrollment period (or the same public benchmark) as "high-confidence non-independence".
-- Manuscript should acknowledge in Limitations + perform a leave-one-dataset-out sensitivity analysis and add a data-provenance column to Table 1. If absent → MAJOR.
-- **Nuance**: map provenance and *request* the provenance column + sensitivity analysis; do NOT assert that a specific study used a given benchmark from coarse supplement labels alone (e.g., a supplement labeling a study only as "Hospital" or "Public" does not confirm BraTS/FeTS use). Confirm against the source before stating it.
-
-**P3 — Diagnostic subset N transparency (mixed DTA + prognostic MA)**:
-- Compute bivariate pool denominator (TP+FP+TN+FN) from Table 2 or forest plot.
-- Compare to total N reported in Abstract.
-- If diagnostic subset is <50% of total without explicit "diagnostic subset N = X / Y" in Results → MAJOR transparency gap.
-
-**P4 — k=1 subgroup flag**:
-- Inspect subgroup analyses for strata with k=1 (single included study).
-- If a reported subgroup p-value is driven by k=1 stratum → flag MAJOR.
-- Recommend reframing as exploratory or removing from formal subgroup test.
-
-**P5 — Supplementary completeness check**:
-- SR-MA supplementary must contain at minimum:
-  - PRISMA / PRISMA-DTA checklist with page refs
-  - Full-text exclusion list with reasons (per PRISMA 2020 item 16b)
-  - Per-study data extraction table
-  - Per-study × per-domain risk-of-bias table (QUADAS-2 / QUADAS-AI / PROBAST / PROBAST-AI)
-  - Full search strategy verbatim per database
-- If supplementary contains only figure captions or is missing 3+ of these → MAJOR.
-
-**P6 — PROSPERO ID format + live URL request**:
-- Standard PROSPERO format: `CRD42` + 4-digit YYYY + 6-digit sequential = 13 chars total. Some pre-2020 IDs are 12 chars (5-digit sequential).
-- IDs with >13 chars or non-numeric tail → FORMAT_ANOMALY (MAJOR).
-- Always request authors provide live registration URL in cover letter for protocol cross-check.
-
-**P7 — Reference duplicate detection** (extends `/verify-refs`):
-- Run `/verify-refs` (PubMed + CrossRef). In addition to standard checks, detect duplicate PMID or DOI within reference list.
-- Verbatim duplicates indicate LLM-assisted reference compilation error → MAJOR (cite renumbering required).
-
-**P8 — AI Disclosure presence**:
-- `grep -iE "chatgpt|gpt-|llm|generative ai|ai was used|ai-assisted|copilot|claude|gemini|chatbot|large language model"` on manuscript body.
-- If 0 matches AND journal requires AI Disclosure (RYAI / Radiology / RSNA family / Lancet family / JAMA family / most BMJ family / Nature family) → flag MINOR-to-MAJOR.
-
-**P9 — Non-significant finding promoted to Abstract (overclaim probe)**:
-- Flag any exploratory or non-significant result (a crossover, a trend, a post-hoc subgroup) that appears in the Abstract or Key Points framed as a finding.
-- Sub-check: does the promoted finding depend on a study flagged or mis-extracted under P1? (A headline crossover can collapse once a mis-extracted comparator is corrected.)
-- Flag "non-inferiority" / "equivalence" asserted without a pre-specified margin. A margin cannot be pre-specified retrospectively — ask the authors to document any pre-existing protocol margin, otherwise drop the non-inferiority language or present it explicitly as a post hoc equivalence / sensitivity analysis.
-
-**P10 — Citation-metadata confusion class (over-escalation guard)**:
-- DOI-suffix digits that surface as an apparent article number (e.g., a DOI tail "77196" against article number 26068, or "60466-1" against 6274) are cosmetic metadata confusion, **not** fabrication — do not escalate them as fabricated references.
-- Reference-list duplicates are handled by `/verify-refs` (`duplicate_findings[]`); AI-disclosure presence is the cross-cutting P8 check. Neither is unique to SR/MA.
-
-**Output template (P1 cell-swap example)**:
-> "I spot-checked [Author Year] (PMID [...]) against the source paper and found that the values in Figure X are swapped. The source paper reports external-test sensitivity A% / specificity B% (n=N); the manuscript forest entries place [num1/denom1] in the sensitivity slot (which is the source's specificity numerator/denominator) and [num2/denom2] in the specificity slot (which is the source's sensitivity)."
-
-**Output template (P1 comparator-existence example)**:
-> "I spot-checked [Author Year] (PMID [...]) against the source. The manuscript lists this study's comparator ('[label]', [value]) in [comparison], but the source paper does not report that arm; the [value] appears to be the study's [limited single-source baseline]. Because this entry contributes to [the pooled comparison / a headline claim], I'd suggest re-extracting the comparator definition per study and adding a comparator-definition column to Table 1 so readers can confirm each arm is the same task on the same data."
-
-**Output template (P2 example)**:
-> "[Author1 Year1] uses [Database] (N=...). [Author2 Year2] uses [Database] (N=...). These are nearly certainly overlapping patient pools, and the statistical independence assumption for MA pooling is violated. I'd suggest a sensitivity analysis excluding one of the two studies, plus an explicit cohort-source column in Table 1."
-
-**Discipline — leads vs findings (applies to every P0–P10 probe)**:
-- Output from a forensic sub-agent or automated scan is a **lead, never a finding, until confirmed against the source.** Concrete failure modes to discard on inspection: treating recent (in-press / current-year) publication dates as "impossible", inventing journal article-number rules, and inflated all-or-nothing fabrication-risk scores.
-- Before finalizing, run an **overclaim sweep of your own draft** (mandatory external-QC pass — independent model or colleague). Two worked examples: a Confidential claim that "the references are real, not fabricated" should be narrowed to "the sampled references / DOIs resolved"; a benchmark example list should be trimmed to studies whose benchmark use was source-confirmed.
-- **Do not compute chance-probabilities** for suspicious or identical values. Record the observation neutrally: "exact match to ≥2 decimals; source verification pending."
+**Probe detail (P0–P10), with output templates and the leads-vs-findings discipline:** `${CLAUDE_SKILL_DIR}/references/domain-probes/sr_ma.md`. Load it and apply each probe when the trigger above fires. In this skill, map each probe finding to the review draft as a Major / Minor comment; route conclusion-threatening or integrity findings into the Confidential Comments to the Editor, and place a confirmed error that drives a headline claim as the Major #1 candidate.
 
 ### Phase 2B: Survival / Prognostic Model Extension
 
@@ -163,53 +89,7 @@ These probes complement (do not replace) the generic Phase 2 issue checklist and
 - Cross-sectional risk model without time-to-event endpoint
 - Replication of a documented prior methodology
 
-**S1 — Conditioning / causal framing**:
-- Does the manuscript claim a "preoperative" / "screening" / "triage" / "X replaces Y" use case while outcomes are conditioned on the downstream treatment whose value the model is supposed to inform?
-- Inputs include post-decision variables (resection margin status, adjuvant chemo/radiotherapy, transplant status) that are unknown at the claimed decision point?
-- Non-treatment comparator or causal framework present?
-- Conditioning gap → MAJOR candidate. Recommend retrain without leaky variables / add non-treatment arm / reframe intended use.
-
-**S2 — Censoring handling in training loss**:
-- Cox partial-likelihood loss or DeepSurv-style loss specified? How is censoring handled (right-censoring, interval-censoring, informative censoring by death)?
-- If Methods describe a Cox or partial-likelihood loss but do not specify censoring treatment, register as MAJOR (reproducibility).
-
-**S3 — Competing risks**:
-- 2+ event types (local recurrence + distant metastasis + death, or cause-specific mortality) modeled?
-- Cause-specific hazards or Fine-Gray subdistribution hazards used?
-- Patient developing one event still at risk for the other (informative censoring by death)?
-- If competing-risks structure is ignored and outcomes are treated as independent right-censored events → MAJOR.
-
-**S4 — Cutoff derivation optimism**:
-- Cutoffs derived via maximally selected log-rank statistics, AUC-based Youden's J, or similar data-driven methods?
-- Hothorn-Lausen correction or equivalent optimism correction applied?
-- Was the same cohort used for both model selection (hyperparameter tuning) AND cutoff selection? (Optimism bias)
-- Bootstrap optimism estimate or sensitivity analysis on cutoff choice (e.g., ±0.5 SD perturbation)?
-- Same-cohort dual use without correction → MAJOR.
-
-**S5 — Comparator horizon alignment**:
-- External baseline prognostic nomogram (commonly designed for 5- or 10-year endpoints) applied as the comparator?
-- Manuscript's available follow-up duration aligned with that horizon?
-- Mismatch → baseline C-index degradation may reflect design-horizon mismatch ≠ intrinsic inferiority. Recommend time-dependent C-index or time-stratified analyses.
-- Baseline implementation specified: applied as published, locally recalibrated, or refit as a new Cox model with similar variables?
-- Unclear implementation → MAJOR (a refit local model should be described as a clinicopathologic comparator, not a "guideline model").
-
-**S6 — C-index variant + reverse Kaplan-Meier follow-up**:
-- Which C-index variant: Harrell's C, Uno's C, time-dependent AUC, IPCW-C?
-- Variant appropriate for the censoring distribution and sample size?
-- Time-dependent AUC at a clinically anchored horizon (e.g., 2-year, 3-year) reported alongside Harrell's C?
-- Reverse Kaplan-Meier median follow-up reported per cohort and per outcome (LR vs DM separately) with censoring date?
-
-**S7 — Calibration beyond discrimination**:
-- Calibration plot (intercept / slope) across all cohorts?
-- Brier score / Integrated Brier Score (IBS)?
-- Decision-curve analysis at clinically relevant probability thresholds?
-- For a prognostic model intended to guide surveillance intensity, treatment intensification, or eligibility for adjuvant therapy, discrimination alone is insufficient. If Methods mention calibration but Results/supplement contain no calibration plot or numeric metrics → MAJOR.
-
-**Output template (S4 example)**:
-> "The Methods (p. X) state that optimal cutoffs for [outcome] were determined via maximally selected log-rank statistics on the internal validation cohort. Two concerns: (a) Hothorn-Lausen correction is cited but it is unclear whether the corrected p-value was used in the cutoff selection; (b) the internal validation cohort appears to have been used for both model selection and cutoff selection, which is a known source of optimism. I'd suggest reporting bootstrap-based optimism estimates or a sensitivity analysis showing how external performance shifts under ±0.5-SD perturbation of the chosen cutoff."
-
-**Output template (S5 example)**:
-> "The chosen baseline nomogram was originally designed and validated for prediction of long-horizon endpoints (5- and 10-year). In this study, median follow-up in [external cohort] is substantially shorter than that horizon, so the comparator's apparent underperformance may partly reflect a horizon mismatch rather than intrinsic inferiority. I'd suggest (a) stating explicitly the time horizon at which both models were evaluated, (b) reporting time-dependent C-indices at a clinically anchored horizon, and (c) clarifying whether the comparator was applied as published, recalibrated locally, or refit as a new Cox model with similar variables."
+**Probe detail (S1–S7), with output templates:** `${CLAUDE_SKILL_DIR}/references/domain-probes/survival_prognostic.md`. Load it and apply each probe when the trigger above fires. In this skill, map each probe finding to the review draft as a Major / Minor comment; route a conditioning/causal-framing or competing-risks design flaw into the Confidential Comments to the Editor and place it as the Major #1 candidate.
 
 ### Phase 2C: Radiomics / Feature-Reproducibility Extension
 
@@ -222,32 +102,7 @@ These probes complement (do not replace) the generic Phase 2 issue checklist. Th
 - Pure deep-learning end-to-end imaging model (handcrafted feature reproducibility not at issue)
 - Replication of a documented prior radiomic pipeline with no new reliability/transportability claim
 
-**R1 — Design-grid circularity (in-domain "prediction" tautology)**:
-- Is an outcome (e.g., feature reliability) predicted from the very grid parameters that were systematically/exhaustively varied to construct the dataset?
-- If so, a high in-domain R² / accuracy is structurally guaranteed by the design ("predicting the construction recipe"), not a discovered relationship — do the predictors simply index the axes of the design grid?
-- Does the manuscript frame in-domain performance as a finding/success and lead the Abstract/Key Points with it?
-- If yes → do **not** endorse the in-domain success. Recommend reframing so the substantive finding is the cross-domain transportability (and, where present, its failure). MAJOR candidate.
-
-**R2 — Construct validity / proxy-target gap**:
-- The clinical rationale typically assumes that features which are reliable/stable/robust in the phantom are also better predictors of a biological/clinical target. A feature can be perfectly stable and biologically uninformative — this link is not logically guaranteed.
-- Is any post-filter performance gain shown to be signal recovery, rather than a by-product of removing a degraded/misaligned baseline feature space?
-- Does the manuscript acknowledge and test the orthogonality of the proxy (reliability) and the target (outcome)? Absent → MAJOR candidate.
-
-**R3 — Transportability framing vs reporting issue**:
-- When cross-phantom / cross-scanner / cross-center failure (negative R² on the target domain, low Jaccard overlap of selected features, calibration slope < 1) is the substantive result, is it nonetheless framed as a generalization success in the Abstract/Key Points/Conclusion?
-- Does the Results text state explicitly that a negative R² on the target domain means the model performs worse than predicting the mean (i.e., the mapping does not transport), rather than reading it as a weak continuous performance metric?
-- **Calibration link**: if in-domain "success" is partly a design artifact and the cross-domain result is a failure, reframing the Abstract will not rescue the central contribution. This is not a reporting fix — escalate the recommendation toward Reject rather than Major Revision.
-
-**R4 — Multiplicity (model × threshold / model × cohort grid)**:
-- Are multiple classifiers × multiple reliability thresholds (or cohorts) compared with one-sided tests, with a few reaching p < 0.05?
-- Is multiple-testing correction applied, and is the expected number of false positives by chance named explicitly (e.g., "5 models × 3 thresholds = 15 tests, ≈1 expected false positive")? Do not defer this to a generic "statistical review needed."
-- For a small external cohort (n ≤ ~30), do bootstrap ΔAUC intervals cross zero? If so, restrict any headline-gain claim accordingly (e.g., to a single classifier family in a small cohort).
-
-**Output template (R1 example)**:
-> "Because the acquisition parameters were varied as a systematic factorial grid, a model that predicts feature reliability from those same parameters is largely recovering the grid by construction; the in-domain R² ≈ 1.0 therefore reflects design structure rather than a discovered relationship. I'd suggest reframing the Abstract and Key Points so the substantive finding is the cross-phantom/cross-scanner transportability (and its failure), and stating explicitly in the Results that a negative R² on the target domain means the model performs worse than predicting the mean — i.e., the reliability mapping does not transport."
-
-**Output template (R4 example)**:
-> "The reported gains come from a grid of [N models] × [M thresholds] one-sided comparisons; with [N×M] tests, roughly one positive is expected by chance alone, and the external cohort (n = [k]) yields bootstrap ΔAUC intervals that cross zero for several thresholds. I'd suggest reporting a multiplicity-adjusted analysis (or stating the expected false-positive count), restricting the headline claim to the classifier family that survives, and marking the ΔAUC intervals that cross zero in the figure."
+**Probe detail (R1–R4), with output templates:** `${CLAUDE_SKILL_DIR}/references/domain-probes/radiomics.md`. Load it and apply each probe when the trigger above fires. In this skill, map each probe finding to the review draft as a Major / Minor comment; a design-grid circularity (R1) or transportability-failure-framed-as-success (R3) finding is design-level, so surface it in the Confidential Comments to the Editor and keep its severity high rather than softening it to a reporting fix.
 
 ### Phase 2D: Narrative / Review-Article Extension
 
@@ -260,36 +115,7 @@ The original-research probes (Phase 2 issue checklist, Phase 2A/2B/2C) do not tr
 - Systematic review **with pooling** (meta-analysis) → Phase 2A
 - Case report / editorial / commentary (opinion form; no recommendation gating)
 
-**RV1 — Novelty & value-add** *(editorial value-add axis)*: Against ≥2–3 recent reviews/primers on the same topic, does the manuscript state explicitly what it adds? For saturated topics, if the authors do not position their contribution against the current review literature, the incremental value is hard to judge — MAJOR candidate. Judge contribution magnitude only; scope-fit is the editor's call.
-
-**RV2 — Scope & aims clarity** (SANRA items 1–2): Is the topic's importance established, and are the review's aims and scope boundaries (what is included/excluded) explicit?
-
-**RV3 — Evidence-gathering transparency** *(SANRA item 3, suggestion-level)*: Even a narrative review benefits from one paragraph on how the literature was identified (databases, time window, selection logic). This is **not a reject criterion** — phrase it as a SANRA-aligned transparency suggestion. Do not require PRISMA.
-
-**RV4 — Technical & medical accuracy** *(reviewer niche strength)*: Engineering correctness (autoregressive decoding, RAG, RLHF, instruction tuning, hallucination mechanisms, evaluation/mitigation methods) and medical correctness (radiology claims, clinical examples, anatomy/imaging detail). Itemize errors with location. This axis is where a domain-literate reviewer adds unique value.
-
-> **Verify-your-own-criticism gate**: before raising a technical inaccuracy or a citation–claim mismatch as a Major, cross-check the reviewer's *own* assertion against a current authoritative source (the full cited paper, CrossRef, arXiv). Fast-moving fields make reviewer critiques go stale: a method dismissed as "not applicable" may have been adapted, and a "preprint" may since have been peer-reviewed. If unverified, downgrade to a hedged "Please verify…"; if confirmed, state it firmly. This applies with extra force to claims about what a cited reference *argues* (a review about hallucination must not itself mis-attribute a source).
-
-**RV5 — Taxonomy / synthesis coherence**: Is the manuscript's classification mutually exclusive and collectively exhaustive, and does it map to established taxonomies (intrinsic vs extrinsic; faithfulness vs factuality; published hallucination surveys)? Ad-hoc categories should be reconciled with an established taxonomy. Is the synthesis integrative rather than a list?
-
-**RV6 — Balance, currency, citation accuracy** (SANRA items 4–5): Is conflicting evidence handled fairly (no cherry-picking)? Are citations current and primary-source-weighted? Spot-check citation accuracy (author/year/claim match) — for a review *about* hallucination, citation errors are thematically critical.
-
-**RV7 — Load-bearing figures/tables** *(editorial value-add axis; SANRA item 6 secondary)*: Are there standardized comparison tables, a landscape figure, or a concrete clinical worked example? Assess whether figures/tables carry synthesis weight or are decorative — strong radiology-AI reviews tend to use standardized comparison matrices and a worked example.
-
-**RV8 — Constructive gap-filling & additions** *(the expected-role probe)*: Identify missing topics/frameworks/key references and propose them as **"consider adding X because it directly supports Y"** — never "must cite." Tier candidates by publication status:
-- *Peer-reviewed guidelines*: TRIPOD-LLM, MI-CLAIM-GEN, and STARD-AI (all Nature Medicine), and the CLAIM 2024 update (Radiology: AI)
-- *Preprint (label as such)*: any not-yet-peer-reviewed arXiv/medRxiv item — name it as a preprint and do not place it at the same level as peer-reviewed guidelines. Verify status before citing, since preprints are frequently published later (a checklist first posted to arXiv may since have appeared in a journal)
-- *Concepts/tools*: RAG specifics (retrieval failure vs fabrication), uncertainty/confidence calibration, radiology-specific evaluation (RadGraph, CheXbert/CheXpert-F1, ReXTrust), regulatory context (FDA 510(k)/CE, RADAR)
-
-Keep additions **proportionate** (≈ ≤1 new reference per page, each motivated; no wholesale rewrite). Suggesting missing *literature/topics* is expected; demanding new *studies* is not.
-
-**Output template (RV1 example)**:
-> "The topic of LLM hallucinations is now addressed by several recent reviews, so it would strengthen the manuscript to state explicitly what this primer adds beyond them — for example, a radiology-specific failure taxonomy, a worked clinical example, or an actionable verification workflow that existing general-purpose reviews do not provide. As written, the Introduction does not position the contribution against the current review literature, which makes the incremental value difficult to judge."
-
-**Output template (RV8 example)**:
-> "The mitigation section would benefit from engaging with emerging reporting standards for generative models, as these directly support the manuscript's call for controlled deployment. Consider adding a brief discussion of TRIPOD-LLM and MI-CLAIM-GEN (both peer-reviewed reporting guidelines for LLM/generative studies), and clarifying how retrieval-augmented generation shifts the dominant failure mode from fabrication toward retrieval error rather than eliminating hallucination, a distinction the current text conflates."
-
-This module was added to give review/narrative manuscripts a dedicated audit gate, on the principle that constructive gap-filling is expected of review-article reviewers (its first review-article audit motivation).
+**Probe detail (RV1–RV8), with the verify-your-own-criticism gate and output templates:** `${CLAUDE_SKILL_DIR}/references/domain-probes/narrative_review.md`. Load it and apply each probe when the trigger above fires; the SANRA appraisal items and candidate-additions catalog in `${CLAUDE_SKILL_DIR}/references/narrative_review_audit.md` remain peer-review-specific supporting material. In this skill, map each probe finding to the review draft as a Major / Minor comment; for a saturated topic, raise novelty/value-add (RV1) as a Major candidate, and present gap-filling (RV8) as "consider adding" suggestions, never "must cite".
 
 ### Phase 3: Draft Review
 

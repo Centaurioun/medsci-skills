@@ -473,6 +473,13 @@ python3 "$REPO_ROOT/scripts/validate_skill_contracts.py"
 contract_status=$?
 echo ""
 
+# Domain-probe vendoring drift gate. Capture the exit status explicitly: this
+# script runs under `set -uo pipefail` (not `set -e`), so a bare call would not
+# abort and the failure would be silently buried before the summary.
+python3 "$REPO_ROOT/scripts/check_domain_probe_sync.py" --strict
+domain_probe_status=$?
+echo ""
+
 if [ "$FAIL" -gt 0 ]; then
   echo -e "${RED}VALIDATION FAILED${NC} — fix $FAIL issue(s) before release"
   exit 1
@@ -481,6 +488,9 @@ elif [ "$META_FAIL" -gt 0 ]; then
   exit 1
 elif [ "$contract_status" -ne 0 ]; then
   echo -e "${RED}VALIDATION FAILED${NC} — skill contract validation failed"
+  exit 1
+elif [ "$domain_probe_status" -ne 0 ]; then
+  echo -e "${RED}VALIDATION FAILED${NC} — domain-probe vendoring drift (run check_domain_probe_sync.py --sync)"
   exit 1
 else
   echo -e "${GREEN}ALL CHECKS PASSED${NC}"

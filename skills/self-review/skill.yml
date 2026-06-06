@@ -38,5 +38,6 @@ known_limitations:
   - "Advisory; produces recommendations, not manuscript edits."
 validation_commands:
   - "python3 scripts/check_reviewer_team_consistency.py"
+  - "python3 scripts/check_domain_probe_sync.py --strict"
   - "feed R0-numbered output into /revise"
 evidence_surface: demo

@@ -214,6 +214,19 @@ publication bias (funnel plot, Egger), and sensitivity/subgroup analyses.
 - **Case reports**: Diagnostic reasoning transparency, timeline completeness, informed consent, generalizability disclaimer
 - **Surgical studies**: Learning curve consideration, surgeon volume/experience, complication grading (Clavien-Dindo), operative detail completeness
 
+**Domain probe modules (load when the manuscript type matches):**
+
+These four modules carry the same domain-specific critique probes used by `/peer-review`, vendored here so self-review reaches the same depth (in particular, survival/time-to-event manuscripts now get a dedicated probe set that the routing table above does not otherwise cover).
+
+| Manuscript type / signal | Probe module |
+|---|---|
+| Systematic Review / Meta-Analysis | `references/domain-probes/sr_ma.md` (P0–P10) |
+| Time-to-event / survival / prognostic model (Cox, Fine-Gray, DeepSurv, nomogram, risk-stratification cutoff) | `references/domain-probes/survival_prognostic.md` (S1–S7) |
+| Radiomic feature reproducibility / acquisition-parameter sweep / reliability-based feature filtering | `references/domain-probes/radiomics.md` (R1–R4) |
+| Narrative / review article / primer / state-of-the-art | `references/domain-probes/narrative_review.md` (RV1–RV8) |
+
+When the manuscript matches a row, read `${CLAUDE_SKILL_DIR}/references/domain-probes/<module>.md` and apply each probe as an additional source of Anticipated Major / Minor Comments. The module severity words (MAJOR / MINOR) map to this skill's framing as follows: a conclusion-threatening or design-level finding becomes a **Fatal** Anticipated Major Comment, a reporting-level finding becomes a **Fixable** Anticipated Minor Comment, and each is tagged with the closest category letter (A–K). These probes **complement** categories A–K above; they do not replace them. (The modules are vendored byte-identical from `/peer-review`; do not edit one copy only — run `python3 scripts/check_domain_probe_sync.py --sync`.)
+
 ### Phase 2.5: Numerical Cross-Verification (Internal)
 
 Before generating the report, verify internal consistency:
