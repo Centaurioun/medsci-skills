@@ -181,13 +181,13 @@ The E2E pipeline (`orchestrate --e2e`) produces everything up to `qc/`. The `sub
 
 ## What's New
 
-**v3.5.0** adds analysis-integrity guards across the manuscript pipeline, without broadening the catalog (still 43 skills). These backport into deterministic, stdlib-only single-pass checks the failure modes a multi-agent panel caught but a single-pass review missed — manuscript prose that is internally consistent yet disagrees with its own data, registration, or arithmetic:
+**v3.6.0** lands 18 gates from a 13-project panel self-review (158 traces → 12 recurring defect patterns), without broadening the catalog (still 43 skills). Six new stdlib detectors join the existing trio — deterministic where a grep is clean, prose/probe where the call needs a human:
 
-- **Confounding completeness** (`/self-review` Phase 2.5e + a new observational domain-probe module) — joins the exposure-stratified Table 1 against the Methods adjustment set and flags every measured-but-unadjusted imbalanced covariate; closes the gap where observational studies had no probe set.
-- **Claim-vs-artifact cross-check** (`/self-review` Phase 2.5f, `/write-paper` Step 7.3b) — catches an outcome-dependent primary re-designation, an E-value that does not recompute from its primary estimate, and a Methods-promised analysis missing from Results; plus a survival **estimand-provenance** probe (S8).
-- **Source- and write-side guards** — structural-zero / dose-duration covariate handling (`/analyze-stats`, `/clean-data`, `/define-variables`), a power-aware null-interpretation check, an abstract estimand-shopping guardrail, a Figure 1 caption ↔ flow-diagram reconciliation (`/make-figures`), a multi-copy manuscript divergence detector (`/sync-submission`), and an incremental-value probe (`/design-study`, `/write-paper`).
+- **Cohort & pool arithmetic** — `/self-review` recomputes incidence rates from events ÷ person-years, balances STROBE exclusion cascades, and checks ordinal tier/stratum partitions for disjointness (`check_cohort_arithmetic.py`); `/meta-analysis` locks patient/lesion aggregate totals and requires re-run evidence for any "fixed" audit note.
+- **Claim ↔ artifact ↔ scope** — Methods ↔ Results ↔ disk coverage (a run-but-unreported analysis is flagged), an endpoint ↔ conclusion scope gate (a cross-sectional design cannot license a surveillance claim; a binary surrogate is not a care directive), and a reviewer-team 3-way that makes an LLM-as-reviewer fatal.
+- **Statistical & reporting contracts** — a CI/estimand output contract (quantile/proportion/sHR must carry a 95% CI; Cox EPV gate; proportion-MA Egger ban + prediction interval), interval-censoring / PH-violation / CIF-horizon survival rules, reporting-framework base+extension naming, a classical-style body lint, a PROSPERO ID format gate, and a pagination-placeholder citation gate.
 
-Earlier in this series: a multi-agent `/self-review --panel` mode, shared domain-probe modules vendored byte-identical into `/peer-review` and `/self-review` (with a CI drift gate), and per-skill Quality Cards with verified cross-agent support.
+Earlier in this series: analysis-integrity guards (confounding completeness, claim-vs-artifact, structural-zero handling), a multi-agent `/self-review --panel` mode, and shared domain-probe modules vendored byte-identical into `/peer-review` and `/self-review` with a CI drift gate.
 
 ---
 
