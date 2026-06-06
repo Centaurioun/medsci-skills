@@ -27,6 +27,7 @@
 **Validation**
 
 - `confirm the draft addresses each section against the guideline rubric`
+- `python3 scripts/check_domain_probe_sync.py --strict`
 
 **Evidence** — `manual_workflow`
 
@@ -35,6 +36,7 @@
 **References** (`skills/peer-review/references/`):
 
 - `aczel_2021_reviewer2_patterns.md`
+- `domain-probes/` (4 files)
 - `narrative_review_audit.md`
 - `reviewer_profiles/` (6 files)
 

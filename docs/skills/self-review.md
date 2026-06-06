@@ -27,11 +27,16 @@
 **Validation**
 
 - `python3 scripts/check_reviewer_team_consistency.py`
+- `python3 scripts/check_domain_probe_sync.py --strict`
 - `feed R0-numbered output into /revise`
 
 **Evidence** — `demo`
 
 ## Bundled resources
+
+**References** (`skills/self-review/references/`):
+
+- `domain-probes/` (4 files)
 
 **Scripts** (`skills/self-review/scripts/`):
 

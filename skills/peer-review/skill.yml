@@ -35,4 +35,5 @@ known_limitations:
   - "No standalone demo; quality depends on the manuscript supplied."
 validation_commands:
   - "confirm the draft addresses each section against the guideline rubric"
+  - "python3 scripts/check_domain_probe_sync.py --strict"
 evidence_surface: manual_workflow
