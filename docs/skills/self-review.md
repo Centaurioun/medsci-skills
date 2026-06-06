@@ -42,6 +42,7 @@
 
 **Scripts** (`skills/self-review/scripts/`):
 
+- `check_claim_artifact.py`
 - `check_confounding_completeness.py`
 - `check_reviewer_team_consistency.py`
 
