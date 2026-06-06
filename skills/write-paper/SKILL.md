@@ -339,6 +339,7 @@ Write these LAST because they frame the paper and depend on knowing what was act
 - Must be self-contained: a reader should understand the study from abstract alone.
 - All numbers must match the main text and tables.
 - Final sentence: clinical implication, not "further studies are needed."
+- **Lead with the pre-specified primary estimand, not the largest effect.** It is tempting (and a critic/peer-sim pass may even suggest it) to foreground the strongest number to make the Abstract "land harder." Do not let that reframe which result is *primary*: tightening effect-size language is fine, but promoting a secondary, exploratory, or post-hoc estimate to the headline is estimand shopping. The Abstract's primary result must be the registered/protocol primary contrast — the same one Step 7.3b checks. If the primary is null or underpowered, report it as such (see `/self-review` category C, power-aware null) rather than substituting a more favourable secondary estimate.
 
 **Process:** Same writer -> critic -> fixer loop (max 3 rounds, threshold 85/100).
 
@@ -484,6 +485,42 @@ fabricated numbers. They are different failure modes and Step 7.3 does not catch
 
 This step composes with — not replaces — `/self-review` Phase 2.5a. Run it here for pipeline
 completeness even when `/self-review` is also invoked.
+
+#### Step 7.3b: Estimand Provenance & Promised-Analysis Audit
+
+Step 7.3/7.3a verify that citations and numbers are real. This step verifies that the
+manuscript's **claims trace to the artifacts they should** — the pre-registration / protocol,
+and the analyses Methods promised. These survive Step 7.3a because the prose is internally
+consistent.
+
+**Trigger:** any manuscript with a pre-registered or protocol-defined primary analysis, an
+E-value / unmeasured-confounding statement, or a Statistical Analysis subsection that names
+analyses (interaction, subgroup, sensitivity, multiple imputation). Skip for case reports.
+
+1. **Delegate the cross-check to `/self-review` Phase 2.5f** (claim-vs-artifact). It runs the
+   deterministic estimand + E-value checks and returns `PRIMARY_REASSIGNED` / `ESTIMAND_DRIFT`
+   (the primary contrast was re-designated after results were known, or does not match the
+   registration) and `EVALUE_ARITHMETIC` / `EVALUE_NON_PRIMARY` (a reported E-value does not
+   recompute from its primary estimate, or is borrowed from a secondary one). Any of these is a
+   **P0 blocker** — halt before Step 7.4 and route to **Step 7.4a (Audit Recovery Branch)**.
+   The fix is to report the pre-specified and revised models coequally and disclose the change
+   in the Abstract and Limitations, never to silently lead with the more favourable estimate.
+
+2. **Methods-promised-analysis completeness (inline grep).** Every analysis named in the Methods
+   Statistical Analysis subsection must appear in Results:
+
+   ```bash
+   # promised in Methods
+   grep -ioE "interaction|subgroup|sensitivity analysis|multiple imputation|mediation|competing risk|landmark|E-value" \
+     manuscript/index.qmd | sort -u
+   ```
+
+   Cross-check each hit against the Results section. A promised-but-absent analysis is a **HALT**:
+   add it to Results, remove the promise from Methods, or file a protocol amendment. Log the
+   checklist to `qc/_pipeline_log.md`.
+
+This step composes with `/self-review` Phase 2.5f; run it here for pipeline completeness even
+when `/self-review` is also invoked.
 
 #### Step 7.4: Self-Review + Fix Loop
 
