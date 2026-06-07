@@ -15,7 +15,7 @@ lines, and the References section, then counting `\b[\w'-]+\b`
 
 ## Demo 2 — BCG Vaccine
 - Pooled **RR 0.489 (95% CI 0.344–0.696)** — `analysis/tables/meta_results.csv` (pooled_RR 0.4894, lci 0.3441, uci 0.6962). (unchanged)
-- PRISMA compliance **57.1% (24/42 applicable)** — `qc/reporting_checklist.md` L20, L26. (was: 77.8% 21/27). Note: the target table's "61.9% (26/42) after fix" is NOT present in the current checklist artifact, so the QC-substantiated 57.1% is used.
+- PRISMA compliance **57.1% (24/42 applicable)** baseline, **→ 61.9% (26/42) after the self-review fix** added a registration statement — both substantiated in `qc/reporting_checklist.md` (L26 baseline "24/42 = 57.1%"; L132 "Updated compliance: 26/42 = 61.9%"). (was: 77.8% 21/27). README and manuscript Table 1 show both (baseline → post-fix).
 - Self-review **initial 78 → final 82 (REVISE) after 1 fix iteration; 3 major / 4 minor** — `qc/self_review.md` L11, L49, L71–L73, L81–L87. The 3 majors (RoB 2, GRADE, reference adequacy) are all `fixable_by_ai:false`, out of scope for a clean-room demo. (was: 82/100, initial 72, 4 major/5 minor)
 - Body prose **~2,200 words** — strip method (2,188). (was: ~2,600)
 - Forest figure path **analysis/figures/forest.png** (was forest_plot.png).

@@ -109,7 +109,7 @@ data(dat.bcg)  # 13 RCTs, 357,347 participants (Colditz et al. 1994)
 | [Forest Plot](demo/02_metafor_bcg/analysis/figures/forest.png) | 13 studies, RE model (REML), 300 dpi |
 | [Funnel Plot](demo/02_metafor_bcg/analysis/figures/funnel.png) | Small-study / publication-bias visual |
 | [PRISMA Flow](demo/02_metafor_bcg/analysis/figures/prisma_flow.svg) | D2-generated PRISMA 2020 flow diagram |
-| [Reporting Checklist](demo/02_metafor_bcg/qc/reporting_checklist.md) | PRISMA 2020 — 57.1% compliance (24/42 applicable) |
+| [Reporting Checklist](demo/02_metafor_bcg/qc/reporting_checklist.md) | PRISMA 2020 — 57.1% (24/42) at check-reporting → 61.9% (26/42) after self-review fix |
 | [Self-Review](demo/02_metafor_bcg/qc/self_review.md) | Initial 78 → 82 (REVISE) after 1 fix iteration; 3 major / 4 minor (majors are out-of-scope RoB/GRADE/references) |
 | [Pipeline Log](demo/02_metafor_bcg/qc/_pipeline_log.md) | 7-step E2E execution trace |
 
