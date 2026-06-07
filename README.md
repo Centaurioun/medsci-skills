@@ -25,6 +25,10 @@
 
 *Topic Discovery &rarr; Literature Search &rarr; Full-Text Retrieval &rarr; Study Design &rarr; Sample Size &rarr; Protocol &rarr; De-identification &rarr; Data Cleaning &rarr; Statistics &rarr; Figures &rarr; Writing &rarr; Humanize &rarr; Compliance &rarr; Journal Selection &rarr; Peer Review &rarr; Revision &rarr; Presentation*
 
+**Created & maintained by [Yoojin Nam, MD](https://orcid.org/0000-0001-8565-1360)**
+<br>
+<sub>Department of Radiology and Research Institute of Radiology, University of Ulsan College of Medicine, Asan Medical Center, Seoul, Republic of Korea</sub>
+
 </div>
 
 ![check-reporting demo](demo.gif)

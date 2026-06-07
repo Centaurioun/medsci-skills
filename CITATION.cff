@@ -14,7 +14,7 @@ abstract: >-
 authors:
   - family-names: Nam
     given-names: Yoojin
-    affiliation: "University of Ulsan College of Medicine, Seoul, Republic of Korea"
+    affiliation: "Department of Radiology and Research Institute of Radiology, University of Ulsan College of Medicine, Asan Medical Center, Seoul, Republic of Korea"
     orcid: "https://orcid.org/0000-0001-8565-1360"
 repository-code: "https://github.com/Aperivue/medsci-skills"
 url: "https://github.com/Aperivue/medsci-skills"
