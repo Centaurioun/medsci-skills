@@ -1,0 +1,13 @@
+{
+  "files": [
+    "analysis/meta_analysis.R"
+  ],
+  "claims": [],
+  "summary": {
+    "n_files": 1,
+    "n_claims": 0,
+    "n_major": 0,
+    "n_flag": 0,
+    "verdict": "OK"
+  }
+}

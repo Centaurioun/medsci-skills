@@ -1,70 +1,90 @@
 {
   "schema_version": 1,
-  "seed": null,
-  "provenance": "demo reproducibility lock: input data + deterministic result tables (timestamped .docx/.pptx excluded)",
+  "seed": 42,
+  "provenance": "DEMO 1 Wisconsin Breast Cancer (sklearn.load_breast_cancer); medsci-skills v3.7.0 clean-room regen; STARD 2015; stratified 70/30 split seed 42",
   "files": {
-    "analysis/tables/diagnostic_accuracy.csv": {
-      "sha256": "b961da457022961d0df47008f3f8695d367935b4e9b7b8ddcc7defb8b95d6519",
-      "bytes": 269,
+    "analysis/tables/auc_comparison_delong.csv": {
+      "sha256": "4b61eb2990129ce1b1adb76f578ead2b66c73a64e2c1bd7990223f7aec34be36",
+      "bytes": 179,
       "tabular": {
         "n_rows": 3,
-        "n_cols": 8,
+        "n_cols": 5,
         "column_hashes": {
-          "Model": "ba4c0929fa5458257f3f66892405074f779ed6a243248e209b19462e8f5e7d9c",
-          "AUC (95% CI)": "85f12eb815630880cda49f43077613cdc5ba50c8f8c1ee9a534ccc4579310d75",
-          "Sensitivity": "9b2b1ed8fdd08d24f86c3fbd199ed5395e18021e3166c16d99c317d57630fe9f",
-          "Specificity": "d1ec3c86fb59fcbb5a287b6ee8283c9d4aef743b82c7388df11a07a04ae5f236",
-          "PPV": "765d68d433b143a222bf80b860f7c4f4157171925ac8d7bc74a4c781e0c33e55",
-          "NPV": "1310f4d73a94fbc083756ffe644a464f7a64eccb4798ac76bc74061a5815373b",
-          "Accuracy": "1bfd364e0ff546106e827455f2289874fc7228df70f5afdf589fa90a2ad3a2c6",
-          "F1": "25829219ae505c9fc692b8967621321193ae95509402e07b78d92ded31d9c738"
+          "Model_A": "82f7be62214a99b906a6abd6a6850a17030d8dabc92884a0b5241ccaa0aeab23",
+          "Model_B": "408490c5bf60ffc0d214a566cd8bb033f3ef4f4f4c4fda0a4d7f392ccdb53e3c",
+          "AUC_A": "37a2dfe5811954194d9fe0ee14b93d7c395ee866b1ddf8b98a22ddd7c84f917a",
+          "AUC_B": "2ce70043943715419a80caf845c1cd9941c2de2fb3378aa3a21964926bfffd20",
+          "DeLong_p": "66e7cbd386a8701a1952ae509f20d466e2a8c4c98afa075249cb4b76f49e505f"
+        }
+      }
+    },
+    "analysis/tables/diagnostic_accuracy.csv": {
+      "sha256": "46d826c4303a8fa4128b2d68308e2280678cd5224cde2c932ae10637ec6e7828",
+      "bytes": 535,
+      "tabular": {
+        "n_rows": 3,
+        "n_cols": 21,
+        "column_hashes": {
+          "Model": "d20c3f42930b8d9bd6c01b897b6a4ff21a0b21ef3088f354c811e1a8c9cc4b11",
+          "AUC": "748e536d7444145a280ad0d420ef1a8eec615b1a9a7ee0c345820cd6346560d5",
+          "AUC_lo": "6e4f26fcbd5dbf6b13f67879cc494798d7c3c1e8cd22eb34a2d66ebfbae1d002",
+          "AUC_hi": "d81608aa0bc5be6f978aecd953bf9e6141c91dcfaef458af55a9a29386b12c27",
+          "Brier": "6e36b481c4a07e8c72cf2e8305635fc22e25b7b8a61f3770942664f438c1a65f",
+          "Thr0.5_Sens": "e23e9cb099cc09decf4c072dde2a173ebdf4c28fb1ce8b5f654b983d70c9e3b1",
+          "Thr0.5_Sens_lo": "4e53228fd2b7a53f40d663b1e2e0f8afab615cf19f7191f162b9d97dd302514f",
+          "Thr0.5_Sens_hi": "f590cf0fced375862a43b6a30d318700c09006ee4eace3ef467ffe4224bf9932",
+          "Thr0.5_Spec": "44641b695246682b66604e14ec7e8e1ee7f1eff83ccab6a1bdb782b69638f0d0",
+          "Thr0.5_Spec_lo": "5b65f222f4aa8811d3f754d5770af44880f5139a9b1813fa949fa4780fcb7816",
+          "Thr0.5_Spec_hi": "caa2dd0f76a406513587fe2c1783886640ce283470e569fc6e471b683fb0a445",
+          "Thr0.5_PPV": "6dd24bac772712357811c4287bf2d45d0e7ec72b3a92fa3f35ee38fa29864f2b",
+          "Thr0.5_NPV": "048a77adcad7dd66c5b627a3cd20ab55cf2c34cc26781f32c56f8d71989c22cf",
+          "Thr0.5_Acc": "858ce0a985ce74b264543202625d0ff1a1cc76c2b01937be10e23dd69ff6048e",
+          "Youden_thr": "894f64a3a5dfe05084793c9f8f1eb166f02e8809c1458f60132167d2b35651f4",
+          "Youden_Sens": "3265a8b3c6b2446c216f3149c5f540c01a33b7c574652e4e8b99e6e188c6caf8",
+          "Youden_Spec": "3b1d132fdf4a11d7ea6f4fbdb29ade29b67517b625bfc730e170a9ca0467f53a",
+          "TP": "97cdbd1cff55046dfab86890822df58bb4c855ca0eb5fc7f134c642063442bc1",
+          "FP": "335d21668a0dd84096d7542fc0e7e5a49d3a9f5a9b8aa4f3a919aaa073144188",
+          "FN": "570d1d293937c19b9d13b513e5713ad5af0fd46b01b717fa6a209da0961e179a",
+          "TN": "b3624d15ea2e0f6250e543fa7cc6c1f8b84d89398acbbb9f45e8da8d1a4007c1"
         }
       }
     },
     "analysis/tables/predictions.csv": {
-      "sha256": "723b7aec178c19bd06da5a7cc0f91147ff8e37d0f9dbdba251ac74654f416a12",
-      "bytes": 7232,
+      "sha256": "3f72b99f45e582cae07f4ed44ae1c889504ea87ecccd131b61a161848d5e153e",
+      "bytes": 8325,
       "tabular": {
-        "n_rows": 114,
-        "n_cols": 8,
-        "column_hashes": {
-          "patient_id": "32329b618e7ba918f356e164960e482033fd92e6e3201cf3f9005c8cb22c6529",
-          "true_label": "970fe49efd808d7de6c9671342fd9135999d1962af30ae06f811b3fda36e6211",
-          "lr_prob": "6661325bbfbc7a01f8fd28f62947440d904ca2248d6c3b0b333a88cbd505412e",
-          "rf_prob": "03f4f95828384de0d27f710b2170415fc96c1976eb8646c0f5d91bedfe3fe612",
-          "svm_prob": "d31e679a7eac834dcceede7f158014db1370a1b272d6bca7f223276d924bb734",
-          "lr_pred": "a8e53d03a724d679b71fcb3d02b42b249d373bb15afa768325d0df65ff364588",
-          "rf_pred": "46d0af7368fa1b517731654797b59f087fb7eaa5e2bc754ea3c0863284b806ff",
-          "svm_pred": "952f01fee67ddb745b9b602ad70609a01724bad2df096b3beb7acf35a6881636"
-        }
-      }
-    },
-    "analysis/tables/table1_demographics.csv": {
-      "sha256": "3e5102cc095d7136ad07736d566063bd136f141e6d1e2ca2c69364090908ba25",
-      "bytes": 159,
-      "tabular": {
-        "n_rows": 3,
+        "n_rows": 171,
         "n_cols": 4,
         "column_hashes": {
-          "Characteristic": "51803141cbdf2f87c0c895766fabe14dca44f709f6bb2c90522287e35f598c62",
-          "Malignant (n=212)": "0aaf684bf8b0a206d7dc7f5303cc613c5163cd975e3233835cacbbff0eb38bf8",
-          "Benign (n=357)": "2cf27ab39dda78841400db2025df18cf4fb28086286e7d508ced70b59eb885ff",
-          "P value": "5f4e4a39febe0293f53a01165b63f0086d92fb3690032850b86e4e3999916e8c"
+          "y_true": "b8685c777f3e71d154042913cd538ff43b848c288da4f1c8aa5fc48e406eff30",
+          "proba_logistic": "53311c79ebe855cb8e565412de03320708c1139da380e2946d1b2bc7f6851207",
+          "proba_random": "cf54c7aa19ed3f89d7e551db6123e53befcc1186745dd8b6f3c8f82c3ea3f651",
+          "proba_svm": "d8e194f19bc8d2a9ccdf9474864450fced7eb05a03766f1114450d2a29dbf553"
         }
       }
     },
-    "data/breast_cancer_clinical.csv": {
-      "sha256": "b63a202828c4f92e6ba9e27f590603c76543e4c146795ab6f01f1e8596757821",
-      "bytes": 140268,
+    "analysis/tables/table1_features_by_class.csv": {
+      "sha256": "ad776f1bdf25826a30bb5e3d251b0e64bfef7df8e5efe94f2ef999a16217bb89",
+      "bytes": 602,
+      "tabular": {
+        "n_rows": 10,
+        "n_cols": 5,
+        "column_hashes": {
+          "Feature": "2db5c842e9747dfafcb929efa85eb4d8e05b67a3ea19714137e82703b5ea17c9",
+          "Malignant_mean_SD": "36db50cc5308a44764456c596fbb610ed49b1a2f7299a683341d17d063691bda",
+          "Benign_mean_SD": "907460b7e57d925e8f33530e69e535812fccb5c83f093a2bda3c87ed37fba60c",
+          "SMD": "adbd4819d5d16a4b1cc3a13eae1c9d122b0e215e227203aae5f8944bb44a8d11",
+          "P_value": "b764d27be0ea8ef8b4ba5caf75fe5d6f09a16388852e4b59a4e61f32324c4e30"
+        }
+      }
+    },
+    "data/wisconsin_breast_cancer.csv": {
+      "sha256": "a33e4b101199ada24b7f416758a3b761a5978a1983191a58b89264c428a26726",
+      "bytes": 126014,
       "tabular": {
         "n_rows": 569,
-        "n_cols": 35,
+        "n_cols": 32,
         "column_hashes": {
-          "patient_id": "cdc5ff16a1576697c8fa0fc55591798c27d7bea93391b60bb27a4869a53b035d",
-          "age": "724408280bfd4be767383be36d27cdd6286da5d42f20d1c3739b3ca777f9c176",
-          "sex": "e3d0d1174c38dc17665102e7853a6dc4cbac638a973403b560b4ecea9909a636",
-          "imaging_modality": "d5569e41c0407ea33a2640ea67b02dd9be9502d74af9a48ab018e50a34026e6d",
-          "diagnosis": "0f40110ef89ec607175a6643fbec9aab408101a320cfd78e8665c8d73b90a858",
           "mean radius": "fae2e5fcacf08b5432f7e5fc8674d3eb57b1f2e4bfa11882fc3a25a7ed580c31",
           "mean texture": "9890a0daa0277ec81e85a96a052b791aac2848eb6599bcb3bdf44cf17c16ba90",
           "mean perimeter": "d6e8a4a123d836c3168f98020768ee37d1a13aee0075b8054d1c3fb44062a4bb",
@@ -94,7 +114,9 @@
           "worst concavity": "2e6ed0fda9cbb61b9331fba9665264448a3f597af4a5181beb4be7ca0b341491",
           "worst concave points": "1ff1abe52ea643c915746345dae61d92464fba41a59d34957df2aaa6877fa537",
           "worst symmetry": "6bd8c9ef442533fa498882e6b62e7a63df8b5e0aaf5d53f94de65f92158fb60e",
-          "worst fractal dimension": "6638db2f128f5180dbd8fcb95cc2f701d84acd6424d1aa709e445f7478f37965"
+          "worst fractal dimension": "6638db2f128f5180dbd8fcb95cc2f701d84acd6424d1aa709e445f7478f37965",
+          "target": "74a28c0ee1c35ca8784a441fcb67704712732863fc6658bb7e76389caca61769",
+          "diagnosis": "0f40110ef89ec607175a6643fbec9aab408101a320cfd78e8665c8d73b90a858"
         }
       }
     }

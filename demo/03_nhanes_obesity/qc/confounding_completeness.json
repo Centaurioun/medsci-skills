@@ -1,0 +1,39 @@
+{
+  "table1": "analysis/tables/table1.csv",
+  "adjustment_set": [
+    "age",
+    "sex",
+    "race"
+  ],
+  "thresholds": {
+    "p": 0.05,
+    "smd": 0.1
+  },
+  "n_imbalanced": 3,
+  "n_unadjusted_imbalanced": 2,
+  "findings": [
+    {
+      "covariate": "age..mean..SD..",
+      "imbalance_p": 0.000999,
+      "smd": null,
+      "in_adjustment_set": true,
+      "verdict": "ADJUSTED"
+    },
+    {
+      "covariate": "BMXBMI..mean..SD..",
+      "imbalance_p": 0.000999,
+      "smd": null,
+      "in_adjustment_set": false,
+      "verdict": "UNADJUSTED_IMBALANCED"
+    },
+    {
+      "covariate": "obesity_f....",
+      "imbalance_p": 0.000999,
+      "smd": null,
+      "in_adjustment_set": false,
+      "verdict": "UNADJUSTED_IMBALANCED"
+    }
+  ],
+  "verdict": "MAJOR_CANDIDATE",
+  "suggested_fix": "Report an extended-adjustment sensitivity model adding the unadjusted imbalanced covariates; keep the original model primary only if the extended model agrees."
+}

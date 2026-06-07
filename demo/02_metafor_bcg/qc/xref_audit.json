@@ -1,0 +1,63 @@
+{
+  "version": "1.2",
+  "manuscript": "manuscript/manuscript.md",
+  "docx": "manuscript/manuscript_final.docx",
+  "policy": {
+    "allow_separate_attachments": true
+  },
+  "summary": {
+    "total_in_text_citations": 5,
+    "unique_labels": 4,
+    "ok": 4,
+    "missing_docx": 0,
+    "missing_body": 0,
+    "mismatch": 0,
+    "uncited": 0,
+    "blockers": 0,
+    "warnings": 0
+  },
+  "submission_safe": true,
+  "findings": [
+    {
+      "label": "Figure:1",
+      "status": "OK",
+      "cited": true,
+      "in_body": true,
+      "in_docx": true,
+      "body_caption": "PRISMA 2020 study-selection flow diagram. The diagram terminates in the 13 randomized trials (357,347 participants) included in the meta-analysis. Upstream record counts are illustrative of a typical identification-and-screening cascade for this corpus in this methods demonstration and are not the yield of a new database search.",
+      "docx_caption": "PRISMA 2020 study-selection flow diagram. The diagram terminates in the 13 randomized trials (357,347 participants) included in the meta-analysis. Upstream record counts are illustrative of a typical identification-and-screening cascade for this corpus in this methods demonstration and are not the yield of a new database search.",
+      "note": ""
+    },
+    {
+      "label": "Figure:2",
+      "status": "OK",
+      "cited": true,
+      "in_body": true,
+      "in_docx": true,
+      "body_caption": "Random-effects (REML) forest plot of the risk ratio of tuberculosis, BCG-vaccinated versus control, across 13 randomized trials. Squares are trial-level risk ratios sized by inverse-variance weight; horizontal lines are 95% confidence intervals; the diamond is the pooled random-effects estimate (RR 0.489, 95% CI 0.344 to 0.696). The vertical dashed line marks the null value of one.",
+      "docx_caption": "Random-effects (REML) forest plot of the risk ratio of tuberculosis, BCG-vaccinated versus control, across 13 randomized trials. Squares are trial-level risk ratios sized by inverse-variance weight; horizontal lines are 95% confidence intervals; the diamond is the pooled random-effects estimate (RR 0.489, 95% CI 0.344 to 0.696). The vertical dashed line marks the null value of one.",
+      "note": ""
+    },
+    {
+      "label": "Figure:3",
+      "status": "OK",
+      "cited": true,
+      "in_body": true,
+      "in_docx": true,
+      "body_caption": "Funnel plot of the trial-level log risk ratio against its standard error, used to assess small-study effects. Egger regression z = -1.40, p = 0.189; Begg-Mazumdar rank test tau = 0.026, p = 0.952.",
+      "docx_caption": "Funnel plot of the trial-level log risk ratio against its standard error, used to assess small-study effects. Egger regression z = -1.40, p = 0.189; Begg-Mazumdar rank test tau = 0.026, p = 0.952.",
+      "note": ""
+    },
+    {
+      "label": "Table:1",
+      "status": "OK",
+      "cited": true,
+      "in_body": true,
+      "in_docx": true,
+      "body_caption": "Per-trial event counts and risk ratios for tuberculosis, BCG-vaccinated versus control, in the 13 included randomized trials. Risk ratios and 95% confidence intervals are derived from the four cell counts of each trial (vaccinated TB-positive and TB-negative; control TB-positive and TB-negative). Source: analysis/tables/per_study_escalc.csv.",
+      "docx_caption": "Per-trial event counts and risk ratios for tuberculosis, BCG-vaccinated versus control, in the 13 included randomized trials. Risk ratios and 95% confidence intervals are derived from the four cell counts of each trial (vaccinated TB-positive and TB-negative; control TB-positive and TB-negative). Source: analysis/tables/per_study_escalc.csv.",
+      "note": ""
+    }
+  ],
+  "vN_docx_check": null
+}

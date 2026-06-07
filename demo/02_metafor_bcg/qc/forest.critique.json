@@ -1,0 +1,44 @@
+{
+  "image": "analysis/figures/forest.png",
+  "figure_type": "forest",
+  "journal": null,
+  "checks": {
+    "dimensions": {
+      "width_px": 2700,
+      "height_px": 2100,
+      "dpi_x": null,
+      "dpi_y": null
+    },
+    "palette": {
+      "passed": true,
+      "out_of_palette_fraction": 0.0,
+      "tolerance": 0.15,
+      "dominant_colors": [
+        {
+          "rgb": [
+            255,
+            255,
+            255
+          ],
+          "fraction": 0.9611,
+          "class": "neutral"
+        },
+        {
+          "rgb": [
+            0,
+            0,
+            0
+          ],
+          "fraction": 0.0202,
+          "class": "neutral"
+        }
+      ]
+    },
+    "ocr": {
+      "passed": null,
+      "note": "pytesseract not installed; install with `pip install pytesseract` (tesseract binary already at /opt/homebrew/bin/tesseract)"
+    }
+  },
+  "flags": [],
+  "summary": "PASS"
+}

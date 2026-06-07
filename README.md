@@ -181,6 +181,14 @@ The E2E pipeline (`orchestrate --e2e`) produces everything up to `qc/`. The `sub
 
 ## What's New
 
+**v3.7.0** adds three deterministic, stdlib-only detectors on top of the v3.6.0 panel-derived gates — bringing the analysis-integrity detector count in `skills/` to **21** — without broadening the catalog (still 43 skills):
+
+- **Reference adequacy** — `/self-review` and `/write-paper` now check that a draft cites *enough* references in the *right* sections and that *every named method* (a competing-risk model, multiple imputation, the E-value, an eGFR equation) carries a citation — the adequacy layer that complements `/verify-refs`'s integrity layer (`check_reference_adequacy.py`).
+- **Panel lens-diversity** — `/self-review --panel` post-processes its reviewers so the cost buys breadth, not a louder echo (`check_panel_diversity.py`).
+- **Generated-code quality** — `/analyze-stats` lints emitted analysis scripts for reproducibility slop (missing seed, hard-coded data literals, absolute paths, in-place source overwrite) (`check_generated_code.py`).
+
+Plus a publish-time skill-worthiness gate (`/publish-skill`) and public adoption/impact tracking (`IMPACT.md`).
+
 **v3.6.0** lands 18 gates from a 13-project panel self-review (158 traces → 12 recurring defect patterns), without broadening the catalog (still 43 skills). Six new stdlib detectors join the existing trio — deterministic where a grep is clean, prose/probe where the call needs a human:
 
 - **Cohort & pool arithmetic** — `/self-review` recomputes incidence rates from events ÷ person-years, balances STROBE exclusion cascades, and checks ordinal tier/stratum partitions for disjointness (`check_cohort_arithmetic.py`); `/meta-analysis` locks patient/lesion aggregate totals and requires re-run evidence for any "fixed" audit note.

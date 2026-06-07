@@ -1,0 +1,43 @@
+{
+  "article_type": "ai_validation",
+  "article_bucket": "ai_validation",
+  "journal_cap": null,
+  "cited_reference_count": 14,
+  "bib_entry_count": null,
+  "effective_target": [
+    25,
+    45
+  ],
+  "section_distribution": {
+    "introduction": 5,
+    "methods": 9,
+    "results": 2,
+    "discussion": 3
+  },
+  "named_methods_found": [
+    "Brier",
+    "DeLong",
+    "STARD",
+    "calibration"
+  ],
+  "uncited_named_methods": [],
+  "methods_zero_citations": false,
+  "reference_count_verdict": "BELOW_TARGET",
+  "adequacy_safe": true,
+  "findings": [
+    {
+      "issue_type": "reference_adequacy",
+      "subtype": "below_article_type_target",
+      "severity": "minor",
+      "location": "Whole manuscript",
+      "description": "Cited references (14) are below the ai_validation target (25-45).",
+      "fixable_by_ai": false,
+      "suggested_fix": "Run /search-lit (paper mode) to retrieve verified candidates across the six categories, sync via /lit-sync, then rerun /verify-refs --strict."
+    }
+  ],
+  "summary": {
+    "major": 0,
+    "minor": 1,
+    "notes": []
+  }
+}

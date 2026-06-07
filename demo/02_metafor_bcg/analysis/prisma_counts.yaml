@@ -1,0 +1,53 @@
+# PRISMA 2020 flow — DEMO 2 (BCG vaccine vs TB meta-analysis, metafor dat.bcg)
+# Clean-room methods demo. The 13 INCLUDED trials are the genuine dat.bcg corpus
+# (Colditz et al. 1994). The upstream record counts below are ILLUSTRATIVE for a
+# methods demonstration of the medsci-skills pipeline — they are NOT a real
+# database search yield. Cascade arithmetic reconciles internally:
+#   db 312 + other 6 = 318 identified
+#   318 - 121 duplicates = 197 screened
+#   197 - 158 excluded (T/A) = 39 reports sought
+#   39 - 4 not retrieved = 35 assessed for eligibility
+#   35 - 22 excluded = 13 studies included (= dat.bcg k)
+rankdir: TB
+nodes:
+  - id: id_db
+    label: "Records identified from databases\n(n = 312)\n• PubMed: 168\n• Embase: 109\n• Cochrane CENTRAL: 35"
+  - id: id_other
+    label: "Records identified from other sources\n(n = 6)\n• Citation search: 6"
+    rank_same_with: id_db
+  - id: dedup
+    label: "Records after duplicates removed\n(n = 197)"
+  - id: screened
+    label: "Records screened (title/abstract)\n(n = 197)"
+  - id: excl_ta
+    shape: note
+    fontsize: 10
+    label: "Records excluded\n(n = 158)"
+    rank_same_with: screened
+  - id: ft_sought
+    label: "Reports sought for retrieval\n(n = 39)"
+  - id: ft_notret
+    shape: note
+    fontsize: 10
+    label: "Reports not retrieved\n(n = 4)"
+    rank_same_with: ft_sought
+  - id: ft_assessed
+    label: "Reports assessed for eligibility\n(n = 35)"
+  - id: ft_excl
+    shape: note
+    fontsize: 10
+    label: "Reports excluded (n = 22):\n• Not randomized: 9\n• No control arm: 6\n• Outcome not TB incidence: 5\n• Duplicate cohort: 2"
+    rank_same_with: ft_assessed
+  - id: included
+    label: "Randomized trials included in\nmeta-analysis (n = 13)\nParticipants (n = 357,347)"
+    highlight: true
+edges:
+  - {from: id_db, to: dedup}
+  - {from: id_other, to: dedup, constraint: false}
+  - {from: dedup, to: screened}
+  - {from: screened, to: ft_sought}
+  - {from: ft_sought, to: ft_assessed}
+  - {from: ft_assessed, to: included}
+  - {from: screened, to: excl_ta, style: dashed, arrow: false, constraint: false}
+  - {from: ft_sought, to: ft_notret, style: dashed, arrow: false, constraint: false}
+  - {from: ft_assessed, to: ft_excl, style: dashed, arrow: false, constraint: false}

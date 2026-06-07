@@ -1,0 +1,51 @@
+{
+  "article_type": "meta-analysis",
+  "article_bucket": "meta_analysis",
+  "journal_cap": null,
+  "cited_reference_count": 0,
+  "bib_entry_count": 0,
+  "effective_target": [
+    40,
+    80
+  ],
+  "section_distribution": {
+    "introduction": 0,
+    "methods": 0,
+    "results": 0,
+    "discussion": 0
+  },
+  "named_methods_found": [
+    "PRISMA"
+  ],
+  "uncited_named_methods": [
+    "PRISMA"
+  ],
+  "methods_zero_citations": true,
+  "reference_count_verdict": "BELOW_TARGET",
+  "adequacy_safe": false,
+  "findings": [
+    {
+      "issue_type": "reference_adequacy",
+      "subtype": "methods_zero_citations",
+      "severity": "major",
+      "location": "Methods - Statistical Analysis",
+      "description": "The Methods/Statistical Analysis section contains no citations; every named method, score, guideline, and diagnostic criterion needs a canonical source (found uncited: PRISMA).",
+      "fixable_by_ai": false,
+      "suggested_fix": "Run /search-lit (paper mode) for canonical methodology sources, sync via /lit-sync, then rerun /verify-refs --strict."
+    },
+    {
+      "issue_type": "reference_adequacy",
+      "subtype": "below_article_type_target",
+      "severity": "major",
+      "location": "Whole manuscript",
+      "description": "Cited references (0) are below the meta_analysis target (40-80).",
+      "fixable_by_ai": false,
+      "suggested_fix": "Run /search-lit (paper mode) to retrieve verified candidates across the six categories, sync via /lit-sync, then rerun /verify-refs --strict."
+    }
+  ],
+  "summary": {
+    "major": 2,
+    "minor": 0,
+    "notes": []
+  }
+}

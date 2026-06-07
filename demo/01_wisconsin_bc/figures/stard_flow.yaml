@@ -1,0 +1,41 @@
+# STARD 2015 diagnostic-accuracy flow diagram.
+# Wisconsin Breast Cancer (sklearn), N=569 FNA samples.
+# Index test exemplar = Logistic Regression at threshold 0.5 (primary index test).
+# Reference standard = histopathology diagnosis (malignant/benign).
+# All cell counts traced to analysis/tables/diagnostic_accuracy.csv (LR row).
+rankdir: TB
+nodes:
+  - id: source
+    label: "FNA samples with histopathology reference\n(N = 569)"
+    highlight: true
+  - id: split
+    shape: note
+    fontsize: 10
+    label: "Stratified 70/30 split (seed = 42):\n• Training set (model fitting): n = 398\n• Test set (index-test evaluation): n = 171"
+    rank_same_with: source
+  - id: test
+    label: "Test set: index tests applied\n(n = 171)"
+  - id: ref
+    label: "Histopathology reference standard applied to all\n(malignant = 64, benign = 107)"
+  - id: idx_pos
+    label: "Index test positive\n(n = 61)"
+  - id: idx_neg
+    label: "Index test negative\n(n = 110)"
+  - id: tp
+    label: "Reference positive (malignant)\nTP = 60"
+  - id: fp
+    label: "Reference negative (benign)\nFP = 1"
+  - id: fn
+    label: "Reference positive (malignant)\nFN = 4"
+  - id: tn
+    label: "Reference negative (benign)\nTN = 106"
+edges:
+  - {from: source, to: test}
+  - {from: test, to: ref}
+  - {from: ref, to: idx_pos}
+  - {from: ref, to: idx_neg}
+  - {from: idx_pos, to: tp}
+  - {from: idx_pos, to: fp}
+  - {from: idx_neg, to: fn}
+  - {from: idx_neg, to: tn}
+  - {from: source, to: split, style: dashed, arrow: false, constraint: false}

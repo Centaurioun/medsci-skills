@@ -1,0 +1,44 @@
+{
+  "image": "analysis/figures/prisma_flow.png",
+  "figure_type": "prisma",
+  "journal": null,
+  "checks": {
+    "dimensions": {
+      "width_px": 2400,
+      "height_px": 3019,
+      "dpi_x": null,
+      "dpi_y": null
+    },
+    "palette": {
+      "passed": true,
+      "out_of_palette_fraction": 0.0,
+      "tolerance": 0.15,
+      "dominant_colors": [
+        {
+          "rgb": [
+            255,
+            255,
+            255
+          ],
+          "fraction": 0.9496,
+          "class": "neutral"
+        },
+        {
+          "rgb": [
+            0,
+            0,
+            0
+          ],
+          "fraction": 0.0336,
+          "class": "neutral"
+        }
+      ]
+    },
+    "ocr": {
+      "passed": null,
+      "note": "pytesseract not installed; install with `pip install pytesseract` (tesseract binary already at /opt/homebrew/bin/tesseract)"
+    }
+  },
+  "flags": [],
+  "summary": "PASS"
+}

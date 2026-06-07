@@ -1,0 +1,62 @@
+{
+  "image": "analysis/figures/funnel.png",
+  "figure_type": "other",
+  "journal": null,
+  "checks": {
+    "dimensions": {
+      "width_px": 2100,
+      "height_px": 1800,
+      "dpi_x": null,
+      "dpi_y": null
+    },
+    "palette": {
+      "passed": true,
+      "out_of_palette_fraction": 0.0,
+      "tolerance": 0.15,
+      "dominant_colors": [
+        {
+          "rgb": [
+            255,
+            255,
+            255
+          ],
+          "fraction": 0.64,
+          "class": "neutral"
+        },
+        {
+          "rgb": [
+            193,
+            193,
+            193
+          ],
+          "fraction": 0.3418,
+          "class": "neutral"
+        },
+        {
+          "rgb": [
+            0,
+            0,
+            0
+          ],
+          "fraction": 0.0062,
+          "class": "neutral"
+        },
+        {
+          "rgb": [
+            83,
+            83,
+            83
+          ],
+          "fraction": 0.0027,
+          "class": "neutral"
+        }
+      ]
+    },
+    "ocr": {
+      "passed": null,
+      "note": "pytesseract not installed; install with `pip install pytesseract` (tesseract binary already at /opt/homebrew/bin/tesseract)"
+    }
+  },
+  "flags": [],
+  "summary": "PASS"
+}

@@ -1,67 +1,63 @@
-# Pipeline Log — Demo 3: NHANES Obesity & Diabetes
-Generated: 2026-04-14
-Mode: --e2e (autonomous)
+# Pipeline Log — DEMO 3 (NHANES obesity<->diabetes), medsci-skills v3.7.0
+Generated: 2026-06-07
+Staging: <clean-room staging>/03_nhanes_obesity
+MEDSCI_SKILLS_ROOT: ${MEDSCI_SKILLS_ROOT}
+Environment: R 4.5.3 (survey 4.x + tableone, both pre-installed; NOT 4.8.0 as prompt suggested),
+  Python 3.14.3 (pandas 2.3.3, read_sas), pandoc 3.9.0.2, d2 0.7.1, graphviz/dot 14.1.5
 
-## Pipeline Steps
+## Step 0 — Data download & preparation
+- Downloaded 4 NHANES 2017-2018 XPT files via curl to data/ (valid SAS XPORT signatures).
+  DEMO_J (9254 rows), BMX_J (8704), DIQ_J (8897), GHB_J (6401).
+- 00_prepare_data.py: merged on SEQN, applied STROBE exclusion cascade, wrote data/nhanes_analytic.csv (n=5010).
+- Exclusion: 9254 -> age>=20 (5569) -> measured BMI (5175) -> valid DM status (5010) -> positive MEC weight (5010 FINAL).
 
-| Step | Skill | Status | Output |
-|------|-------|--------|--------|
-| 1 | `/analyze-stats` (Python) | PASS | tables/table1.csv, tables/prevalence_by_bmi.csv, tables/regression_results.csv, figures/prevalence_by_bmi.png, figures/or_forest_plot.png, figures/hba1c_distribution.png, figures/prevalence_by_age_bmi.png, _analysis_outputs.md |
-| 2 | `/make-figures --study-type observational` | PASS | figures/strobe_flow.svg (D2), figures/_figure_manifest.md (5 entries) |
-| 3 | `/write-paper --autonomous` | PASS | manuscript.md (~2,800 words) |
-| 4 | Phase 7.1: AI Pattern Scan | PASS | 0 forbidden patterns detected |
-| 5 | `/check-reporting --json` (STROBE) | PASS | reporting_checklist.md, compliance 81.8% (18/22 PRESENT) |
-| 6 | `/self-review --json --fix` | PASS | review_comments.md, score 75→85/100 (2 iterations), verdict REVISE→PASS, 4 major / 5 minor / 0 fatal, 8 fixed / 3 skipped |
-| 7 | Phase 7.6: DOCX Build | PASS | manuscript_final.docx (pandoc) |
-| 8 | `/present-paper` (bonus) | PASS | presentation.pptx (12 slides, speaker notes) |
+## Step 1 — /analyze-stats (survey-weighted)
+- 01_survey_analysis.R: svydesign(id=SDMVPSU, strata=SDMVSTRA, weights=WTMEC2YR, nest=TRUE); design df=15.
+- Outputs: tables/table1.csv, regression_or.csv, regression_or_hba1c_sensitivity.csv, key_scalars.csv, exclusion_cascade.csv; analysis/_analysis_outputs.md.
+- Weighted diabetes prev 11.7% (10.6-12.8); obesity 42.3% (38.9-45.7).
+- PRIMARY aOR obesity->diabetes = 3.03 (95% CI 2.29-4.02), p<0.001 (adj age, sex, race).
+- Sensitivity (HbA1c>=6.5, n=4779): aOR 2.95 (2.18-3.98).
+- Generated-code gate (check_generated_code.py --strict): 00_prepare_data.py PASS (0 findings); 01_survey_analysis.R PASS (0 findings).
 
-## Summary
+## Step 2 — /make-figures (observational/STROBE)
+- generate_flow_diagram.R --type strobe -> strobe_flow.{pdf,png,600.png}; DiagrammeRsvg -> strobe_flow.svg.
+- 02_make_forest.py -> forest_or.{pdf,png} from regression_or.csv (obesity highlighted at OR 3.03).
+- _figure_manifest.md written (2 figures). Generated-code gate on forest script: PASS (0 findings).
 
-- **Word count**: ~2,800 (excluding abstract, references, legends)
-- **Figure count**: 5 (flow diagram, prevalence bar chart, OR forest plot, HbA1c distribution, age × BMI prevalence)
-- **Table count**: 3 (demographics, prevalence, regression results)
-- **Reporting guideline**: STROBE
-- **Compliance**: 81.8% (18/22 applicable items PRESENT)
-- **Self-review score**: 85/100 (PASS)
-- **References**: 5 (all marked [UNVERIFIED] — demo dataset)
-- **AI pattern scan**: PASS (0 forbidden patterns)
-- **FATAL flags**: None
+## Step 3 — /write-paper (IMRAD, association-only)
+- manuscript/manuscript.md + title_page.md. refs.bib placeholder created; references left [UNVERIFIED] (methods demo).
+- Body word count (Intro..Conclusion) = 1337; total manuscript ~1700 words.
+- Step 7.1 classical-style QC (check_classical_style.py --strict): PASS (0 findings).
+- AI-disclosure 4-token check: version (Claude Opus 4.8) + channel (API) + date (June 2026) + responsible party (the authors) ALL present; 0 placeholders.
+- Placeholder/citation marker gate ([@NEW:]/[N]): clean.
+- Scope: cross-sectional -> association-only; no prognostic/surveillance/causal claim in conclusions.
 
-## Key Results
+## Step 4 — /check-reporting (STROBE --json)
+- Contract verified: check_checklist_exists.py --guideline STROBE -> OK.
+- Genuine item-by-item assessment in qc/reporting_checklist.{json,md}.
+- 34 items; 4 NOT_APPLICABLE (6b,12b,14c,16c); PRESENT 25, PARTIAL 4 (9,12c,14b,16a), MISSING 1 (10).
+- compliance_pct = present/applicable = 25/30 = 83.3%.
 
-| Metric | Value |
-|--------|-------|
-| Sample size | 4,866 (excluding 74 underweight) |
-| Diabetes prevalence (overall) | 14.9% |
-| Prevalence: Normal BMI | 7.5% (95% CI: 6.1%-9.1%) |
-| Prevalence: Overweight | 13.9% (12.3%-15.7%) |
-| Prevalence: Obese | 19.9% (18.2%-21.6%) |
-| Adjusted OR: Overweight vs Normal | 2.06 (1.45-2.92) |
-| Adjusted OR: Obese vs Normal | 4.50 (3.23-6.27) |
+## Step 5 — /self-review (--fix, deterministic detectors) + v3.7.0 detectors
+- INITIAL: 1 genuine MAJOR (scope_coherence CROSS_SECTIONAL_PROGNOSTIC).
+- Fix iter 1: reworded Abstract Conclusion + Discussion Limitations + Conclusion to drop
+  prognostic/surveillance vocabulary; association-only meaning preserved.
+- FINAL: scope_coherence CLEAN (exit 0). Verdict: ACCEPT-WITH-NOTES.
+- Detector literal outputs -> qc/_detector_findings.md; JSON artifacts -> qc/*.json.
+  - check_classical_style: CLEAN
+  - check_cohort_arithmetic: CLEAN (cascade reconciles)
+  - check_scope_coherence: CLEAN after fix (fired once initially -> fixed)
+  - check_reference_adequacy: 2 Major EXPECTED ([UNVERIFIED] demo refs)
+  - check_confounding_completeness: 2 Major FALSE POSITIVE (outcome-stratified T1 fed to exposure-stratified O1 check)
+- Genuine unresolved MAJOR = 0; genuine deferred MINOR = 5 (STROBE 10 + 9/12c/14b/16a).
 
-## Self-Review Key Issues
+## Step 6 — DOCX build
+- pandoc (title_page + manuscript) -> manuscript/manuscript_final.docx (17 KB).
+- docx body XML carries all key numbers (3.03, 5,010, 42.3, 11.7) + disclosure.
 
-| ID | Severity | Category | Issue |
-|----|----------|----------|-------|
-| M1 | Major | A | Cross-sectional design limits causal inference |
-| M2 | Major | B | Complex survey variance estimation not used |
-| M3 | Major | A | Diabetes defined by HbA1c alone |
-| M4 | Major | D | Limited novelty for well-studied association |
-| m1 | Minor | F | Unverified references (5 items) |
-| m2 | Minor | B | Missing data approach not stated |
-| m3 | Minor | C | No sensitivity analysis for diabetes definition |
-| m4 | Minor | A | Underweight exclusion rationale incomplete |
-| m5 | Minor | D | Asian-specific BMI thresholds not analyzed |
+## Step 7 — Dataset manifest
+- version_dataset.py manifest over 6 derived CSVs (raw XPTs excluded for portability) -> manifest.lock.json (seed=42, per-column SHA-256).
+- verify --strict: OK, 6/6 match (exit 0).
 
-## Self-Review Fix Loop (Phase 7.4)
-- Initial score: 75 → After iter 1: 82 → After iter 2: 85
-- Fix iterations: 2/2
-- Fixed issues: 6 (iter 1) + 2 partial mitigations (iter 2)
-- Remaining issues (human review needed): m1 (reference verification), m3 (diabetes sensitivity analysis), m5 (ethnicity-specific BMI reanalysis)
-- Final verdict: PASS
-
-## Notes
-
-- All 7 pipeline steps completed successfully.
-- Self-review fix loop applied 8 text-level corrections across 2 iterations, raising score from 75 (REVISE) to 85 (PASS).
-- Data source: Pre-processed NHANES 2017-2018 CSV (n = 4,940 with complete BMI + HbA1c).
+## Environment note
+- Prompt specified R 4.8.0; actual usable R was 4.5.3 with survey + tableone pre-installed (fully functional). No substantive impact.

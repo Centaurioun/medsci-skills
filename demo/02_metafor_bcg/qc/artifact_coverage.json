@@ -1,0 +1,12 @@
+{
+  "manuscript": "manuscript/manuscript.md",
+  "analysis_dir": "analysis",
+  "manifest": "analysis/_analysis_outputs.md",
+  "claims": [],
+  "summary": {
+    "n_claims": 0,
+    "n_major": 0,
+    "n_flag": 0,
+    "verdict": "OK"
+  }
+}

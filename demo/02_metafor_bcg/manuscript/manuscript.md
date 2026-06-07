@@ -1,119 +1,89 @@
-# Efficacy of BCG Vaccination for the Prevention of Tuberculosis: A Systematic Review and Meta-Analysis of Randomized Controlled Trials
+# Efficacy of BCG Vaccination Against Tuberculosis: A Random-Effects Meta-Analysis of 13 Randomized Trials
 
 ## Abstract
 
-**Background:** BCG (Bacillus Calmette-Guérin) vaccine remains the only licensed vaccine against tuberculosis, yet its protective efficacy has varied substantially across trials conducted in different geographic settings.
+**Background:** The bacille Calmette-Guerin (BCG) vaccine has been administered for nearly a century, yet reported protection against tuberculosis (TB) has varied widely across trials. We quantified the pooled effect of BCG vaccination on TB incidence and characterized the heterogeneity among randomized trials.
 
-**Objective:** To quantify the overall efficacy of BCG vaccination in preventing tuberculosis and to explore sources of heterogeneity through subgroup analysis and meta-regression.
+**Methods:** We synthesized 13 randomized controlled trials of BCG vaccine versus control comprising 357,347 participants. The effect measure was the risk ratio (RR) of TB, vaccinated versus control. We computed per-trial log risk ratios and sampling variances and pooled them with a random-effects model estimated by restricted maximum likelihood (REML). Heterogeneity was summarized by I-squared, tau-squared, and Cochran Q, and we report a 95% prediction interval. Small-study effects were assessed with Egger regression and the Begg-Mazumdar rank test, and robustness with leave-one-out analysis. Reporting followed PRISMA 2020.
 
-**Data Sources:** PubMed, Embase, and Cochrane CENTRAL were searched from inception through December 2023 without language restrictions.
+**Results:** BCG vaccination was associated with a pooled RR of 0.489 (95% CI 0.344 to 0.696), corresponding to a 51% relative reduction in TB risk. Heterogeneity was very high (I-squared 92.2%, tau-squared 0.313; Cochran Q = 152.23, df = 12, p < 0.001). The 95% prediction interval was 0.155 to 1.549. Trial-level risk ratios ranged from 0.197 to 1.562. The pooled estimate was stable in leave-one-out analysis (range 0.452 to 0.533), with every leave-one-out interval excluding 1.0. Neither Egger regression (z = -1.40, p = 0.189) nor the rank test (tau = 0.026, p = 0.952) indicated funnel asymmetry. A meta package cross-check using the Hartung-Knapp adjustment gave an identical point estimate (RR 0.489, 95% CI 0.330 to 0.726).
 
-**Study Selection:** Randomized or quasi-randomized controlled trials that compared BCG-vaccinated participants with unvaccinated controls and reported tuberculosis incidence were eligible.
+**Conclusion:** Across 13 randomized trials, BCG vaccination roughly halved the risk of tuberculosis, but the protective effect was highly heterogeneous and a prediction interval crossing 1.0 indicates that the magnitude, and occasionally the presence, of protection cannot be assumed in every future setting.
 
-**Data Extraction and Synthesis:** Two reviewers independently extracted data. Risk ratios (RR) with 95% confidence intervals (CI) were pooled using a random-effects model (restricted maximum likelihood estimator). Heterogeneity was assessed with I², Q statistic, and prediction intervals. Meta-regression was performed to evaluate the moderating effect of absolute latitude.
+**Keywords:** BCG vaccine; tuberculosis; meta-analysis; risk ratio; random-effects model
 
-**Results:** Thirteen trials (357,347 participants; 191,064 vaccinated, 166,283 controls; published 1948-1980) were included. The pooled RR was 0.489 (95% CI: 0.344-0.696), corresponding to a 51.1% risk reduction (95% CI: 30.4%-65.6%). Substantial heterogeneity was observed (I² = 92.2%, Q = 152.23, p < 0.001; tau² = 0.3132; prediction interval: 0.155-1.549). Meta-regression identified absolute latitude as a significant moderator (coefficient = -0.0291, p < 0.001), explaining 75.6% of between-study variance. No significant publication bias was detected (Egger's test p = 0.189; Begg's test p = 0.952).
+## **INTRODUCTION**
 
-**Conclusions:** BCG vaccination reduced tuberculosis risk by approximately half, with considerably greater efficacy at higher latitudes. The pronounced geographic gradient suggests that environmental mycobacterial exposure may attenuate vaccine-induced protection in tropical regions.
+Tuberculosis remains one of the leading infectious causes of death worldwide, and the bacille Calmette-Guerin (BCG) vaccine is the only licensed vaccine in routine use against it [UNVERIFIED]. First administered in the early twentieth century, BCG is now given to tens of millions of infants each year as part of national immunization programs, which makes the precise quantification of its protective effect a question of continuing public-health importance rather than only historical interest [UNVERIFIED]. Despite its long history and broad deployment, the protective efficacy reported for BCG has ranged from near-complete protection in some trials to no measurable benefit in others [UNVERIFIED]. This variability has complicated policy decisions about who should be vaccinated, at what age, and in which epidemiological settings.
 
-**Registration:** [UNVERIFIED - DEMO] PROSPERO CRD42024000000
+Several explanations for the divergent trial results have been proposed, including differences in the geographic latitude at which trials were conducted, exposure to environmental mycobacteria, the strain and dose of vaccine used, and the age and prior sensitization of the populations enrolled [UNVERIFIED]. Because these factors covary across studies, a single summary estimate may obscure as much as it reveals, and the distribution of true effects is at least as informative as the average. When between-study heterogeneity is substantial, the conventional pooled risk ratio describes the mean of that distribution but says little about its spread; a prediction interval, which estimates the range within which the effect of a future study would be expected to fall, conveys the spread directly and is therefore an essential companion to the point estimate in this setting.
 
----
+We synthesized the randomized evidence on BCG vaccination and tuberculosis with two aims: to estimate the pooled relative effect of vaccination on TB incidence under a random-effects model, and to characterize the between-trial heterogeneity, including a prediction interval that describes where the effect of a future trial would plausibly fall. This manuscript is a clean-room demonstration of the medsci-skills v3.7.0 analysis-and-writing pipeline; the included-trial data are the canonical, openly available BCG vaccine trials, and the methods reported here are exactly those executed by the pipeline.
 
-## Introduction
+## **METHODS**
 
-Tuberculosis remains a leading infectious cause of death worldwide, responsible for an estimated 1.3 million deaths annually among HIV-negative individuals. BCG vaccine, derived from an attenuated strain of Mycobacterium bovis and first administered to humans in 1921, continues to serve as the sole licensed vaccine for tuberculosis prevention. Although BCG vaccination has been incorporated into the immunization programs of over 150 countries, individual trials have reported widely divergent estimates of its protective efficacy, ranging from no detectable benefit to greater than 80% protection.
+### Study design and data source
 
-Several hypotheses have been advanced to explain this heterogeneity. The most prominent is the latitude hypothesis, which posits that exposure to environmental non-tuberculous mycobacteria (NTM) in tropical regions confers partial immunity that masks the incremental benefit of BCG vaccination. Other proposed explanations include differences in vaccine strains, variations in the virulence of prevailing Mycobacterium tuberculosis strains, differences in study methodology and participant selection, and the use of diverse allocation methods across trials.
+This was a random-effects meta-analysis of randomized controlled trials of BCG vaccine versus control for the prevention of tuberculosis, reported in accordance with the PRISMA 2020 statement [UNVERIFIED]. The trial-level data are the canonical BCG vaccine dataset assembled in a prior systematic review [UNVERIFIED], comprising 13 randomized trials. Because this is a methods demonstration rather than a de novo systematic review, the upstream record counts shown in the study-selection diagram (Figure 1) are illustrative of a typical search-and-screening cascade for this corpus and are not the yield of a new database search; the 13 included trials and all of their event counts are the genuine published trial data.
 
-The original meta-analysis by Colditz et al. (1994) synthesized evidence from 13 prospective trials and demonstrated a pooled relative risk of approximately 0.49, with latitude emerging as a significant moderator. However, the original analysis employed a DerSimonian-Laird estimator without prediction intervals, did not report meta-regression R² statistics, and predated the PRISMA reporting framework. The present re-analysis addresses these gaps by applying restricted maximum likelihood (REML) estimation, computing prediction intervals to characterize the distribution of true effects, conducting meta-regression with R² quantification, performing a complete publication bias assessment (Egger, Begg, and trim-and-fill), and reporting in accordance with PRISMA 2020 guidelines. The objective was to quantify the overall efficacy of BCG vaccination in preventing tuberculosis and to explore sources of between-study heterogeneity through subgroup analysis and meta-regression.
+### Eligibility criteria
 
-## Methods
+Trials were eligible if they met all of the following: (1) a randomized or systematically allocated comparison of BCG vaccine against an unvaccinated or placebo control; (2) ascertainment of incident tuberculosis as an outcome in both arms; and (3) reporting of the number of TB cases and the number at risk in each arm, sufficient to construct a 2x2 table.
 
-### Protocol and Registration
+### Outcome and effect measure
 
-This systematic review followed the Preferred Reporting Items for Systematic Reviews and Meta-Analyses (PRISMA) 2020 guidelines. The protocol was registered prospectively [UNVERIFIED - DEMO].
+The outcome was incident tuberculosis. The effect measure was the risk ratio (RR) of TB in the vaccinated arm relative to the control arm, with an RR below 1.0 indicating protection. For each trial we computed the log risk ratio and its sampling variance from the four cell counts (vaccinated TB-positive and TB-negative, control TB-positive and TB-negative).
 
-### Eligibility Criteria
+### Protocol and registration
 
-Eligible studies were randomized or quasi-randomized controlled trials that (a) compared BCG-vaccinated participants with unvaccinated controls and (b) reported tuberculosis incidence as an outcome. No restrictions were imposed on language, publication date, or geographic setting. Observational studies, case reports, and studies evaluating BCG revaccination were excluded.
+As a methods demonstration built on a canonical, openly available trial dataset rather than a de novo systematic review, this analysis was not prospectively registered and no review protocol was prepared. A production systematic review of this question would be registered (for example, in PROSPERO) before screening.
 
-### Information Sources and Search Strategy
+### Statistical analysis
 
-PubMed, Embase, and the Cochrane Central Register of Controlled Trials (CENTRAL) were searched from inception through December 2023. The search strategy combined MeSH terms and free-text keywords for BCG vaccination and tuberculosis (PubMed example: ("BCG Vaccine"[MeSH] OR "BCG" OR "Bacillus Calmette-Guerin") AND ("Tuberculosis"[MeSH] OR "tuberculosis") AND ("randomized controlled trial"[pt] OR "controlled clinical trial"[pt])), supplemented by manual review of reference lists from identified systematic reviews. The complete Boolean search syntax for all three databases is provided in the Supplementary Appendix.
+Per-trial log risk ratios and variances were computed with the inverse-variance approach implemented in the metafor package [UNVERIFIED]. Effects were pooled with a random-effects model fitted by restricted maximum likelihood (REML) [UNVERIFIED]. Between-trial heterogeneity was quantified by the I-squared statistic, the between-trial variance tau-squared, and Cochran Q with its p value, and we report a 95% prediction interval for the effect of a future trial. Small-study and publication-bias effects were assessed with Egger regression and the Begg-Mazumdar rank correlation test, recognizing that both tests are underpowered when fewer than 10 trials are available and are reported here for completeness with 13 trials. Robustness of the pooled estimate was examined by leave-one-out analysis. As a software cross-check, the same comparison was re-fitted with the meta package using an inverse-variance random-effects model with the Hartung-Knapp adjustment [UNVERIFIED]. All estimates are reported on the risk-ratio scale after back-transformation from the log scale. Analyses were performed in R with the metafor and meta packages; the analysis script set a fixed random seed for reproducibility.
 
-### Study Selection and Data Extraction
+## **RESULTS**
 
-Two reviewers independently screened titles and abstracts, followed by full-text assessment of potentially eligible records. Discrepancies were resolved by consensus. A standardized extraction form captured trial identifier, first author, publication year, number of events and participants in each arm, absolute latitude of the study site, and allocation method (random, alternate, or systematic).
+### Included trials and participants
 
-### Risk of Bias Assessment
+Thirteen randomized trials contributed to the meta-analysis, together enrolling 357,347 participants across the vaccinated and control arms (Figure 1). Trial-level risk ratios ranged from 0.197 to 1.562 (Table 1). Eleven of the 13 trials had a point estimate below 1.0, and in 8 trials the 95% confidence interval excluded 1.0 in the protective direction.
 
-Risk of bias was assessed using the Cochrane Risk of Bias tool. Allocation concealment, blinding, and completeness of follow-up were evaluated for each trial. Individual study risk of bias assessments using the Cochrane Risk of Bias tool were planned but not completed for this demonstration analysis. In a full systematic review, a traffic-light summary and risk of bias table would be mandatory.
+### Pooled effect
 
-### Statistical Analysis
+Under the random-effects REML model, BCG vaccination was associated with a pooled risk ratio of 0.489 (95% CI 0.344 to 0.696), corresponding to a 51% relative reduction in the risk of tuberculosis (Figure 2). The independent cross-check using the meta package with the Hartung-Knapp adjustment produced the same point estimate (RR 0.489) with a wider confidence interval (0.330 to 0.726), as expected for that variance estimator with a small number of trials.
 
-Risk ratios with 95% CIs were calculated for each trial using the Mantel-Haenszel method. Effect sizes were log-transformed for pooling. A random-effects model with the restricted maximum likelihood (REML) estimator was used to compute the pooled effect. Heterogeneity was quantified using the Q statistic, I² statistic, tau², and 95% prediction intervals. Subgroup analysis was performed by allocation method (random, alternate, systematic). Meta-regression was conducted with absolute latitude as a continuous moderator, reporting the regression coefficient, its standard error, p-value, and R² (proportion of heterogeneity explained).
+### Heterogeneity
 
-Sensitivity analysis included leave-one-out analysis to assess the influence of individual studies and externally studentized residuals to identify influential observations. Publication bias was evaluated using funnel plot inspection, Egger's regression test, Begg's rank correlation test, and trim-and-fill analysis. All analyses were performed in R version 4.5.3 using the metafor (version 4.8.0) and meta (version 8.2.1) packages. Statistical significance was set at a two-sided alpha of 0.05.
+Between-trial heterogeneity was very high. The I-squared statistic was 92.2%, the between-trial variance tau-squared was 0.313, and Cochran Q was 152.23 (df = 12, p < 0.001). The 95% prediction interval for a future trial spanned 0.155 to 1.549, crossing 1.0.
 
-## Results
+### Small-study effects and sensitivity analyses
 
-### Study Selection
+Egger regression did not indicate funnel asymmetry (z = -1.40, p = 0.189), and the Begg-Mazumdar rank test was likewise non-significant (tau = 0.026, p = 0.952) (Figure 3). In the leave-one-out analysis, the pooled risk ratio remained between 0.452 and 0.533 regardless of which single trial was omitted, and every leave-one-out confidence interval excluded 1.0; the I-squared statistic stayed between 87.0% and 93.2%.
 
-The database search identified 847 records, supplemented by 42 records from other sources (note: screening numbers in this PRISMA flow are constructed for demonstration purposes and do not reflect an actual systematic search). After removal of 277 duplicates, 612 records were screened at the title and abstract level, of which 71 proceeded to full-text assessment. Fifty-eight articles were excluded for the following reasons: not a randomized or quasi-randomized trial (n = 23), no tuberculosis outcome (n = 14), duplicate population (n = 11), or insufficient data (n = 10). Thirteen trials met all eligibility criteria and were included in the quantitative synthesis (Figure 1).
+## **DISCUSSION**
 
-### Study Characteristics
+Across 13 randomized trials enrolling more than 350,000 participants, BCG vaccination roughly halved the risk of tuberculosis, with a pooled risk ratio of 0.489. The protective direction was consistent in most trials, and the pooled estimate was insensitive to the removal of any single trial, which argues against any individual study driving the result.
 
-The 13 included trials were published between 1948 and 1980 and enrolled a total of 357,347 participants (191,064 in the vaccination arm; 166,283 in the control arm). Seven trials used random allocation, two used alternate allocation, and four used systematic allocation. Study sites spanned latitudes from 13° to 55° absolute.
+The defining feature of this evidence base is its heterogeneity rather than its average. An I-squared of 92.2% means that almost all of the observed variation in trial results reflects genuine differences in the underlying effect rather than sampling error, and the prediction interval makes the practical consequence concrete: although the average effect is clearly protective, the effect in a new setting could plausibly range from very strong protection to no protection at all. A summary risk ratio is therefore an incomplete description of what BCG does, and the prediction interval should accompany it whenever the pooled estimate is quoted. This distinction matters for how the result is communicated to policymakers, because a headline relative reduction of roughly one half is accurate as an average yet would overstate the certainty of benefit for any one program.
 
-### Overall Efficacy
+Reported correlates of this variability include trial latitude and the local prevalence of environmental mycobacteria, which can prime or mask vaccine-induced immunity, as well as differences in vaccine strain, dose, and the age at which participants were vaccinated [UNVERIFIED]. Formal subgroup or meta-regression analysis of those moderators, particularly latitude, is a natural extension that could partition the heterogeneity into explained and residual components, but it was outside the scope of this demonstration. The agreement between the two software implementations, which differed only in the variance estimator used for the confidence interval and returned an identical point estimate, indicates that the pooled result is a property of the data rather than of any single package or default setting.
 
-The pooled risk ratio from the random-effects model was 0.489 (95% CI: 0.344-0.696; p < 0.001), indicating that BCG vaccination reduced the risk of tuberculosis by 51.1% (95% CI: 30.4%-65.6%) (Figure 2). Substantial heterogeneity was observed (I² = 92.2%; Q = 152.23, df = 12, p < 0.001; tau² = 0.3132). The 95% prediction interval ranged from 0.155 to 1.549, indicating that the true effect in a new study setting could range from substantial protection to a modest increase in risk.
+The non-significant small-study tests should be interpreted cautiously. With only 13 trials, both Egger regression and the rank correlation test have limited power, so the absence of detected asymmetry is weak evidence against publication or small-study bias rather than its exclusion. The funnel plot is presented as a visual companion to these tests, but it carries the same caveat: with so few trials and such wide between-trial variance, apparent symmetry is reassuring only at the margin.
 
-### Subgroup Analysis
+For practice, the implication is that BCG can be expected to reduce tuberculosis incidence at the population level, and the consistency of the protective direction across most trials supports its continued use where the disease burden is high. The accompanying message, equally important, is that the expected size of that benefit should be estimated locally rather than borrowed wholesale from the pooled average, because the same analysis that establishes protection on average also establishes that the effect is setting-dependent. Decisions about extending, modifying, or revaccinating with BCG in a particular program are therefore better informed by the prediction interval and by the moderators of efficacy than by the summary risk ratio alone.
 
-Subgroup analysis by allocation method revealed the following pooled estimates: random allocation (k = 7), RR = 0.379 (95% CI: 0.221-0.650, I² = 89.9%); alternate allocation (k = 2), RR = 0.582 (95% CI: 0.335-1.011, I² = 82.0%); and systematic allocation (k = 4), RR = 0.654 (95% CI: 0.323-1.324, I² = 86.4%). The test for subgroup differences was not statistically significant (QM = 1.77, df = 2, p = 0.413), and the moderator explained none of the between-study variance (R² = 0%).
+This work has limitations. First, it is a methods demonstration built on a single, canonical trial dataset, and the upstream study-selection counts are illustrative rather than the product of a fresh, comprehensive search; the pooled estimate should not be read as an updated clinical recommendation. Second, the marked heterogeneity was characterized but not explained, because moderator analyses were not undertaken. Third, the trials span several decades and diverse populations, and differences in vaccine strain, dose, and case ascertainment that contribute to the heterogeneity could not be adjusted for at the aggregate level.
 
-### Meta-Regression
+In summary, the randomized evidence indicates that BCG vaccination substantially reduces tuberculosis risk on average, but the protection is highly variable across settings, and a prediction interval that crosses the null shows that neither the size nor, in some contexts, the presence of benefit can be assumed for any individual future population.
 
-Meta-regression with absolute latitude as a continuous moderator was statistically significant (coefficient = -0.0291, SE = 0.0072, p < 0.001), explaining 75.6% of the between-study heterogeneity (R² = 75.6%). The residual I² decreased from 92.2% to 68.4% after accounting for latitude. Trials conducted at higher latitudes demonstrated greater vaccine efficacy (Figure 3).
+## Tables
 
-### Sensitivity Analysis
-
-Leave-one-out analysis demonstrated that no single study altered the pooled estimate to a degree that would change the direction or statistical significance of the overall finding. Pooled RR values ranged from 0.452 (omitting TPT Madras 1980) to 0.533 (omitting Hart & Sutherland 1977). No study was identified as influential based on externally studentized residuals (all |rstudent| < 2).
-
-### Publication Bias
-
-Egger's regression test (t = -1.40, p = 0.189) and Begg's rank correlation test (tau = 0.026, p = 0.952) detected no statistically significant funnel plot asymmetry (Figure 4). Trim-and-fill analysis identified one potentially missing study on the right side of the funnel, yielding an adjusted pooled RR of 0.518 (95% CI: 0.365-0.736), which remained statistically significant.
-
-## Discussion
-
-This meta-analysis of 13 randomized controlled trials demonstrated that BCG vaccination reduced tuberculosis risk by approximately 51%, with a pooled risk ratio of 0.489 (95% CI: 0.344-0.696). The protective effect was stable across sensitivity analyses, and no individual study exerted undue influence on the summary estimate. Publication bias was not detected by formal statistical tests.
-
-The most notable finding was the pronounced geographic gradient in vaccine efficacy. Meta-regression identified absolute latitude as a potent moderator, explaining 75.6% of between-study heterogeneity. Trials conducted closer to the equator consistently reported lower protective efficacy, consistent with the hypothesis that environmental NTM exposure in tropical regions provides cross-reactive immunity that attenuates the incremental benefit of BCG vaccination. This finding aligns with the landmark analysis by Colditz et al. and has been corroborated by ecological studies demonstrating higher NTM prevalence at lower latitudes.
-
-Subgroup analysis by allocation method did not reveal statistically significant differences, suggesting that variations in randomization procedures did not systematically bias the findings. The prediction interval (0.155-1.549) warrants particular attention because its upper bound exceeds unity, meaning that a new trial conducted in a different setting could plausibly observe no protective benefit or even a slight increase in tuberculosis risk among vaccinated individuals. This has direct policy implications: national immunization programs in low-latitude regions cannot rely on the pooled estimate alone to justify BCG vaccination for tuberculosis prevention, and the expected benefit in any individual setting remains uncertain despite the favorable overall average.
-
-A formal GRADE certainty-of-evidence assessment was not performed, which limits the strength of recommendations that can be drawn from this analysis. The overall certainty of evidence is likely low given the high between-study heterogeneity and observational nature of most included studies.
-
-The most consequential limitation is the age of the evidence base: the included trials were conducted between 1948 and 1980, and the epidemiology of tuberculosis has evolved considerably in the intervening decades. Second, the dataset does not capture information on BCG strain, which may contribute to between-study variability. Third, the prediction interval crossing unity indicates persistent uncertainty regarding the expected effect in any individual new setting. Fourth, assessment of additional moderators was limited by the small number of included studies (k = 13).
-
-In conclusion, BCG vaccination reduced tuberculosis risk by approximately half across 13 randomized trials encompassing over 350,000 participants. The geographic latitude of the study site was the dominant source of heterogeneity, consistent with the environmental mycobacteria hypothesis. These findings support the continued use of BCG vaccination, particularly in higher-latitude settings, while highlighting the need for next-generation tuberculosis vaccines with more consistent efficacy across geographic regions.
-
-## References
-
-1. Colditz GA, Brewer TF, Berkey CS, et al. Efficacy of BCG vaccine in the prevention of tuberculosis: meta-analysis of the published literature. JAMA. 1994;271(9):698-702. [UNVERIFIED - DEMO]
-2. World Health Organization. Global Tuberculosis Report 2023. Geneva: WHO; 2023. [UNVERIFIED - DEMO]
-3. Mangtani P, Abubakar I, Ariti C, et al. Protection by BCG vaccine against tuberculosis: a systematic review of randomised controlled trials. Clin Infect Dis. 2014;58(4):470-480. [UNVERIFIED - DEMO]
-4. Fine PEM. Variation in protection by BCG: implications of and for heterologous immunity. Lancet. 1995;346(8986):1339-1345. [UNVERIFIED - DEMO]
-5. Roy A, Eisenhut M, Harris RJ, et al. Effect of BCG vaccination against Mycobacterium tuberculosis infection in children: systematic review and meta-analysis. BMJ. 2014;349:g4643. [UNVERIFIED - DEMO]
+Table 1. Per-trial event counts and risk ratios for tuberculosis, BCG-vaccinated versus control, in the 13 included randomized trials. Risk ratios and 95% confidence intervals are derived from the four cell counts of each trial (vaccinated TB-positive and TB-negative; control TB-positive and TB-negative). Source: analysis/tables/per_study_escalc.csv.
 
 ## Figure Legends
 
-**Figure 1.** PRISMA 2020 flow diagram of study selection. Thirteen randomized controlled trials met all eligibility criteria.
+Figure 1. PRISMA 2020 study-selection flow diagram. The diagram terminates in the 13 randomized trials (357,347 participants) included in the meta-analysis. Upstream record counts are illustrative of a typical identification-and-screening cascade for this corpus in this methods demonstration and are not the yield of a new database search.
 
-**Figure 2.** Forest plot of BCG vaccine efficacy. Risk ratios with 95% confidence intervals are shown for each trial, with the pooled estimate from the random-effects model (diamond). I² = 92.2%.
+Figure 2. Random-effects (REML) forest plot of the risk ratio of tuberculosis, BCG-vaccinated versus control, across 13 randomized trials. Squares are trial-level risk ratios sized by inverse-variance weight; horizontal lines are 95% confidence intervals; the diamond is the pooled random-effects estimate (RR 0.489, 95% CI 0.344 to 0.696). The vertical dashed line marks the null value of one.
 
-**Figure 3.** Meta-regression bubble plot of absolute latitude versus log risk ratio. Each circle represents a study, sized proportionally to the inverse of its variance. The regression line and 95% prediction band are shown. R² = 75.6%.
-
-**Figure 4.** Funnel plot of standard error versus log risk ratio. Open circles represent observed studies; the filled circle represents the single study imputed by trim-and-fill analysis.
+Figure 3. Funnel plot of the trial-level log risk ratio against its standard error, used to assess small-study effects. Egger regression z = -1.40, p = 0.189; Begg-Mazumdar rank test tau = 0.026, p = 0.952.

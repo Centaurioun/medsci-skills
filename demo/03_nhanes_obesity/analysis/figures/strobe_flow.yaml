@@ -1,0 +1,45 @@
+# STROBE cross-sectional flow diagram — NHANES 2017-2018 obesity<->diabetes
+# Counts traced to analysis/tables/exclusion_cascade.csv (no fabricated values).
+title: "NHANES 2017-2018 analytic sample selection (STROBE)"
+rankdir: TB
+nodes:
+  - id: source
+    label: "NHANES 2017-2018 participants\n(DEMO_J, N = 9,254)"
+  - id: adults
+    label: "Adults aged >= 20 years\nN = 5,569"
+  - id: excl1
+    shape: note
+    fontsize: 10
+    label: "Excluded (n = 3,685):\n- Age < 20 years"
+    rank_same_with: adults
+  - id: bmi
+    label: "With measured BMI\nN = 5,175"
+  - id: excl2
+    shape: note
+    fontsize: 10
+    label: "Excluded (n = 394):\n- Missing BMI (BMXBMI)"
+    rank_same_with: bmi
+  - id: dmstatus
+    label: "Valid self-reported diabetes status\n(DIQ010 = Yes/No)\nN = 5,010"
+  - id: excl3
+    shape: note
+    fontsize: 10
+    label: "Excluded (n = 165):\n- Borderline/refused/unknown\n  diabetes status"
+    rank_same_with: dmstatus
+  - id: analytic
+    label: "Analytic sample\n(positive MEC exam weight)\nN = 5,010"
+    highlight: true
+  - id: obese
+    label: "Obese (BMI >= 30)\nn = 2,090"
+  - id: nonobese
+    label: "Non-obese (BMI < 30)\nn = 2,920"
+edges:
+  - {from: source, to: adults}
+  - {from: adults, to: bmi}
+  - {from: bmi, to: dmstatus}
+  - {from: dmstatus, to: analytic}
+  - {from: analytic, to: obese}
+  - {from: analytic, to: nonobese}
+  - {from: adults,   to: excl1, style: dashed, arrow: false, constraint: false}
+  - {from: bmi,      to: excl2, style: dashed, arrow: false, constraint: false}
+  - {from: dmstatus, to: excl3, style: dashed, arrow: false, constraint: false}

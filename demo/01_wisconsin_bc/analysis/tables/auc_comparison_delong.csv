@@ -1,0 +1,4 @@
+Model_A,Model_B,AUC_A,AUC_B,DeLong_p
+Logistic Regression,Random Forest,0.998,0.996,0.554
+Logistic Regression,SVM (RBF),0.998,0.997,0.800
+Random Forest,SVM (RBF),0.996,0.997,0.640

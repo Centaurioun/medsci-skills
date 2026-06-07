@@ -1,42 +1,50 @@
 # Title Page
 
-**Title:** Machine Learning Classification of Breast Cancer Using Fine-Needle Aspiration Cytology Features: A Diagnostic Accuracy Study
+## Title
 
-**Short title:** ML Classification of Breast Cancer FNA Cytology
+Diagnostic accuracy of three machine-learning classifiers for distinguishing malignant from benign breast masses on fine-needle aspirate cytomorphometry
 
-**Authors:**
+## Running title
 
-1. [Author Name], [Degree(s)], [Department], [Institution], [City], [Country]
-2. [Author Name], [Degree(s)], [Department], [Institution], [City], [Country]
+ML classifier diagnostic accuracy on breast FNA
 
-**Corresponding author:**
-[Author Name], [Degree(s)]
-[Department], [Institution]
-[Address]
-[Email] | [Phone]
+## Authors
 
-**Word count:** ~1,900 (excluding abstract, references, figure legends)
+Demonstration Author¹
 
-**Abstract word count:** ~280
+¹ medsci-skills v3.7.0 pipeline demonstration (DEMO 1, clean-room regeneration)
 
-**Number of tables:** 3
+## Corresponding author
 
-**Number of figures:** 3
+Demonstration Author (placeholder)
 
-**Number of references:** [N]
+## Article type
 
-**Key Points:**
+Original article — diagnostic accuracy study (STARD 2015)
 
-- Three machine learning classifiers achieved AUC values exceeding 0.99 for FNA-based breast cancer classification.
-- SVM achieved the highest accuracy (0.974) with perfect specificity (1.000).
-- Pairwise AUC comparisons showed no statistically significant differences among classifiers.
+## Word count
 
-**Reporting guideline:** STARD 2015
+- Abstract: structured (Background / Objective / Methods / Results / Conclusion)
+- Main text (Introduction through Discussion): approximately 1,150 words
 
-**Funding:** [Funding source or "None"]
+## Keywords
 
-**Conflicts of interest:** [COI statement or "The authors declare no conflicts of interest."]
+breast cancer; fine-needle aspiration; diagnostic accuracy; machine learning; logistic regression; STARD
 
-**Data availability:** The Wisconsin Breast Cancer dataset is publicly available via scikit-learn (`sklearn.datasets.load_breast_cancer`).
+## Funding
 
-**Ethics statement:** This study used a publicly available, de-identified dataset and did not require institutional review board approval.
+None (methods demonstration; no funding).
+
+## Conflicts of interest
+
+None declared.
+
+## Reporting guideline
+
+STARD 2015 (diagnostic accuracy).
+
+## Artificial-intelligence-use disclosure
+
+During preparation of this demonstration manuscript, the authors used Claude Opus 4.8 (Anthropic), accessed through the Claude Code command-line interface (API channel), during 2026-06 to run the medsci-skills v3.7.0 reproducible-reporting pipeline (figure generation, drafting, reporting-checklist scoring, and self-review). All quantitative claims were verified against committed analysis tables, and the authors take full responsibility for the content. Generative AI was not used to create, modify, or fabricate any data, statistical result, or figure; every number traces to a committed analysis artifact.
+
+> Note: this disclosure paragraph is placed on the title page, not in the manuscript body, per the classical-style convention (in-body AI-disclosure paragraphs are flagged). It carries version (Opus 4.8), access channel (Claude Code CLI / API), date range (2026-06), and responsible party (the authors).

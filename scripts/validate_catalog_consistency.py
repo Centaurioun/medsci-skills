@@ -37,11 +37,20 @@ def disk_counts() -> dict[str, int]:
     checklists = len(list((ROOT / "skills" / "check-reporting" / "references" / "checklists").glob("*.md")))
     find_prof = len(list((ROOT / "skills" / "find-journal" / "references" / "journal_profiles").glob("*.md")))
     write_prof = len(list((ROOT / "skills" / "write-paper" / "references" / "journal_profiles").glob("*.md")))
+    # Deterministic, stdlib-only analysis-integrity detectors living inside skills/
+    # (check_*/detect_*/derive_*/verify_refs). Excludes top-level repo-CI validators
+    # (validate_*.py in scripts/) and host/format validators (validate_schema.py,
+    # validate_pptx_mac_compat.py), which are not manuscript-integrity gates.
+    detector_globs = ("check_*.py", "detect_*.py", "derive_*.py", "verify_refs.py")
+    detectors = len({
+        str(p) for g in detector_globs for p in (ROOT / "skills").glob(f"*/scripts/{g}")
+    })
     return {
         "skills": skills,
         "reporting_guidelines": checklists,
         "journal_profiles_find": find_prof,
         "journal_profiles_write": write_prof,
+        "integrity_detectors": detectors,
     }
 
 

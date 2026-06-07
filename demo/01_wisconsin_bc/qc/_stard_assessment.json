@@ -1,0 +1,194 @@
+{
+  "guideline": "STARD 2015",
+  "items": [
+    {
+      "num": "1",
+      "section": "Title",
+      "status": "PRESENT",
+      "note": "Title identifies a diagnostic-accuracy study and names accuracy measures (sensitivity/specificity/AUC implied via 'diagnostic accuracy ... classifiers')."
+    },
+    {
+      "num": "2",
+      "section": "Abstract",
+      "status": "PRESENT",
+      "note": "Structured abstract: design, participants, index tests, reference standard, N, accuracy estimates with 95% CIs, conclusions."
+    },
+    {
+      "num": "3",
+      "section": "Scientific background",
+      "status": "PRESENT",
+      "note": "Intro gives clinical background of FNA and intended discriminative use."
+    },
+    {
+      "num": "4",
+      "section": "Objectives",
+      "status": "PRESENT",
+      "note": "Intro states two explicit aims (accuracy estimation + classifier comparison)."
+    },
+    {
+      "num": "5",
+      "section": "Study design",
+      "status": "PARTIAL",
+      "note": "Analysis is retrospective on a fixed public benchmark; 'held-out test set' design stated, but the prospective/retrospective label is not given verbatim (benchmark has no data-collection timing)."
+    },
+    {
+      "num": "6",
+      "section": "Eligibility criteria",
+      "status": "PARTIAL",
+      "note": "Dataset/source and feature set described; classic inclusion/exclusion criteria and clinical setting do not apply to a curated benchmark and are not stated as such."
+    },
+    {
+      "num": "7",
+      "section": "Sampling",
+      "status": "PARTIAL",
+      "note": "Stratified random train/test split described; original consecutive/random/convenience series of the source cohort not characterized (benchmark provenance)."
+    },
+    {
+      "num": "8a",
+      "section": "Index test",
+      "status": "PRESENT",
+      "note": "Three index tests fully specified (model family, 400 trees, RBF kernel, standardization fit on train only, probability output) -- replicable with code + seed."
+    },
+    {
+      "num": "8b",
+      "section": "Reference standard",
+      "status": "PRESENT",
+      "note": "Reference standard = histopathologic diagnosis (malignant/benign), stated in Methods + Abstract."
+    },
+    {
+      "num": "9",
+      "section": "Rationale for reference standard",
+      "status": "PARTIAL",
+      "note": "Histopathology used as the diagnostic gold standard; rationale is implicit (no alternative considered/justified)."
+    },
+    {
+      "num": "10a",
+      "section": "Index cut-off pre-specification",
+      "status": "PRESENT",
+      "note": "0.5 probability threshold pre-specified; Youden alternative reported and labeled as alternative operating threshold."
+    },
+    {
+      "num": "10b",
+      "section": "Reference cut-off pre-specification",
+      "status": "N/A",
+      "note": "Reference standard is a binary histopathologic diagnosis; no cut-off applies."
+    },
+    {
+      "num": "11",
+      "section": "Blinding",
+      "status": "N/A",
+      "note": "No human readers; index tests are deterministic given the held-out features. Train/test separation prevents leakage; blinding in the STARD sense does not apply to an automated classifier on a labeled benchmark."
+    },
+    {
+      "num": "12",
+      "section": "Additional analyses",
+      "status": "PRESENT",
+      "note": "Methods specify AUC with DeLong CIs, Wilson CIs for proportions, Brier calibration, and pairwise DeLong comparison of AUCs."
+    },
+    {
+      "num": "13",
+      "section": "Sample size",
+      "status": "PARTIAL",
+      "note": "Test n=171 from a 70/30 split is stated, but no formal power/precision justification is given."
+    },
+    {
+      "num": "14",
+      "section": "Dates and setting",
+      "status": "N/A",
+      "note": "Public benchmark dataset; recruitment dates/setting do not apply and are unavailable."
+    },
+    {
+      "num": "15",
+      "section": "Demographics",
+      "status": "PARTIAL",
+      "note": "Class-level feature characteristics (Table-1-style means/SDs/SMDs) reported; patient demographics (age/sex) are absent from the benchmark."
+    },
+    {
+      "num": "16",
+      "section": "Participant numbers",
+      "status": "PRESENT",
+      "note": "N=569 -> train 398 / test 171; malignant/benign counts given; STARD flow diagram provided (Figure 1)."
+    },
+    {
+      "num": "17",
+      "section": "Time interval",
+      "status": "N/A",
+      "note": "Index test and reference standard are computed/recorded simultaneously on the same archived sample; no time interval applies."
+    },
+    {
+      "num": "18",
+      "section": "Distribution of severity",
+      "status": "PARTIAL",
+      "note": "Distribution by class is described via feature SMDs; disease severity spectrum / alternative diagnoses not characterized (benchmark has only binary label)."
+    },
+    {
+      "num": "19",
+      "section": "Cross-tabulation",
+      "status": "PRESENT",
+      "note": "2x2 cross-tabulation reported: TP/FP/FN/TN for the logistic-regression index test (Figure 1 + Results) and confusion matrices for all three (Figure 3)."
+    },
+    {
+      "num": "20",
+      "section": "Adverse events",
+      "status": "N/A",
+      "note": "Retrospective computational analysis; no procedures performed, no adverse events possible."
+    },
+    {
+      "num": "21",
+      "section": "Accuracy estimates",
+      "status": "PRESENT",
+      "note": "AUC with DeLong 95% CIs and Sens/Spec/PPV/NPV/Acc with Wilson CIs reported per index test."
+    },
+    {
+      "num": "22",
+      "section": "Handling of indeterminate",
+      "status": "N/A",
+      "note": "No indeterminate results: every probability maps to positive/negative at the threshold; dataset has no missing labels/features."
+    },
+    {
+      "num": "23",
+      "section": "Subgroup analyses",
+      "status": "N/A",
+      "note": "No subgroup analyses performed; none claimed. (Single comparison across the three index tests.)"
+    },
+    {
+      "num": "24",
+      "section": "Study limitations",
+      "status": "PRESENT",
+      "note": "Discussion explicitly states single-source benchmark, high prevalence, no external validation, conventional threshold, and the unverified-references/methods-demo caveat."
+    },
+    {
+      "num": "25",
+      "section": "Clinical applicability",
+      "status": "PRESENT",
+      "note": "Discussion states intended interpretive role and explicitly bounds clinical applicability (not transportable; methods demo)."
+    },
+    {
+      "num": "26",
+      "section": "Registration",
+      "status": "MISSING",
+      "note": "No registration number; benchmark re-analysis is not registered (note: registration is increasingly expected)."
+    },
+    {
+      "num": "27",
+      "section": "Protocol",
+      "status": "PARTIAL",
+      "note": "Full analysis code + reproducibility lock accompany the demo (Data Availability), but no separately accessible study protocol is cited."
+    },
+    {
+      "num": "28",
+      "section": "Funding",
+      "status": "PRESENT",
+      "note": "Funding statement present on title page ('None')."
+    }
+  ],
+  "counts": {
+    "PRESENT": 14,
+    "PARTIAL": 8,
+    "MISSING": 1,
+    "NA": 7
+  },
+  "applicable": 23,
+  "present": 14,
+  "compliance_pct": 60.9
+}

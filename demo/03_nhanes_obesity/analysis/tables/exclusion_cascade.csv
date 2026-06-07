@@ -1,0 +1,10 @@
+step,n
+Total NHANES 2017-2018 participants (DEMO_J),9254
+Excluded: age < 20 years,3685
+Adults aged >= 20 years,5569
+Excluded: missing BMI (BMXBMI),394
+With measured BMI,5175
+"Excluded: diabetes status borderline/refused/unknown/missing (DIQ010 not in {1,2})",165
+With valid self-reported diabetes status,5010
+Excluded: non-positive MEC exam weight (WTMEC2YR <= 0),0
+FINAL analytic sample,5010
