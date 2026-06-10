@@ -215,6 +215,14 @@ The E2E pipeline (`orchestrate --e2e`) produces everything up to `qc/`. The `sub
 
 ## What's New
 
+**v4.1** ships distribution levers and a submission pre-flight gate — analysis-integrity detectors **24 → 25** (still 43 skills):
+
+- **Claude Code plugin marketplace** — `/plugin marketplace add Aperivue/medsci-skills`, then `/plugin` discovery of eight `medsci-*` category plugins generated from the catalog SSOT (`.claude-plugin/marketplace.json`).
+- **MedSci-Audit detector registry** — the deterministic verification layer is now a named, enumerated, citable suite ([`MEDSCI_AUDIT.md`](MEDSCI_AUDIT.md) + generated `metadata/detectors_catalog.json`, six audit families).
+- **Hero-skill standalone mirrors** — `scripts/sync_hero_skill.py` mirrors a focused skill to its own star-funnel repo; first two live: [`Aperivue/verify-refs`](https://github.com/Aperivue/verify-refs) and [`Aperivue/check-reporting`](https://github.com/Aperivue/check-reporting).
+- **Placeholder/marker gate** — `check_placeholders.py` flags leftover `[@NEW:]` / `[version]` / `TODO` / template-URL markers before submission (the 25th detector).
+- **Submission pre-flight gate** — `preflight_gate.py` bundles the existing detectors + `/verify-refs` into one halt-on-failure command (`qc/preflight_gate_report.json`, non-zero exit on any blocker) — the single last step before freeze.
+
 **v4.0** extends the project's own deterministic, no-drift SSOT discipline to the public storefront and finishes the detector backlog — bringing the analysis-integrity detector count in `skills/` to **24** (still 43 skills):
 
 - **SSOT to the storefront** — a generated, machine-readable `metadata/skills_catalog.json` (slug + research-lifecycle category + one-line description per skill) is now the source the [aperivue.com](https://aperivue.com/en/skills) storefront vendors, gated offline so the public site can never silently drift behind the repo (`gen_skills_catalog_json.py --check`).
