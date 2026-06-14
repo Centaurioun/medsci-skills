@@ -1,7 +1,7 @@
 ---
 name: check-reporting
-description: Check manuscript compliance with medical research reporting guidelines. Supports 35 guidelines including STROBE, CONSORT, CONSORT-AI, STARD, STARD-AI, TRIPOD, TRIPOD+AI, TRIPOD-LLM, ARRIVE, PRISMA, PRISMA-DTA, PRISMA-P, CARE, SPIRIT, SPIRIT-AI, CLAIM, MI-CLEAR-LLM, SQUIRE 2.0, CLEAR, MOOSE, GRRAS, SWiM, AMSTAR 2, and risk of bias tools (QUADAS-2, QUADAS-C, RoB 2, ROBINS-I, ROBINS-E, ROBIS, ROB-ME, PROBAST, PROBAST+AI, NOS, COSMIN, RoB NMA). Generates item-by-item assessment with PRESENT/MISSING/PARTIAL status.
-triggers: checklist, reporting guideline, STROBE, CONSORT, CONSORT-AI, STARD, STARD-AI, TRIPOD, TRIPOD-LLM, PRISMA, PRISMA-DTA, PRISMA-P, ARRIVE, CARE, CLAIM, MI-CLEAR-LLM, SPIRIT, SPIRIT-AI, QUADAS, QUADAS-C, RoB, ROBINS, ROBINS-E, ROBIS, ROB-ME, PROBAST, NOS, COSMIN, AMSTAR, SWiM, risk of bias, compliance check, LLM accuracy, large language model
+description: Check manuscript compliance with medical research reporting guidelines. Supports 36 guidelines including STROBE, CONSORT, CONSORT-AI, STARD, STARD-AI, TRIPOD, TRIPOD+AI, TRIPOD-LLM, ARRIVE, PRISMA, PRISMA-DTA, PRISMA-P, CARE, SPIRIT, SPIRIT-AI, CLAIM, DECIDE-AI, MI-CLEAR-LLM, SQUIRE 2.0, CLEAR, MOOSE, GRRAS, SWiM, AMSTAR 2, and risk of bias tools (QUADAS-2, QUADAS-C, RoB 2, ROBINS-I, ROBINS-E, ROBIS, ROB-ME, PROBAST, PROBAST+AI, NOS, COSMIN, RoB NMA). Generates item-by-item assessment with PRESENT/MISSING/PARTIAL status.
+triggers: checklist, reporting guideline, STROBE, CONSORT, CONSORT-AI, STARD, STARD-AI, TRIPOD, TRIPOD-LLM, PRISMA, PRISMA-DTA, PRISMA-P, ARRIVE, CARE, CLAIM, DECIDE-AI, MI-CLEAR-LLM, SPIRIT, SPIRIT-AI, QUADAS, QUADAS-C, RoB, ROBINS, ROBINS-E, ROBIS, ROB-ME, PROBAST, NOS, COSMIN, AMSTAR, SWiM, risk of bias, compliance check, LLM accuracy, large language model, clinical deployment
 tools: Read, Write, Edit, Bash, Grep, Glob
 model: inherit
 ---
@@ -41,6 +41,7 @@ compliance report suitable for journal submission.
   - `SPIRIT.md` -- clinical trial protocols, SPIRIT 2025 (CC BY 4.0, Chan et al. BMJ 2025)
   - `SPIRIT_AI.md` -- AI clinical-trial protocols, SPIRIT-AI 2020 (CC BY 4.0, Cruz Rivera et al. Nat Med 2020)
   - `CLAIM_2024.md` -- AI/ML in clinical imaging, CLAIM 2024 Update (RSNA open access, Tejani et al. Radiol Artif Intell 2024)
+  - `DECIDE_AI.md` -- early-stage clinical evaluation of AI decision-support systems, DECIDE-AI 2022 (educational summary, CC BY-NC, Vasey et al. Nat Med 2022)
   - `MI_CLEAR_LLM.md` -- LLM accuracy studies in healthcare (CC BY-NC 4.0, Park et al. KJR 2024; 2025 update)
   - `SQUIRE_2.md` -- quality improvement in healthcare/education (CC BY, Ogrinc et al. BMJ Qual Saf 2016)
   - `CLEAR.md` -- radiomics studies (CC BY 4.0, Kocak et al. Insights Imaging 2023)
@@ -106,6 +107,7 @@ user specification.
 | Animal study | ARRIVE 2.0 | -- |
 | AI/ML study in clinical imaging | CLAIM 2024 | -- |
 | Study using a large language model (develop/fine-tune/prompt/evaluate an LLM) | TRIPOD-LLM | MI-CLEAR-LLM (use alongside when LLM accuracy is an outcome) |
+| Early-stage / live clinical evaluation of an AI decision-support system (human factors, workflow, safety) | DECIDE-AI | -- |
 | LLM accuracy evaluation in healthcare | MI-CLEAR-LLM | STARD-AI or CLAIM 2024 (use alongside) |
 | Reliability / agreement study | GRRAS | -- |
 | SR protocol | PRISMA-P | -- |

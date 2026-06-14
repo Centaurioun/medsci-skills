@@ -54,6 +54,7 @@ ALIAS_TO_STEM = {
     "spirit": "SPIRIT",
     "spiritai": "SPIRIT_AI",
     "claim": "CLAIM_2024",
+    "decideai": "DECIDE_AI",
     "miclearllm": "MI_CLEAR_LLM",
     "squire": "SQUIRE_2",
     "clear": "CLEAR",

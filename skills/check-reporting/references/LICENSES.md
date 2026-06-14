@@ -24,6 +24,7 @@ Attribution for bundled reporting guideline checklists.
 | SPIRIT.md | SPIRIT 2025 | Chan AW et al. BMJ 2025;389:e081477 | CC BY 4.0 |
 | CARE.md | CARE 2013 | Gagnier JJ et al. J Clin Epidemiol 2014;67(1):46-51 | CC BY-NC 4.0 |
 | CLAIM_2024.md | CLAIM 2024 Update | Tejani AS et al. Radiol Artif Intell 2024;6(4):e240300 | RSNA, open access |
+| DECIDE_AI.md | DECIDE-AI 2022 | Vasey B et al. Nat Med 2022;28(5):924-933 | CC BY-NC 4.0 (DECIDE-AI materials) — educational summary |
 
 These files are educational summaries of published assessment tools. The original
 checklist documents should be cited in any manuscript that uses them.
@@ -44,6 +45,10 @@ this repository's MIT license — downstream use must comply with the original t
   (© The Author(s), under exclusive licence to Springer Nature); the author-accepted
   manuscript is CC BY 4.0 via institutional rights retention. Cite Gallifant et al. 2025
   and complete the official instrument (tripod-statement.org) for a submission checklist.
+- **DECIDE_AI.md** paraphrases item *intent* in our own words (no verbatim wording). The
+  published Nature Medicine statement is subscription-access; DECIDE-AI materials carry **CC
+  BY-NC 4.0** (non-commercial). Cite Vasey et al. 2022 and complete the official DECIDE-AI
+  instrument for a submission checklist.
 
 All files remain educational summaries that cite their source; they do not relicense
 the underlying guidelines.
