@@ -44,6 +44,10 @@ stop adding marginal items there).
 | G9 | calc-sample-size | `references/justification_examples.md` — reviewer-safe sample-size justification prose per design (found via cross-skill audit; SKILL.md promised "IRB-ready justification text" but no exemplar library) | 4 | 4 | 4 | 64 | shipped (this PR) |
 | G10 | present-paper | `scripts/inject_speaker_notes.py` run-level markdown parser — general speaker notes rendered `**bold**` literally (the failure mode pptx-speaker-notes.md warns against); the parser existed only in inject_pronunciation_notes.py. Found while triaging the unmerged `present-paper-md-notes-glossary` branch (whose verify_refs/academic-aio parts were already superseded by main) | 3 | 4 | 4 | 48 | shipped (rescue PR) |
 | G11 | manage-refs | `scripts/render_pandoc.sh` had no pre-render reference audit — a direct render call could ship fabricated/mismatched citations (the master pre_submission_gate audits, but direct calls bypass it). Found while triaging the unmerged present-paper-md-notes-glossary branch | 4 | 3 | 4 | 48 | shipped (cleanup PR) |
+| G22 | check-reporting | `checklists/DECIDE_AI.md` — DECIDE-AI reporting guideline for the early-stage live clinical evaluation of AI decision-support systems (the development-to-implementation gap between offline validation and a definitive trial). No checklist covered live-deployment/human-factors/safety reporting. Found reverse-engineering the clinical-impact area | 5 | 3 | 5 | 75 | in-progress (this PR) |
+| G23 | peer-review + self-review | `domain-probes/ai_overclaiming.md` decision-impact subsection (DI1–DI5, DECIDE-AI axis) — live/prospective vs retrospective evidence, intended-use/deployment pathway, threshold + calibration/utility, workflow integration + human–computer override, safety/error capture + subgroup safety. Sharpens AO4 for the deployment-evaluation case | 4 | 3 | 4 | 48 | in-progress (this PR) |
+
+> Numbering note: G12–G21 belong to three earlier still-open sibling PRs (decision-curve+TRIPOD-LLM; AI-RCT; prospective-DTA+MRMC). This branch uses G22–G23.
 
 ## Lane status
 
