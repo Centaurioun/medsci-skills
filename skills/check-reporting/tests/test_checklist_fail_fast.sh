@@ -49,6 +49,7 @@ assert_exit "CONSORT now vendored" 0 "$(run --guideline 'CONSORT 2025')"
 assert_exit "CARE now vendored" 0 "$(run --guideline CARE)"
 assert_exit "SPIRIT now vendored" 0 "$(run --guideline 'SPIRIT 2025')"
 assert_exit "CLAIM 2024 now vendored" 0 "$(run --guideline 'CLAIM 2024')"
+assert_exit "DECIDE-AI now vendored" 0 "$(run --guideline 'DECIDE-AI')"
 
 # 2b. Advertised-but-unvendored guidelines -> exit 1 (contract violation). The AI
 #     extensions are routed in the auto-detect table but ship no checklist file.
