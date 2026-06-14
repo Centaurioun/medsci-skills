@@ -61,6 +61,28 @@ An 8-probe checklist for time-to-event outcomes and prognostic model development
 - Does every derived statistic (E-value, an sHR-vs-cause-specific-HR contrast) trace to the *declared primary* estimand, or is a supporting/non-primary estimate quoted as if it bounded the headline claim?
 - Estimand drift — a primary re-designated post-hoc, or a derived statistic computed on a non-primary estimate but presented as primary → MAJOR. Recommend reporting the pre-specified and revised models coequally, disclosing the change, and recomputing any E-value for the primary estimate. (The self-review skill automates the registration ↔ manuscript and E-value arithmetic checks as Phase 2.5f, `scripts/check_claim_artifact.py`.)
 
+## TRIPOD+AI reporting-flow probes (prediction-model studies, T1–T4)
+
+Co-apply these when the manuscript develops or validates a **multivariable prediction model** (often AI/ML), where the reporting axis is TRIPOD+AI (Collins et al. 2024) — and TRIPOD-LLM (Gallifant et al. 2025) when the model is a large language model. They check the *reporting flow* of a prediction model rather than the survival design probed in S1–S8; name the base instrument and the extension, and cite each.
+
+**T1 — Dataset / model flow (development vs validation)**:
+- Are the data partitions reported explicitly and kept separate: training, tuning/hyperparameter, internal test, and **external** validation? Is the unit (patient vs image vs record) consistent across splits?
+- Is there any leakage path — preprocessing/feature selection/threshold choice fit on pooled data, the same cohort used for tuning and evaluation, or (for an LLM) evaluation data plausibly in pretraining/prompt-development?
+- Development-only study presented as if externally validated, or an undisclosed shared-patient overlap between "development" and "validation" → MAJOR.
+
+**T2 — Performance with discrimination AND calibration**:
+- Is performance reported with uncertainty (95% CI), and does it include **both** discrimination (C-statistic/AUC) **and** calibration (plot + slope/intercept)? Discrimination alone for a model that outputs probabilities is incomplete.
+- Is a **decision-curve / net-benefit** analysis reported when the model is meant to guide an action (surveillance intensity, treatment, eligibility)? Pair calibration with the decision curve (`make-figures` `exemplar_plots/decision_curve.md`); added-value claims need the incremental-value table (`analyze-stats` `table-standards/table-types/incremental_value.md`).
+- AUC-only reporting for a probability model intended to drive a decision → MAJOR (calibration/utility missing).
+
+**T3 — Subgroup / fairness performance**:
+- Is performance reported across relevant subgroups (age, sex, site, scanner/source, and where available race/ethnicity), or is a single pooled metric the only evidence?
+- Are subgroup sample sizes adequate, and is differential performance discussed rather than buried? Absent fairness/subgroup assessment where data permit → minor–MAJOR depending on the deployment claim.
+
+**T4 — Model availability and intended use**:
+- Can a reader reproduce predictions — full coefficients (and intercept/baseline hazard) for a regression model, or model/code/weights availability and input–output spec for an AI/LLM model?
+- Is the **intended use** stated with the required human oversight, and are claims kept within the evidence (no "deployment-ready" from a single internal test set)? Missing model specification/availability, or use claims beyond the validation evidence → MAJOR.
+
 **Output template (S4 example)**:
 > "The Methods (p. X) state that optimal cutoffs for [outcome] were determined via maximally selected log-rank statistics on the internal validation cohort. Two concerns: (a) Hothorn-Lausen correction is cited but it is unclear whether the corrected p-value was used in the cutoff selection; (b) the internal validation cohort appears to have been used for both model selection and cutoff selection, which is a known source of optimism. I'd suggest reporting bootstrap-based optimism estimates or a sensitivity analysis showing how external performance shifts under ±0.5-SD perturbation of the chosen cutoff."
 

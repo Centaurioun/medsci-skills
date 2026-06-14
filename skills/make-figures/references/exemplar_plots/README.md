@@ -23,6 +23,10 @@ against `critic_rubrics/data_plot.md`; do not copy an image.
   point, DeLong for AUC differences, PR + AUPRC (baseline = prevalence) under imbalance.
 - `calibration_plot.md` — calibration: predicted-vs-observed with 45° line, flexible curve,
   slope/intercept, predicted-risk distribution, external set, not HL-test-alone; pairs roc_pr.
+- `decision_curve.md` — decision curve (net-benefit/DCA): threshold-probability vs net benefit,
+  treat-all/treat-none references, justified threshold range, calibrated model curve, proposed
+  operating threshold; the clinical-utility counterpart to roc_pr/calibration. Pairs the
+  `analyze-stats` incremental_value table-type.
 - `mrmc_roc.md` — multi-reader multi-case (MRMC) reader-study ROC: per-reader curves + bold
   reader-averaged curve, MRMC (reader+case) AUC CI, ΔAUC with margin, per-patient/per-lesion unit,
   fully-crossed/washout note. Pairs the analyze-stats reader-study table-type.
