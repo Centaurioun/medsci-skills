@@ -149,6 +149,9 @@ When the lesson is "this entity was mistaken for another," the differential is t
   table is warranted.
 - **Figure anatomy**: for complex courses, pair the text with `/make-figures`
   `exemplar_plots/clinical_timeline.md`.
+- **Imaging-led case**: if the contribution is the image or an image-guided procedure, use
+  `exemplar_case_report_radiology.md` (per-modality technique→findings→impression, structured-reporting
+  lexicons, quantitative-threshold honesty, IR procedure/complication, DICOM de-identification).
 
 ## Common failure modes
 

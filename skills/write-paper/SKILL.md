@@ -63,6 +63,13 @@ When paper type is "case report":
 1. Load `${CLAUDE_SKILL_DIR}/references/paper_types/case_report.md` (CARE structure).
 2. Load `${CLAUDE_SKILL_DIR}/references/exemplar_case_report.md` for the narrative flow,
    150-word structured abstract anatomy, and case-report failure modes.
+2b. If the case is **imaging-led** (diagnostic radiology, nuclear medicine, or interventional
+    radiology — the contribution is the image or an image-guided procedure), also load
+    `${CLAUDE_SKILL_DIR}/references/exemplar_case_report_radiology.md` for per-modality
+    technique→findings→impression discipline, structured-reporting lexicons (BI-RADS/LI-RADS/
+    PI-RADS/TI-RADS/Lung-RADS/O-RADS), quantitative anchors with method/threshold honesty,
+    multimodality discordance, the IR procedure/complication subtype, incidental-finding reporting,
+    and DICOM de-identification / real alt text / device-vendor COI.
 3. Override word limits: total 1000-1500 words (excl. abstract, references, legends).
 4. Override abstract limit: 150 words, structured (Introduction, Case Presentation, Conclusion).
 5. Override reference limit: 15 references maximum.
