@@ -247,7 +247,7 @@ also load `${CLAUDE_SKILL_DIR}/references/pipeline_concepts_medical_ai.md` —
 canonical layouts, required annotations, and tool selection per type.
 
 **Optional flags:**
-- `--study-type <type>`: One of: `diagnostic-accuracy`, `ai-validation`, `meta-analysis`, `dta-meta-analysis`, `observational-cohort`, `rct`. When set, auto-generate the full figure set from the Study-Type Figure Sets table below without prompting for individual figure types.
+- `--study-type <type>`: One of: `diagnostic-accuracy`, `ai-validation`, `meta-analysis`, `dta-meta-analysis`, `observational-cohort`, `rct`, `case-report`. When set, auto-generate the full figure set from the Study-Type Figure Sets table below without prompting for individual figure types.
 - `--data-dir <path>`: Directory containing analysis outputs (CSVs, `_analysis_outputs.md`). Default: current working directory.
 
 Ask the user for:
@@ -437,6 +437,7 @@ When the study type is known (from `/write-paper` Phase 0 or user specification)
 | DTA meta-analysis (PRISMA-DTA) | PRISMA flow diagram, paired forest plot (Se + Sp), SROC curve, Deeks funnel plot |
 | Observational cohort (STROBE) | Flow diagram, Kaplan-Meier curves (if survival endpoint) |
 | RCT (CONSORT) | CONSORT flow diagram, primary endpoint figure |
+| Case report (CARE) | Clinical timeline figure, annotated imaging/pathology panel when visually load-bearing |
 
 After generating all figures, create a structured manifest file at `figures/_figure_manifest.md`:
 
