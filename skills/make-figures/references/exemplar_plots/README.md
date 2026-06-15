@@ -37,6 +37,10 @@ against `critic_rubrics/data_plot.md`; do not copy an image.
 - `confusion_matrix.md` — confusion matrix: TP/FP/FN/TN with explicit Predicted/Actual axes, raw
   counts AND row-normalized (recall) / column-normalized (precision) views, class-imbalance caveat,
   stated operating threshold, per-class metrics, multi-class macro-average. Pairs roc_pr.
+- `clinical_timeline.md` — CARE case-report timeline: relative time axis, symptoms/tests/treatment/
+  outcome lanes, index presentation marker, final follow-up endpoint, de-identification discipline,
+  and annotated imaging-panel pairing when imaging is the teaching point. Pairs `write-paper`
+  `exemplar_case_report.md`.
 
 ## Curator guidelines (for adding more)
 
@@ -49,4 +53,4 @@ against `critic_rubrics/data_plot.md`; do not copy an image.
   exemplar composes. Cross-reference the rubric and the relevant `analyze-stats` template
   (e.g., `forest_plot.py` / `meta_analysis.R` for the forest) rather than restating them.
 - Keep each file ~40–60 lines. Future candidates (see `reverse_engineer/gap_register.md`):
-  `bland_altman.md`, `confusion_matrix.md`, `visual_abstract` anatomy.
+  `visual_abstract` anatomy.

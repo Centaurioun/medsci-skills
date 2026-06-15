@@ -37,7 +37,7 @@ Legend for **Status** column:
 | **DECIDE-AI 2022** | AI clinical eval (Stage 1–2) | Human-AI interaction diagram + safety-signal plot + override-rate over time | ❌ (uncertain — verify in full text) | Vasey et al., *Nat Med* 2022 (PMID 35585198) |
 | **CHEERS 2022** | Economic evaluation | Cost-effectiveness plane + cost-effectiveness acceptability curve | ❌ | Husereau et al., *BMJ* 2022 |
 | **SPIRIT 2025** | Trial protocol | Schedule-of-enrollment timeline (Figure 1 in published trials) | ✅ | `templates/official/spirit2013/` (updated to 2025); see also Robinson timeline figures |
-| **CARE 2016** | Case report | Timeline of patient course (recommended) | ⚠️ | Riley et al., *J Clin Epidemiol* 2017; use generic flow generator |
+| **CARE 2013** | Case report | Timeline of patient course (recommended) | ⚠️ | Gagnier et al., *J Clin Epidemiol* 2014; use `exemplar_plots/clinical_timeline.md` |
 | **SQUIRE 2.0** | Quality improvement | Run chart / SPC chart | ❌ | Ogrinc et al., *BMJ Qual Saf* 2016 |
 
 ---

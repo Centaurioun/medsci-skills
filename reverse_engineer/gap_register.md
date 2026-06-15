@@ -56,6 +56,9 @@ stop adding marginal items there).
 | G21 | analyze-stats | `table-types/reader_study.md` — MRMC per-reader + reader-averaged performance table (OR/DBM reader+case CI, per-patient vs per-lesion, non-inferiority margin); distinct from agreement.md (reliability) | 4 | 3 | 5 | 60 | shipped (#143) |
 | G22 | check-reporting | `checklists/DECIDE_AI.md` — DECIDE-AI reporting guideline for the early-stage live clinical evaluation of AI decision-support systems (the development-to-implementation gap between offline validation and a definitive trial). No checklist covered live-deployment/human-factors/safety reporting. Found reverse-engineering the clinical-impact area | 5 | 3 | 5 | 75 | shipped (#144) |
 | G23 | peer-review + self-review | `domain-probes/ai_overclaiming.md` decision-impact subsection (DI1–DI5, DECIDE-AI axis) — live/prospective vs retrospective evidence, intended-use/deployment pathway, threshold + calibration/utility, workflow integration + human–computer override, safety/error capture + subgroup safety. Sharpens AO4 for the deployment-evaluation case | 4 | 3 | 4 | 48 | shipped (#144) |
+| G24 | write-paper | `references/exemplar_case_report.md` — CARE narrative-flow and 150-word Introduction / Case Presentation / Conclusion abstract anatomy; catches rarity-without-teaching-value, consent/de-identification gaps, chronology collapse, and n=1 causal overclaiming | 4 | 3 | 5 | 60 | shipped (this PR) |
+| G25 | peer-review + self-review | `domain-probes/case_report.md` (NEW MODULE, CR1–CR6) — case-report novelty/teaching-value, consent + image de-identification, temporal-vs-causal discipline, similar-case comparison, CARE timeline/follow-up completeness, and teaching-point scope | 4 | 3 | 5 | 60 | shipped (this PR) |
+| G26 | make-figures | `exemplar_plots/clinical_timeline.md` — CARE clinical-timeline anatomy with relative time axis, event lanes, index-presentation marker, final follow-up endpoint, and annotated imaging-panel pairing | 3 | 3 | 5 | 45 | shipped (this PR) |
 
 > Numbering note: G12–G23 are this reverse-engineering batch (decision-curve+TRIPOD-LLM, AI-RCT, prospective-DTA+MRMC, DECIDE-AI); rows are marked shipped (#PR) post-merge.
 
@@ -64,7 +67,7 @@ stop adding marginal items there).
 - **make-figures** (figure exemplars): forest shipped (#130); km/roc/calibration/bland-altman/
   confusion/visual-abstract open — **the suite's weakest area, keep returning here.**
 - **write-paper exemplars**: methods/results/discussion trio shipped; intro/abstract open.
-- **review domain-probes**: 6 modules; RCT/trial + survey/qualitative/economic still open.
+- **review domain-probes**: case-report added; survey/qualitative/economic still open.
 
 ## Shipped (audit trail)
 
