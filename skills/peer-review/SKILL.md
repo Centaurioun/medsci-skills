@@ -199,6 +199,16 @@ Apply this 6-probe checklist (D1–D6) **only when the manuscript is a diagnosti
 
 **Probe detail (D1–D6), with output templates and the leads-vs-findings discipline:** `${CLAUDE_SKILL_DIR}/references/domain-probes/diagnostic_accuracy.md`. Load it and apply each probe when the trigger fires. In this skill, map each probe finding to the review draft as a Major / Minor comment; two-gate (case-control) sampling (D2), verification/incorporation bias (D1), or an MRMC analysis that ignores reader variance (D6) is design/analysis-level — surface it in the Confidential Comments to the Editor and place it as the Major #1 candidate. Pairs the `analyze-stats` `table-types/reader_study.md` table and the `make-figures` `exemplar_plots/mrmc_roc.md` figure; a test-set-tuned operating threshold pairs with `exemplar_reviews/optimistic_validation_reporting.md`.
 
+### Phase 2J: Case-Report Extension
+
+Apply this 6-probe checklist (CR1–CR6) **only when the manuscript is a case report or a small
+single-patient clinical narrative**. These probes complement (do not replace) the generic Phase 2
+issue checklist and CARE reporting items; they target case-report contribution, consent and
+de-identification, n=1 causal overclaiming, similar-case comparison, timeline/follow-up completeness,
+and teaching-point framing.
+
+**Probe detail (CR1–CR6), with output templates and the leads-vs-findings discipline:** `${CLAUDE_SKILL_DIR}/references/domain-probes/case_report.md`. Load it and apply each probe when the trigger fires. In this skill, map each probe finding to the review draft as a Major / Minor comment; missing consent or identifiable patient data (CR2), causal overclaiming (CR3), or an absent case-report contribution/teaching value (CR1) can be placed as Major #1 depending on what carries the manuscript's claim. Pair timeline-related findings (CR5) with `/make-figures` `exemplar_plots/clinical_timeline.md`.
+
 ### Phase 3: Draft Review
 
 Before writing comments, skim the relevant model in `references/exemplar_reviews/` for the
