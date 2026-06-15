@@ -311,7 +311,10 @@ flow diagram) is not "broadly acceptable."
 
 For AI/ML and radiomics manuscripts, also confirm the chosen **methodological-quality /
 risk-of-bias** instrument (PROBAST+AI, METRICS/RQS, APPRAISE-AI) and its non-waivable
-concerns — a fully *reported* paper can still be at high risk of bias. Keep these distinct
+concerns — a fully *reported* paper can still be at high risk of bias. For radiomics, the
+fuller METRICS breakdown (9 categories / 30 weighted items) is in
+`${CLAUDE_SKILL_DIR}/references/appraisal_tools/METRICS.md` (an appraisal reference, not a counted
+reporting checklist). Keep these distinct
 from the reporting counterparts (CLEAR, DECIDE-AI), which route through the normal checklist
 flow. Do not assert a numeric journal desk-reject threshold; the hard signals are a missing
 critical item and the journal's own required elements.

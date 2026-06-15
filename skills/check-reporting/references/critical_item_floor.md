@@ -48,6 +48,10 @@ Keep these distinct from their **reporting** counterparts — **CLEAR** (radiomi
 and **DECIDE-AI** (early clinical-evaluation reporting) are reporting guidelines, not RoB
 tools; route them through the normal checklist flow, not this appraisal note.
 
+For the fuller **METRICS** breakdown (9 categories / 30 weighted, condition-dependent items, with
+the non-waivable concerns), see `appraisal_tools/METRICS.md`. It is an appraisal reference, not a
+counted reporting checklist.
+
 ## How to use in the report
 
 - After the item table, list **Critical items: X / Y present**, naming each MISSING critical
