@@ -30,6 +30,13 @@ against `critic_rubrics/data_plot.md`; do not copy an image.
 - `mrmc_roc.md` — multi-reader multi-case (MRMC) reader-study ROC: per-reader curves + bold
   reader-averaged curve, MRMC (reader+case) AUC CI, ΔAUC with margin, per-patient/per-lesion unit,
   fully-crossed/washout note. Pairs the analyze-stats reader-study table-type.
+- `bland_altman.md` — Bland–Altman agreement: difference vs mean-of-the-two-methods, bias line +
+  CI, ±1.96·SD limits of agreement with CIs on each limit, proportional-bias check, % within LoA,
+  pre-defined clinical-acceptability band, not a correlation plot, repeated-measures handling.
+  Pairs the analyze-stats agreement table-type.
+- `confusion_matrix.md` — confusion matrix: TP/FP/FN/TN with explicit Predicted/Actual axes, raw
+  counts AND row-normalized (recall) / column-normalized (precision) views, class-imbalance caveat,
+  stated operating threshold, per-class metrics, multi-class macro-average. Pairs roc_pr.
 
 ## Curator guidelines (for adding more)
 
