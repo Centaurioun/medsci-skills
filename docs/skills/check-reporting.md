@@ -36,6 +36,7 @@
 **References** (`skills/check-reporting/references/`):
 
 - `LICENSES.md`
+- `appraisal_tools/` (1 file)
 - `checklists/` (36 files)
 - `critical_item_floor.md`
 - `step4c_registration_timing.md`
