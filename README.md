@@ -224,6 +224,12 @@ The E2E pipeline (`orchestrate --e2e`) produces everything up to `qc/`. The `sub
 
 ## What's New
 
+**v4.4** adds reviewer/analysis depth with no new skill or reporting-guideline count (still 45 skills / 36 guidelines / 27 detectors):
+
+- **`/author-strategy` — trajectory-archetype classification (optional).** Classifies a queried author's PubMed trajectory into abstract career archetypes (A1 infrastructure builder, A2 methodology rule-maker, A3 clinical→AI hybrid, A4 SR/MA volume engine, A5 large-consortium participation, A6 device/technique depth, + a computed composite) as an **explainable, multi-label, confidence-scored heuristic — not an objective verdict**. The rubric is a single canonical YAML (the narrative doc is generated from it); scores exclude `unavailable` signals (h-index/citation/venue-tier → `[VERIFY]`, never fabricated); a **disambiguation gate** binds an approved `corpus_manifest.json` to the CSV (csv + PMID-set hashes) so a surname alone never classifies, and target-author attribution never borrows a co-author's ORCID/affiliation.
+- **`/peer-review` + `/self-review` — Image-Synthesis / cross-modality probe (IS1–IS4)** for studies that synthesize one imaging modality from another and claim the output carries the target's information, plus a reviewer-side reference-integrity spot-check.
+- **`/verify-refs` — OpenAlex tertiary index** recovers conference-proceedings / non-DOI citations (NeurIPS/ICLR/ACL) that fall through PubMed and CrossRef, the free analogue of a portal's second index.
+
 **v4.3** hardens the **cross-sectional / observational cohort** review surface end-to-end, much of it reverse-engineered from real CC-BY cohort papers (learn-only under the license firewall) — no new skill or reporting-guideline count (still 45 skills / 36 guidelines); analysis-integrity detectors **25 → 27**:
 
 - **Observational probes O1 → O14** (`/peer-review` + `/self-review`, vendored) — over-adjustment / analysis-unit clustering / outcome construct-validity (O7–O9), overlapping-subset gradient (O10), **complex-survey design & weighting** for NHANES/KNHANES (O11), **data-driven threshold / "inflection-point" mining** (O12), **cross-sectional mediation** temporal-order & sequential-ignorability (O13), and **interaction scale** — additive RERI/AP/S vs multiplicative (O14). Plus a new **clinical-prediction-model** probe module **CP1–CP4** and survival **S9** (panel-data / multistate variance).
