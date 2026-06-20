@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+## [4.5.0] - 2026-06-20
+
 ### Added
 
 - **Self-review domain-probe batch (SR/MA + DTA + prediction-model) + submission asset-anon abs-path gate.** Five new review probes promoted from field cycles, plus one deterministic submission check. `sr_ma.md`: **P12** risk-of-bias table row-sum ↔ figure-matrix reconciliation (each NOS ★/JBI Y row must equal its printed total; the traffic-light figure's data matrix must match the supplementary table; SSOT = the primary appraisal form, not a plotting-script constant) and **P13** included-study ↔ reference-list completeness (every characteristics-table study must be a numbered reference; source citations from PubMed `efetch`, not hand-kept notes; disambiguate same author/year by technique + sample size). `diagnostic_accuracy.md`: **D7** index-test-as-enrollment-criterion circularity (escalate past Major when an inclusion threshold is the index test under study). `clinical_prediction_model.md`: **CP5** intended-use horizon leakage (claim-timepoint adjectives vs each predictor's availability timepoint) and **CP6** validation-nomenclature conflation (development/CV vs held-out/external test). Probes are vendored byte-identical to `peer-review`. `sync-submission/scripts/check_asset_anonymization.py`: new scan class 4 — a `word/*.xml` attribute (e.g. a pandoc-embedded image's `<pic:cNvPr descr="…">`) carrying an absolute home-dir path (`/Users/…`, `/home/…`) is a username leak invisible to a rendered-text scan; flagged as `docx_embedded_abs_path` (leak severity), with a regression test fixture. No version bump — probe/reference + detector additions.
