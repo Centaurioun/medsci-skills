@@ -2,6 +2,31 @@
 
 ## [Unreleased]
 
+## [4.6.0] - 2026-06-21
+
+A maintainability, governance, and review-depth release. **Integrity detectors 28 → 30; domain probes 11 → 12; skills 45 and reporting guidelines 36 unchanged.** No skill rename, CLI, or output-path change — additive and backward-compatible.
+
+### Added
+
+- **Fairness / equity / subgroup-performance domain probe (`equity_fairness.md`, EQ0–EQ6).** Vendored byte-identical into `/peer-review` and `/self-review` (`MODULES` 11 → 12). Fires only when a manuscript claims cross-population performance or presents subgroup analyses as a fairness argument: disaggregated subgroup metrics (not aggregate-only), error-rate-vs-discrimination parity and base-rate dependence, a named fairness estimand + between-group gap test, development-cohort representativeness, subgroup EPV/power, and equity-aware framing aligned to TRIPOD+AI / DECIDE-AI / CONSORT-AI. (#170)
+- **AI-disclosure + data/code-availability detector (`sync-submission/check_disclosure_availability.py`).** An AI-use disclosure must carry four tokens — version + access channel + date/date-range + responsible party (the tool name only triggers the check) — plus Data/Code Availability presence with a repository/DOI where the journal expects one, keyed by `journal_availability_policy.json`. (#171)
+- **Structured-summary-box conformance detector (`academic-aio/check_summary_box.py`).** Key Points bullet count + one-claim-per-bullet, Research-in-context's three sub-blocks, and plain-language word band, journal-keyed via `summary_box_specs.json` — catches the wrong-format box a production technical check rejects. (#171)
+- **Skill `maturity` taxonomy (`official` / `experimental` / `community`).** A required, additive `skill.yml` v2.2 field (`schema_version` stays 2), enforced by `validate_skill_contracts.py` and surfaced in `skills_catalog.json`; all 45 current skills are `official`. (#174)
+- **Governance & answer-engine docs:** `ROADMAP.md` (priorities + explicit out-of-scope), `MAINTAINERS.md` (clinical authority stays with the founder), `SECURITY.md` (vulnerability reporting + medical-scope boundary), `docs/maintainer_workflow.md` (review + release checklist), `docs/faq.md` (AEO/GEO), and two new issue templates (installation problem, detector request). (#173)
+
+### Changed
+
+- **Positioning leads with the compliance moat.** README hero subline and the marketplace source description (`MARKETPLACE_DESCRIPTION`) now lead with reporting-guideline + risk-of-bias compliance, reference verification, and deterministic integrity gates rather than skill count. README gains a "What is MedSci Skills?" answer block, a "Start here: 3 workflows" section, and a "Validation status" section (available vs CI-gated vs E1-evaluated). A stale "32 EQUATOR" hero count was corrected to "36 reporting guidelines and risk-of-bias tools". (#173, #174)
+- **`write-paper` Phase 7 token diet (pilot).** The three integrity-audit sub-steps (7.3a/7.3b/7.3c) moved to `references/phase7_integrity_audits.md` behind a control-flow-preserving pointer; measured −10,238 chars (~2,559 tokens) per invocation, loaded on demand only when Phase 7 runs. (#172)
+
+### Documentation
+
+- `CONTRIBUTING.md` and the PR template add a medical-claim → founder-review gate and an official/experimental/community classification line; `IMPACT.md` adds an "Interpretation of metrics" caveat block ("early community interest, not widespread adoption"). (#173)
+
+### Validation / Evidence
+
+- New deterministic scripts each ship a network-free challenge/regression test wired into CI. `MEDSCI_AUDIT.md` detector-count claims corrected (it had drifted to 27/28) and a `DETECTOR_CLAIM_FILES` gate added to `validate_catalog_consistency.py` (anchored current-total patterns, never historical evaluation numbers) so the total cannot silently drift again. A regression test for the routing-asset gate (`tests/test_routing_assets.sh`) covers the references/ pointer that guards the Phase-7 extraction. (#169, #171)
+
 ## [4.5.0] - 2026-06-20
 
 ### Added

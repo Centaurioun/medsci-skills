@@ -267,6 +267,12 @@ The E2E pipeline (`orchestrate --e2e`) produces everything up to `qc/`. The `sub
 
 ## What's New
 
+**v4.6** is a maintainability, governance, and review-depth release — still 45 skills / 36 guidelines; analysis-integrity detectors **28 → 30**, domain probes 11 → 12:
+
+- **Fairness / equity / subgroup-performance probe (EQ0–EQ6)** for AI/prediction/diagnostic studies that claim cross-population performance, plus two new detectors: an **AI-disclosure + data/code-availability** check (`/sync-submission`) and a **structured-summary-box conformance** check (`/academic-aio`).
+- **Governance + answer-engine layer:** `ROADMAP.md`, `MAINTAINERS.md`, `SECURITY.md`, a maintainer workflow + release checklist, an AEO/GEO `docs/faq.md`, a "Start here: 3 workflows" + "Validation status" section in this README, and a new `maturity` field (official / experimental / community) on every skill.
+- **Token diet (pilot):** `write-paper` Phase 7 integrity audits moved to a load-on-demand reference (~2,559 tokens saved per invocation). Positioning now leads with the compliance moat rather than skill count.
+
 **v4.5** deepens the review + submission surface with no new skill or reporting-guideline count (still 45 skills / 36 guidelines); analysis-integrity detectors **27 → 28**:
 
 - **`/clean-data` + `/analyze-stats` — reverse-coded-item / negative-alpha detector.** A multi-item Likert scale with a negatively-worded item must be recoded `(min+max) − x` before the scale total or Cronbach's alpha is computed; left un-recoded, the item correlates negatively with the rest of the scale and alpha collapses (often negative). A negative alpha is a coding bug, not a "multidimensional construct." New stdlib-only `check_reverse_coding.py` returns `REVERSE_CODING_LIKELY` / `REVERSE_CODING_SUSPECT` / `OK` from per-item item-rest correlations + raw alpha; the Likert summary template gains a `--reverse-items` recode flag.
