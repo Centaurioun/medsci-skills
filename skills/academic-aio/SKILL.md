@@ -89,6 +89,8 @@ Include the journal-specific summary box verbatim when supported:
 - npj Digital Medicine: "Plain-language summary" (150–200 words, 8th-grade reading level).
 - Nature Medicine: editor's summary (supplied by editorial, but draft one proactively).
 
+**Deterministic format check.** Validate the drafted box against its journal spec with `python3 ${CLAUDE_SKILL_DIR}/scripts/check_summary_box.py --manuscript <file> --journal <stem> --strict` (reads `references/summary_box_specs.json`: Key Points bullet count + one-claim-per-bullet, Research-in-context's three sub-blocks, plain-language word band). It catches the wrong-format / wrong-bullet-count box that a production technical check rejects.
+
 These boxes are the fragments Perplexity and ChatGPT web most often copy or paraphrase verbatim; treat them as the paper's canonical citation surface.
 
 Journal-specific templates (USER MUST VERIFY against current IFA): `references/journal_summarybox_templates.yaml`.

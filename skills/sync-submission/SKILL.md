@@ -89,6 +89,8 @@ The gate's offline references pass is the deterministic subset (duplicates +
 pagination placeholders); an online `/verify-refs --strict` against PubMed/CrossRef
 remains the authoritative fabrication and author-name check before submission.
 
+**Disclosure & availability check (standalone).** Top medical-AI journals require, before review, an AI-use disclosure carrying four tokens (version + access channel + date/date-range + responsible party — the tool name only *triggers* the check) and Data/Code Availability statements. Run `python3 ${CLAUDE_SKILL_DIR}/scripts/check_disclosure_availability.py --manuscript <file> --journal <stem> [--ai-study] [--require data_availability ...] [--strict]` (reads `references/journal_availability_policy.json`). It blocks on a missing required statement or an AI disclosure that is present but missing a token / carrying a placeholder; "available on reasonable request" where the journal expects a repository is a P1 warning. Writes `qc/disclosure_availability_report.json`.
+
 ## Workflow
 
 1. Resolve canonical manuscript from `project.yaml` or explicit input.

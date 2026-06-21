@@ -30,10 +30,15 @@
 - `python3 scripts/cross_document_n_check.py`
 - `bash tests/test_wordcount_cap.sh`
 - `bash tests/test_assemble_supplement.sh`
+- `bash tests/test_disclosure_availability.sh`
 
 **Evidence** — `bundled_script`
 
 ## Bundled resources
+
+**References** (`skills/sync-submission/references/`):
+
+- `journal_availability_policy.json`
 
 **Scripts** (`skills/sync-submission/scripts/`):
 
@@ -42,6 +47,7 @@
 - `blind_sweep.py`
 - `check_asset_anonymization.py`
 - `check_cross_artifact_stale.py`
+- `check_disclosure_availability.py`
 - `check_wordcount_cap.py`
 - `cover_letter_drift_check.py`
 - `cross_document_n_check.py`

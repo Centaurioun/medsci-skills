@@ -84,6 +84,12 @@ jobs:
       - name: Run sync-submission asset-anonymization gate test (A2)
         run: bash skills/sync-submission/tests/test_asset_anonymization.sh
 
+      - name: Run sync-submission disclosure/availability detector test
+        run: bash skills/sync-submission/tests/test_disclosure_availability.sh
+
+      - name: Run academic-aio summary-box detector test
+        run: bash skills/academic-aio/tests/test_summary_box.sh
+
       - name: Run sync-submission cross-artifact staleness gate test (A3)
         run: bash skills/sync-submission/tests/test_cross_artifact_stale.sh
 
