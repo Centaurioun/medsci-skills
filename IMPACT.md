@@ -31,7 +31,19 @@ How the numbers are captured:
 
 Trend over time lives in [`metrics/traffic_log.csv`](metrics/traffic_log.csv); a
 star-history chart is available at
-[star-history.com](https://star-history.com/#Aperivue/medsci-skills&Date).
+[star-history.com](https://star-history.com/#Aperivue/medsci-skills&Date). The
+Snapshot block is a point-in-time capture; the live figures are in the traffic log.
+
+## Interpretation of metrics
+
+These numbers are read conservatively, because most of them measure *interest*, not
+confirmed use:
+
+- **Stars** indicate interest, not confirmed use.
+- **Forks** may indicate experimentation or reuse — a somewhat stronger signal than a star.
+- **Clones / downloads** are inflated by CI and mirroring traffic; the *unique* columns are more meaningful.
+- **Confirmed use cases and academic citations** are the strongest evidence, and are scarcer than raw stars.
+- **Current status: early community interest for a niche biomedical-workflow repository — not widespread adoption.** This page never claims adoption that has not been observed; a thin section is a truthful section.
 
 ---
 

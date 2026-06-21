@@ -31,6 +31,8 @@ Per-skill documentation under `docs/skills/` is **generated** from each `skills/
 - [ ] New scripts have a short usage example and deterministic expected behavior.
 - [ ] Documentation states when the skill should not be used.
 - [ ] Public-facing copy is suitable for an open-source repository.
+- [ ] **Does this PR change a medical/research claim?** If yes, it needs founder / Clinical-Lead review (see [`MAINTAINERS.md`](MAINTAINERS.md)). Only make such claims **more** cautious, accurate, or clearly scoped — never broader.
+- [ ] **Status declared** — is this an *official* (founder-approved, documented, tested), *experimental* (useful but not fully tested), or *community* (external, not founder-validated) contribution?
 
 ## PII and Publication Hygiene
 
