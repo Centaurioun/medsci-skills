@@ -43,6 +43,44 @@ Before finalizing, verify:
 
 ---
 
+## Title Page — Author & Affiliation Order
+
+Journals — and **every Nature Portfolio / npj technical check** — require the
+title-page affiliations to be **numbered in the order the authors first introduce
+them**, not grouped by institution. Do **not** hand-number them (an LLM groups by
+institution or lets a late author keep a low number, which the technical check
+bounces). The rule, stated once:
+
+- **Affiliation 1 belongs to the first author's first affiliation.** Walk the author
+  list left to right; each new affiliation gets the next integer the **first** time
+  it appears; a repeat of an earlier affiliation reuses its number.
+- The affiliation block is then listed in **ascending numeric order** (= first
+  appearance), contiguous (1..N, no gaps), every number cited by ≥1 author.
+- **Each affiliation ends with its city and country** (e.g. "…, Seoul, Republic of
+  Korea").
+- Corresponding authors get a `*` (and equal-contribution a `†`) appended to their
+  superscript; the footnotes follow the block.
+
+**Generate and verify this deterministically** rather than by hand:
+
+```bash
+# build the byline + affiliation block from an ordered authors file
+python3 "${CLAUDE_SKILL_DIR}/scripts/build_title_page_affiliations.py" \
+  --authors authors.yaml --out manuscript/title_page_affiliations.md
+
+# verify an existing title page before submission (catches out-of-order numbering,
+# gaps, undefined/orphan affiliations, and a missing city/country)
+python3 "${CLAUDE_SKILL_DIR}/scripts/build_title_page_affiliations.py" \
+  --check manuscript/title_page.md --strict
+```
+
+`authors.yaml` is an ordered `authors:` list (each with `name`, an ordered
+`affiliations:` list of keys, optional `corresponding`/`equal_contribution`) plus an
+`affiliations:` dict mapping each key to its full "Department, Institution, City,
+Country" text. The script assigns the numbers; you never type a superscript.
+
+---
+
 ## Abstract
 
 ### Structure

@@ -536,7 +536,7 @@ Log the self-review fix loop results to `qc/_pipeline_log.md`:
 
 Generate the following files:
 - `manuscript/manuscript.md`: Complete manuscript (with LLM disclosure in Methods and Acknowledgments if enabled)
-- `manuscript/title_page.md`: Title page with author info, word count, key points if required
+- `manuscript/title_page.md`: Title page with author info, word count, key points if required. **Number the author affiliations by first appearance** (affiliation 1 = the first author's first affiliation; each new affiliation gets the next integer as the author list is read left to right; each ends with city + country) — required by Nature Portfolio / npj technical checks. Do not hand-number; generate and verify with `scripts/build_title_page_affiliations.py` (`--authors authors.yaml` to build, `--check title_page.md --strict` to verify). See `references/section_guides/title_abstract.md` § "Title Page — Author & Affiliation Order".
 - `qc/reporting_checklist.md`: Filled reporting guideline checklist from Step 7.2
 - `qc/self_review.md`: Final self-review report from Step 7.4
 - `qc/_pipeline_log.md`: Pipeline execution log
