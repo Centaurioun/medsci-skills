@@ -1,0 +1,55 @@
+name: Detector request
+description: Propose a new deterministic integrity detector (a check that should not rely on model judgment)
+title: "[detector] <short name>"
+labels: ["enhancement", "detector"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for proposing a detector. A detector is a **deterministic, stdlib-only
+        check** (same input, same verdict, no model in the decision path) that catches
+        a fabricated, drifted, or non-compliant pattern before review — see
+        [`MEDSCI_AUDIT.md`](../../MEDSCI_AUDIT.md). The strongest proposals come from a
+        real failure that a deterministic rule would have caught. Keep examples
+        public/synthetic.
+  - type: textarea
+    id: failure
+    attributes:
+      label: What failure should it catch?
+      description: The concrete defect (e.g. "a reported incidence rate that exceeds its person-time") and, ideally, a real cycle where it bit.
+      placeholder: "Symptom: ... | Why no existing check catches it: ..."
+    validations:
+      required: true
+  - type: textarea
+    id: rule
+    attributes:
+      label: Proposed deterministic rule
+      description: How would a script decide pass/fail from the inputs, with no model judgment?
+      placeholder: "Inputs: ... | Verdict logic: ... | What is a hard blocker vs an advisory warning?"
+    validations:
+      required: true
+  - type: input
+    id: owner-skill
+    attributes:
+      label: Which skill should own it?
+      description: The detector lives under that skill's scripts/ (e.g. sync-submission, self-review, check-reporting).
+      placeholder: "e.g. sync-submission"
+    validations:
+      required: true
+  - type: dropdown
+    id: contribute
+    attributes:
+      label: Are you willing to open a pull request?
+      options:
+        - "Yes, I can draft the detector + challenge test"
+        - "Maybe, with guidance"
+        - "No, requesting only"
+    validations:
+      required: true
+  - type: checkboxes
+    id: hygiene
+    attributes:
+      label: Public-repo hygiene
+      options:
+        - label: This request contains no PHI, real names, manuscript IDs, project codes, or institution-specific details.
+          required: true

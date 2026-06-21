@@ -38,3 +38,8 @@ See CONTRIBUTING.md for the full workflow and PII/publication hygiene rules.
 - [ ] New scripts include a short usage example and deterministic expected behavior.
 - [ ] The skill documentation states when the skill should **not** be used.
 - [ ] Public-facing copy is suitable for an open-source repository.
+
+## Medical claims & classification
+
+- [ ] No unsupported medical claims. If this PR changes a medical/research claim, it needs founder / Clinical-Lead review (see `MAINTAINERS.md`), and the change only makes the claim **more** cautious/accurate/scoped.
+- [ ] Classification: this is an **official** / **experimental** / **community** change (delete as appropriate).

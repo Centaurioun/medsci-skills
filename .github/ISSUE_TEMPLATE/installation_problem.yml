@@ -1,0 +1,61 @@
+name: Installation problem
+description: Report a problem installing or running MedSci Skills
+title: "[install] <short summary>"
+labels: ["installation"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for the report. Please include enough detail to reproduce. Keep
+        everything public/synthetic — no real names, manuscript IDs, institution
+        context, or private absolute paths (redact home directories).
+  - type: dropdown
+    id: method
+    attributes:
+      label: Install method
+      options:
+        - Claude Code plugin (marketplace)
+        - install.py (manual, all skills)
+        - npm / npx
+        - Individual skill copy
+        - Other (explain below)
+    validations:
+      required: true
+  - type: input
+    id: host
+    attributes:
+      label: Host / environment
+      description: Host app (Claude Code / Codex / Cursor / Copilot) + OS.
+      placeholder: "e.g. Claude Code on macOS 15"
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: MedSci Skills version
+      description: Release tag or commit (see the README badge / CITATION.cff).
+      placeholder: "e.g. v4.6.0"
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: What you did and what happened
+      description: Exact command(s), expected result, and the actual error output (redact private paths).
+      placeholder: "Command: ... | Expected: ... | Got: ..."
+    validations:
+      required: true
+  - type: textarea
+    id: diagnostics
+    attributes:
+      label: Diagnostics (optional)
+      description: Output of `/setup-medsci` or `python3 --version` / `node --version` if relevant.
+    validations:
+      required: false
+  - type: checkboxes
+    id: hygiene
+    attributes:
+      label: Public-repo hygiene
+      options:
+        - label: This report contains no PHI, real names, manuscript IDs, project codes, or unredacted private paths.
+          required: true

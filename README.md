@@ -38,6 +38,21 @@
 
 ---
 
+## What is MedSci Skills?
+
+MedSci Skills is an open-source Claude Code skill collection for **clinical
+manuscript preparation**. It helps physician-researchers and biomedical
+investigators move from literature search, study design, statistics, and figures to
+reporting-guideline compliance, citation/reference auditing, numerical-consistency
+checks, and response-to-reviewer workflows — combining agentic writing with
+**deterministic integrity gates** for submission-grade biomedical research. It is
+**not** a diagnostic tool, an autonomous author, or a general AI-scientist platform;
+every output requires human-expert verification. New here? See the
+[3 workflows below](#start-here-3-workflows), the [FAQ](docs/faq.md), and the
+[scope boundary](ROADMAP.md#not-planned--explicitly-out-of-scope).
+
+---
+
 ## Quick Start
 
 **No terminal?** Use the classroom installer ZIP — download, unzip, double-click the installer, then restart your agent app (see [Installation](#installation)).
@@ -90,9 +105,37 @@ All eight plugins share the same repository source, so this groups and enables s
 **Want just one capability?** Two skills are also published as focused standalone repos (generated mirrors; this repo stays the source of truth), each installable on its own with `/plugin marketplace add Aperivue/<repo>`:
 
 - [`Aperivue/verify-refs`](https://github.com/Aperivue/verify-refs) — catch fabricated/mismatched citations (PubMed + CrossRef).
-- [`Aperivue/check-reporting`](https://github.com/Aperivue/check-reporting) — audit a manuscript against 32 EQUATOR reporting guidelines.
+- [`Aperivue/check-reporting`](https://github.com/Aperivue/check-reporting) — audit a manuscript against the bundled EQUATOR reporting guidelines and risk-of-bias tools.
 
 ---
+
+## Start here: 3 workflows
+
+New users don't need all the skills at once. Most work starts as one of three
+workflows. Each runs through `/orchestrate` or by invoking the named skills in
+order; all outputs require human-expert review.
+
+**Workflow A — Manuscript pre-submission audit.** *Use when* a manuscript is nearly
+ready and you want it checked before a reviewer sees it. *Skills:* `/self-review` →
+`/check-reporting` → `/verify-refs` → `/sync-submission`. *In:* your manuscript
+(+ `refs.bib`, tables/figures). *Out:* anticipated reviewer comments, an item-by-item
+reporting-guideline audit, a citation-integrity report, and a submission-package
+drift check. *Safety:* it flags issues; you fix and verify them.
+
+**Workflow B — Data to manuscript package.** *Use when* you have a cleaned dataset
+and need a full draft. *Skills:* `/clean-data` → `/analyze-stats` → `/make-figures` →
+`/write-paper` → `/check-reporting` → `/find-journal`. *In:* a cleaned CSV/parquet
++ a research question. *Out:* reproducible analysis code, publication-ready figures,
+an IMRaD draft, a reporting checklist, and a journal shortlist. *Safety:* statistics
+and claims must be verified against your data; the toolkit never fabricates numbers
+or references.
+
+**Workflow C — Systematic review / meta-analysis.** *Use when* you are running an
+SR/MA. *Skills:* `/meta-analysis` (with `/search-lit`, `/make-figures`,
+`/check-reporting`). *In:* a research question + search strategy. *Out:* PROSPERO-style
+protocol scaffolding, screening/extraction structure, PRISMA-consistent counts and
+diagram, pooled-estimate figures, and a manuscript draft. *Safety:* screening and
+extraction decisions stay with the human review team.
 
 ## Live Demos: Three Study Types, Three Full Pipelines
 
@@ -515,6 +558,14 @@ Projects declare their source-of-truth layout in `SSOT.yaml`, and a `qc/migratio
 ### Skills Work Together
 Skills call each other. `check-reporting` invokes `make-figures` for PRISMA diagrams. `write-paper` calls `search-lit` for citation verification. `self-review` delegates reporting compliance to `check-reporting`. `calc-sample-size` output feeds directly into `write-protocol`'s IRB justification section.
 
+### Validation status — available vs CI-gated vs evaluated
+Be precise about what "validated" means here — the three tiers are different facts:
+- **Available** — every bundled skill and deterministic detector. The current totals are the single source of truth in [`metadata/catalog_counts.json`](metadata/catalog_counts.json) and [`MEDSCI_AUDIT.md`](MEDSCI_AUDIT.md).
+- **CI-gated** — detectors with a committed challenge/regression test that runs on every push via [`validate.yml`](.github/workflows/validate.yml).
+- **Formally evaluated** — the subset measured by the canonical evaluation harness **E1** in [`evaluation/`](evaluation/), which is v3.8-era and validates the then-current detector subset; detectors added since are **CI-tested, not yet E1-evaluated** (the size of the catalog and the size of the evaluated subset are deliberately reported as separate facts — see `MEDSCI_AUDIT.md`).
+
+The toolkit is *designed to reduce common manuscript-preparation errors*; it does **not** guarantee correctness and is **not** clinically validated.
+
 ## Setup
 
 **New to Python, R, or the command line?** The full step-by-step guide for clinicians is in [`docs/setup/`](docs/setup/README.md):
@@ -622,7 +673,14 @@ Every contribution is gated the same way the maintainers are: it must be a self-
 file, pass the CI (`validate.yml` — PII scan, structure, catalog consistency), and carry no
 patient or author identifiers. See [`CONTRIBUTING.md`](CONTRIBUTING.md) for the PR checklist
 and the PII/publication hygiene rules. New ideas that don't fit a template? Open a
-[skill request](https://github.com/Aperivue/medsci-skills/issues/new?template=skill_request.yml).
+[skill request](https://github.com/Aperivue/medsci-skills/issues/new?template=skill_request.yml)
+or a [detector request](https://github.com/Aperivue/medsci-skills/issues/new?template=detector_request.yml).
+
+**Governance:** [`ROADMAP.md`](ROADMAP.md) (priorities + scope boundary),
+[`MAINTAINERS.md`](MAINTAINERS.md) (roles — clinical authority stays with the founder),
+[`docs/maintainer_workflow.md`](docs/maintainer_workflow.md) (review + release process),
+and [`SECURITY.md`](SECURITY.md) (vulnerability reporting + the medical-scope boundary).
+A change that touches a medical/research claim needs Clinical-Lead review.
 
 ## In the Wild
 
