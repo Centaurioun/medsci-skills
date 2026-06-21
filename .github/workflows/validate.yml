@@ -33,6 +33,9 @@ jobs:
       - name: Run validate_routing_assets.py (SKILL.md asset references must exist)
         run: python3 scripts/validate_routing_assets.py --strict
 
+      - name: Run validate_routing_assets.py self-test (dangling references/ pointer fails)
+        run: bash tests/test_routing_assets.sh
+
       - name: Run check_domain_probe_sync.py (vendored domain probes must be byte-identical)
         run: python3 scripts/check_domain_probe_sync.py --strict
 
