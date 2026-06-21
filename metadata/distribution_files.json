@@ -23,13 +23,28 @@
     },
     {
       "path": "installers/install.py",
-      "size": 10209,
-      "sha256": "3244dbef06b492a528a98b60d0f830039f0cc61a4caf9e0185bf3925ecb0eb42"
+      "size": 11602,
+      "sha256": "7cf85ce72b0476381e6d4e93719e87a90d9cecd223c24837fb8bfca7b2dd81f2"
     },
     {
       "path": "installers/medsci_txn.py",
       "size": 14829,
       "sha256": "0cb950a98ffcf027c8fa090e1352f7d3052e928934bc2f3a21ce420b631866d0"
+    },
+    {
+      "path": "installers/update-macos.command",
+      "size": 535,
+      "sha256": "b5eafc89896ad022ead1db3e431f021ec4f734a4fe0cd0ac170b9d25fa80bddf"
+    },
+    {
+      "path": "installers/update-windows.cmd",
+      "size": 383,
+      "sha256": "095ba6d2a720ced75ff04dbe860480baec658bc2e90afbe9c4138fc9eb2702e2"
+    },
+    {
+      "path": "installers/update.py",
+      "size": 19308,
+      "sha256": "9d8baaf4cddc189241a0e8387a4cd8790c634f373855818d26624331b17d0dbe"
     },
     {
       "path": "skills/academic-aio/SKILL.md",

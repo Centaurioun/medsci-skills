@@ -526,6 +526,26 @@ See [docs/classroom_distribution_plan.md](docs/classroom_distribution_plan.md) a
 
 > **Tip:** Not sure which skill to use? Start with `/orchestrate` -- it will classify your request and route you to the right tool.
 
+## Updating
+
+MedSci Skills updates often. You do **not** need GitHub, git, or the command line to stay current.
+
+- **One click (recommended for the classroom install).** After installing, an updater is placed at
+  `~/.medsci-skills/updater/` (and, if you chose `--desktop-launcher`, an **"Update MedSci Skills"**
+  icon on your Desktop). Double-click it: it downloads the latest release from GitHub, verifies it,
+  and re-installs — transactionally, so an interrupted update never corrupts your install.
+- **Already installed an old copy?** Re-download the latest classroom ZIP **once** and double-click
+  the installer; from then on the one-click updater is in place for every future update.
+- **Terminal users:** `npx medsci-skills@latest install` always installs the latest.
+- **Just checking:** `python3 installers/install.py --check-update` reports whether a newer version
+  is available and installs nothing.
+- **Claude Code plugin marketplace:** third-party marketplace **auto-update is off by default** —
+  enable it in Claude Code or run a manual plugin update.
+
+Updates connect only to GitHub, send no information about your machine or work, and create no
+telemetry or tracking. Modified skills are backed up before an update and never auto-deleted. See
+the [update privacy & data notice](docs/update_privacy.md).
+
 ## Key Features
 
 ### Autonomous E2E Pipeline
