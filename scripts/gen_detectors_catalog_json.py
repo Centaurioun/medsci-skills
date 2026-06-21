@@ -75,6 +75,8 @@ FAMILY_BY_ID: dict[str, str] = {
     "check_checklist_version": "reporting_compliance",
     "check_prisma_figure": "reporting_compliance",
     "check_wordcount_cap": "reporting_compliance",
+    "check_disclosure_availability": "reporting_compliance",
+    "check_summary_box": "reporting_compliance",
     # Data preparation & validation
     "check_structural_zero": "data_preparation",
     "check_reverse_coding": "data_preparation",

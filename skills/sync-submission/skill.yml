@@ -42,4 +42,5 @@ validation_commands:
   - "python3 scripts/cross_document_n_check.py"
   - "bash tests/test_wordcount_cap.sh"
   - "bash tests/test_assemble_supplement.sh"
+  - "bash tests/test_disclosure_availability.sh"
 evidence_surface: bundled_script

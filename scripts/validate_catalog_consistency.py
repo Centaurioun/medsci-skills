@@ -71,6 +71,22 @@ SKILLS_TAGLINE_FILES = ["README.md"]
 # only the literal badge count is checked, never arbitrary "Skills" prose.
 SKILLS_BADGE_FILES = ["README.md"]
 
+# Files carrying the catalog-total DETECTOR claim. MEDSCI_AUDIT.md drifted once
+# (lead said 27 while the SSOT was 28) because no gate watched it. The patterns
+# below are anchored to the *current-total* phrasings ONLY — they must never match
+# historical/evaluation numbers in the same file (e.g. "brought the catalog to 24",
+# "19 DefectSpec rows", "n=21", or the per-family sub-counts in the family table),
+# which are legitimately different facts. A new doc citing the detector total must
+# be added here with an anchored pattern.
+DETECTOR_CLAIM_FILES = ["MEDSCI_AUDIT.md"]
+DETECTOR_CLAIM_PATTERNS = [
+    r"\b(\d{1,3})\s+stdlib-only detectors\b",
+    r"\bThe\s+(\d{1,3})\s+detectors\s+fall into\b",
+    r"Current detector catalog:\s*(\d{1,3})\b",
+    r'"(\d{1,3})\s+detectors,\s*validated\b',
+    r"\bcover all\s+(\d{1,3})\s+detectors\b",
+]
+
 
 def doc_claims() -> list[tuple[str, int, int, str]]:
     """Return (file, claimed, expected, context) for every count claim found.
@@ -112,6 +128,17 @@ def doc_claims() -> list[tuple[str, int, int, str]]:
         for i, line in enumerate(f.read_text(encoding="utf-8").splitlines(), 1):
             for m in badge_re.finditer(line):
                 out.append((rel, int(m.group(1)), s, f"L{i} skills badge"))
+
+    d = truth["integrity_detectors"]
+    det_res = [re.compile(p, re.IGNORECASE) for p in DETECTOR_CLAIM_PATTERNS]
+    for rel in DETECTOR_CLAIM_FILES:
+        f = ROOT / rel
+        if not f.exists():
+            continue
+        for i, line in enumerate(f.read_text(encoding="utf-8").splitlines(), 1):
+            for rx in det_res:
+                for m in rx.finditer(line):
+                    out.append((rel, int(m.group(1)), d, f"L{i} detector total"))
     return out
 
 

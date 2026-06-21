@@ -27,6 +27,8 @@
 **Validation**
 
 - `python3 scripts/validate_schema.py <summary-box-file>`
+- `python3 scripts/check_summary_box.py --manuscript <file> --journal <stem> --strict`
+- `bash tests/test_summary_box.sh`
 
 **Evidence** — `bundled_script`
 
@@ -40,10 +42,12 @@
 - `oac_funding_checklist.yaml`
 - `reporting_guideline_mapping.md`
 - `schema_markup_templates/` (5 files)
+- `summary_box_specs.json`
 
 **Scripts** (`skills/academic-aio/scripts/`):
 
 - `batch_metadata_audit.py`
+- `check_summary_box.py`
 - `validate_schema.py`
 
 **Templates** (`skills/academic-aio/templates/`):

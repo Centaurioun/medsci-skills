@@ -33,4 +33,6 @@ known_limitations:
   - "Does not draft new scientific content; optimizes existing approved text only."
 validation_commands:
   - "python3 scripts/validate_schema.py <summary-box-file>"
+  - "python3 scripts/check_summary_box.py --manuscript <file> --journal <stem> --strict"
+  - "bash tests/test_summary_box.sh"
 evidence_surface: bundled_script
