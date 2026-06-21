@@ -29,6 +29,8 @@
 
 - `/verify-refs --strict`
 - `/self-review`
+- `python3 scripts/build_title_page_affiliations.py --check manuscript/title_page.md --strict`
+- `bash tests/test_title_page_affiliations.sh`
 
 **Evidence** — `demo`
 
@@ -51,6 +53,7 @@
 
 **Scripts** (`skills/write-paper/scripts/`):
 
+- `build_title_page_affiliations.py`
 - `check_placeholders.py`
 
 ## Source

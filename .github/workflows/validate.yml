@@ -93,6 +93,9 @@ jobs:
       - name: Run academic-aio summary-box detector test
         run: bash skills/academic-aio/tests/test_summary_box.sh
 
+      - name: Run write-paper title-page affiliation-order test
+        run: bash skills/write-paper/tests/test_title_page_affiliations.sh
+
       - name: Run sync-submission cross-artifact staleness gate test (A3)
         run: bash skills/sync-submission/tests/test_cross_artifact_stale.sh
 
