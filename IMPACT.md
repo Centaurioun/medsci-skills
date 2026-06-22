@@ -9,8 +9,10 @@ are expected to fill over time.
 How the numbers are captured:
 
 - **Automated**: a weekly workflow ([`.github/workflows/metrics.yml`](.github/workflows/metrics.yml))
-  appends a row to [`metrics/traffic_log.csv`](metrics/traffic_log.csv) — stars,
-  forks, release downloads, 14-day traffic, and Zenodo views/downloads.
+  appends to [`metrics/traffic_log.csv`](metrics/traffic_log.csv) (stars, forks, release
+  downloads, 14-day traffic, Zenodo views/downloads) and — so the *source* of each wave is not
+  lost after GitHub's 14-day window — to [`metrics/referrers_log.csv`](metrics/referrers_log.csv)
+  (top referring sites) and [`metrics/paths_log.csv`](metrics/paths_log.csv) (top viewed paths).
 - **Manual**: academic citations and named downstream use are logged in
   [`docs/citations.md`](docs/citations.md) as they are discovered.
 
