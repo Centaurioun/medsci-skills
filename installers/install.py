@@ -194,6 +194,16 @@ def parse_args() -> argparse.Namespace:
         action="store_true",
         help="Simulate installs into temp dirs, assert all skills are discoverable, and touch no host directory. Exits 0 on pass.",
     )
+    parser.add_argument(
+        "--check-update",
+        action="store_true",
+        help="Report whether a newer release is available (connects to GitHub; installs nothing).",
+    )
+    parser.add_argument(
+        "--desktop-launcher",
+        action="store_true",
+        help="With your consent, also place an 'Update MedSci Skills' launcher on your Desktop.",
+    )
     return parser.parse_args()
 
 
@@ -201,6 +211,13 @@ def main() -> int:
     args = parse_args()
     if args.self_test:
         return run_self_test()
+    if args.check_update:
+        try:
+            import update  # noqa: PLC0415 - optional, only when explicitly requested
+            return update.check_update(medsci_txn.state_home())
+        except Exception as exc:  # noqa: BLE001
+            print(f"MedSci Skills: update check unavailable ({exc}).", file=sys.stderr)
+            return 1
     log_lines: list[str] = []
     log("MedSci Skills Installer", log_lines)
     log(f"Repository: {REPO_ROOT}", log_lines)
@@ -227,6 +244,17 @@ def main() -> int:
     except Exception as exc:  # noqa: BLE001
         failures.append("cursor")
         log(f"\n[cursor] FAILED: {exc}", log_lines)
+
+    # Place the one-click updater under ~/.medsci-skills/updater/ so a future update needs no
+    # GitHub/terminal even if this download folder is deleted (best-effort; never fatal).
+    if not args.dry_run:
+        try:
+            import update  # noqa: PLC0415
+            update.install_updater_home(REPO_ROOT, medsci_txn.state_home(),
+                                        lambda m: log(m, log_lines),
+                                        desktop=args.desktop_launcher)
+        except Exception as exc:  # noqa: BLE001
+            log(f"\n[updater] could not install the one-click updater ({exc}); updates still work via re-running the installer.", log_lines)
 
     if failures:
         log(f"\nCompleted with errors on: {', '.join(failures)}. Other targets are fully installed.", log_lines)
