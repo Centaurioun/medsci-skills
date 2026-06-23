@@ -358,8 +358,8 @@
     },
     {
       "path": "skills/analyze-stats/scripts/check_generated_code.py",
-      "size": 14525,
-      "sha256": "b9918728e4eac298fdb6adffa2a79faf835b395b65bace69409c190e88c13619"
+      "size": 15024,
+      "sha256": "b8643d9d9a4b600af428604811135fc27cee6eb2140bdae5e393ed9b3be37fae"
     },
     {
       "path": "skills/analyze-stats/skill.yml",
@@ -2963,13 +2963,13 @@
     },
     {
       "path": "skills/self-review/scripts/check_classical_style.py",
-      "size": 10067,
-      "sha256": "5cf7f9a331a4ebcb6f8523fcb5fd1b872079e3bb6e00bf9821a03d504174fdaa"
+      "size": 10953,
+      "sha256": "3b5c85edc57ee607a2b0a10898d68ac163ce3be6fe50b82c8c11490d7bc2705a"
     },
     {
       "path": "skills/self-review/scripts/check_cohort_arithmetic.py",
-      "size": 23363,
-      "sha256": "4ef7bded82091bc6cac8bf35cfa19bc1651acb7e0df2aa8b742bd7a04c8b3991"
+      "size": 23868,
+      "sha256": "55933d25d824bf073c0a8b7abc42d2f160c459a288ab932c50d63cf8c03afd37"
     },
     {
       "path": "skills/self-review/scripts/check_confounding_completeness.py",
@@ -2998,8 +2998,8 @@
     },
     {
       "path": "skills/self-review/scripts/check_scope_coherence.py",
-      "size": 9538,
-      "sha256": "45915b2736f0356e1b2e827939090e5034a01ba5c310b952dd13ad6f2df45a61"
+      "size": 10818,
+      "sha256": "820dfc264c2a4f62c79c0c7123a3e1a8b59a100b89654617a08ff55deeb25a75"
     },
     {
       "path": "skills/self-review/skill.yml",
