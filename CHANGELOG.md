@@ -2,6 +2,13 @@
 
 ## [Unreleased]
 
+## [4.8.0] - 2026-06-24
+
+The **review-harvest batch**: deterministic detector hardening promoted from real-manuscript review
+cycles — four false-positive fixes, two new gates, nine reviewer-side domain probes, and a
+design-stage gate. **Additive and backward-compatible** — no skill, CLI, or output-path change;
+skills 45 and reporting guidelines 36 unchanged; analysis-integrity detectors **30 → 32**.
+
 ### Added
 
 - **Reader-facing supplement / multi-file hygiene gate** — new `check_supplement_hygiene.py`

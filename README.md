@@ -268,6 +268,12 @@ The E2E pipeline (`orchestrate --e2e`) produces everything up to `qc/`. The `sub
 
 ## What's New
 
+**v4.8** is the **review-harvest batch** — deterministic detector hardening promoted from real-manuscript review cycles. Additive and backward-compatible; still 45 skills / 36 guidelines, analysis-integrity detectors **30 → 32**:
+
+- **Two new gates** — `check_supplement_hygiene.py` lints the rendered supplement / tables / caption files (not just the manuscript) for §-labels, placeholders, build markers, response-letter framing, and unresolved body↔supplement cross-references; `check_null_calibration.py` flags a headline negative/equivalence claim made without a minimum-detectable-effect / power / equivalence statement.
+- **Four detector false-positive fixes** — gates no longer fire on a recommended colorblind-safe palette, author-footnote `§` daggers, a correctly-hedged disclaimer, or a tier-label digit; each with a regression fixture and three newly CI-wired test suites.
+- **Nine reviewer-side domain probes** (SR/MA, observational, diagnostic, AI-overclaiming, survival) plus a `/design-study` design-stage ceiling gate for perceptual/reader-AI studies and a reusable confidence-weighted-rating→AUC monotonicity template.
+
 **v4.7** is the **self-update foundation** — physician-researchers stay current without GitHub, git, or a terminal. Additive and backward-compatible; still 45 skills / 36 guidelines / 30 detectors:
 
 - **Transactional, crash-recoverable installer.** Each install runs through a durable journal state machine recovered on the next run (roll back / forward-clean / fail-closed), with per-target SHA-256 inventories — your modified or third-party skills are backed up and never clobbered or auto-deleted.
