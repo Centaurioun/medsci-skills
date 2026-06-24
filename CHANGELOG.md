@@ -2,6 +2,41 @@
 
 ## [Unreleased]
 
+### Added
+
+- **Reader-facing supplement / multi-file hygiene gate** — new `check_supplement_hygiene.py`
+  (`/self-review`) lints the rendered supplement, a separately-built tables file, and caption files
+  (not just `manuscript.md`) for the technical-check-fatal residue that hides there: `§`/`§L` internal
+  labels, unfilled placeholders (`Table SX`, `[Authors]`, figure-path globs, build-dir paths), build
+  markers (`[VERIFY]`/`TODO`), response-to-reviewers framing, planning residue, and body↔supplement
+  cross-reference numbers that don't resolve. `check_artifact_coverage.py` gains
+  `PROMISED_STAT_NO_VALUE` + a `--supplement` corpus (a bound/ceiling/de-confounded statistic promised
+  but never given a number anywhere). (#187)
+- **Power-aware null-interpretation gate** — new `check_null_calibration.py` (`/self-review`)
+  flags a headline negative/equivalence claim ("no synergy", "not associated") that carries no
+  minimum-detectable-effect, power, equivalence-margin/TOST, or CI-compatibility statement. Plus a
+  reusable `rating_monotonicity.py` template (`/analyze-stats`) that catches a folded
+  confidence-weighted (call × confidence) → AUC encoding, and a `/design-study` design-stage ceiling
+  gate for perceptual/reader-AI studies (6 ceiling-breakers set before data lock). (#188)
+- **Nine reviewer-side domain probes** across the shared peer-review/self-review modules: SR/MA
+  small-k enrollment-overlap, mixed-denominator pooling, prospective-registration chronology, and
+  boundary-degenerate proportions (P14–P17); observational selection-on-availability and
+  serial-imaging lesion-tracking (O15/O16); diagnostic exclusion-flow ↔ prose + modality-safety (D8);
+  AI arm-task-vs-deployment-workflow (AO6); and a survival apparent-vs-optimism deterministic tell
+  (S7). (#186)
+- **Integrity detector count: 30 → 32.**
+
+### Fixed
+
+- **Four detector false positives** that fired Major on legitimate (often recommended) patterns:
+  `check_generated_code` no longer flags a hex-color palette (the colorblind-safe WONG palette
+  `make-figures` recommends) as hand-typed tabular data; `check_classical_style` fires the `§` AI-tell
+  only on a section cross-reference, not on author-footnote daggers; `check_scope_coherence` clears
+  `CROSS_SECTIONAL_PROGNOSTIC` when the prognostic token sits inside a negation/deferral frame; and
+  `check_cohort_arithmetic` no longer mis-binds the `RATE_BACKCALC` numerator to a tier label's digit
+  or a decimal's fraction. Each ships a regression fixture; three previously-unwired test suites are
+  now CI-wired. (#185)
+
 ### Changed
 
 - **Release pipeline now also publishes to npm** (idempotent, with npm provenance via OIDC), so the
