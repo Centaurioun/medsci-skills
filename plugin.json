@@ -1,0 +1,16 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "medsci-skills",
+  "version": "5.24.0",
+  "description": "Medical and scientific research Agent Skills from the MedSci Skills project, maintained as an updateable fork for use across compatible agent clients.",
+  "repository": "https://github.com/Centaurioun/medsci-skills",
+  "license": "MIT",
+  "keywords": [
+    "medical-research",
+    "academic-writing",
+    "agent-skills",
+    "literature-review",
+    "biostatistics",
+    "reporting-guidelines"
+  ]
+}
