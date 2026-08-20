@@ -256,7 +256,7 @@ def render(catalog: dict) -> str:
 def main() -> int:
     ap = argparse.ArgumentParser(description="Generate metadata/skills_catalog.json.")
     ap.add_argument("--check", action="store_true",
-                    help="verify the catalog is in sync; exit 1 on drift (no writes)")
+                    help="verify the catalog is in sync; exit 1 on drift (CI gate)")
     ap.add_argument("--skills-dir", type=Path, default=SKILLS_DIR,
                     help="skills/ directory to scan (default: repo skills/; for tests)")
     ap.add_argument("--out", type=Path, default=OUT,
