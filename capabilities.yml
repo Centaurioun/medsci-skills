@@ -67,6 +67,19 @@ domains:
     overlaps:
       - write-paper
     rule: Generates figure files and figure manifests; manuscript text consumes them.
+  periodontology_domain_expertise:
+    owner: periodontology-research
+    overlaps:
+      - design-study
+      - analyze-stats
+      - make-figures
+      - write-paper
+      - self-review
+      - check-reporting
+    rule: >
+      Supplies periodontal/dental terminology, measurement, hierarchy, clinical-context,
+      and interpretation constraints; delegates general design, statistics, figures,
+      writing, review, reporting, and evidence authority to their existing owners.
 
 # umbrellas group related domains under a single routing name for /orchestrate.
 # An umbrella is a read-only view; edits and ownership still live in `domains:`.
