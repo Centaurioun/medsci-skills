@@ -50,6 +50,7 @@ CATEGORY_BY_OWNER_DOMAIN: dict[str, tuple[str, str]] = {
     "data_preparation": ("data_study_design", "Data & Study Design"),
     "data_documentation": ("data_study_design", "Data & Study Design"),
     "dataset_versioning": ("data_study_design", "Data & Study Design"),
+    "periodontology_domain_expertise": ("data_study_design", "Data & Study Design"),
     # Model engineering & validation (v5.0 lane — its own storefront category as of
     # the v5.0.0 major: design an architecture, scaffold a reproducible repo, validate
     # the model, report it, and evaluate models / LLMs-MLLMs on clinical tasks).
@@ -255,7 +256,7 @@ def render(catalog: dict) -> str:
 def main() -> int:
     ap = argparse.ArgumentParser(description="Generate metadata/skills_catalog.json.")
     ap.add_argument("--check", action="store_true",
-                    help="verify the catalog is in sync; exit 1 on drift (CI gate)")
+                    help="verify the catalog is in sync; exit 1 on drift (no writes)")
     ap.add_argument("--skills-dir", type=Path, default=SKILLS_DIR,
                     help="skills/ directory to scan (default: repo skills/; for tests)")
     ap.add_argument("--out", type=Path, default=OUT,
