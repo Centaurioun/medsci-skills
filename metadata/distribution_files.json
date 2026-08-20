@@ -3268,8 +3268,8 @@
     },
     {
       "path": "skills/orchestrate/SKILL.md",
-      "size": 41766,
-      "sha256": "9b72dde92177d7b21df7548df650349d8f77c48c9cb5aabdff89f734cdb4ae21"
+      "size": 42491,
+      "sha256": "03dd310c4199e4393e554c9337b4de9f87a96fc4e465c1db9b9f05331a716c55"
     },
     {
       "path": "skills/orchestrate/references/dialogue_nodes.md",
@@ -3595,6 +3595,21 @@
       "path": "skills/peer-review/skill.yml",
       "size": 2346,
       "sha256": "42bd6cc388a3802960ddf3e46b2ca226926bd4c9a779e6802b43e9fbb4172bac"
+    },
+    {
+      "path": "skills/periodontology-research/SKILL.md",
+      "size": 11074,
+      "sha256": "105a90a3afbc0a9562a98018fe2610cd6c585e2f65b4ec91e9f815a474d0bb5c"
+    },
+    {
+      "path": "skills/periodontology-research/references/periodontology-domain-profile.md",
+      "size": 13171,
+      "sha256": "201232e0cd436ca151152530f94742c78bf93a21c9d71f79efbcad8d36a32e2f"
+    },
+    {
+      "path": "skills/periodontology-research/skill.yml",
+      "size": 2236,
+      "sha256": "21d527b8f46ccad3fc202568d1100ddd5930368fb6bfdc5325c34fec12c01f6a"
     },
     {
       "path": "skills/polish-language/SKILL.md",
