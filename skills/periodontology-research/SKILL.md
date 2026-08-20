@@ -6,7 +6,7 @@ description: >
   and handoff decisions without replacing MedSci's existing design, statistics, evidence, figure,
   writing, review, or reporting owners.
 triggers: periodontology research, periodontal study, periodontitis research, gingivitis research, peri-implant research, periodontal measurements, probing depth, clinical attachment, bleeding on probing, patient tooth site hierarchy, oral-systemic periodontal framing
- tools: Read, Write, Edit, Grep, Glob
+tools: Read, Write, Edit, Grep, Glob
 model: inherit
 ---
 
