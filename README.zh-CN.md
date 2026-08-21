@@ -4,14 +4,14 @@
 
 [English](README.md) | [简体中文](README.zh-CN.md)
 
-**58 项实际有效的技能。** 由医生兼研究员构建，并在真实出版物上进行了测试。
+**59 项实际有效的技能。** 由医生兼研究员构建，并在真实出版物上进行了测试。
 
 *MedSci Skills 是一款为医生和医学工程研究人员提供的端到端研究工具——设计→支架→验证→发布——用于临床手稿及其背后的医疗人工智能模型。它的护城河是合规层——47 条报告指南和偏差风险工具、参考/引文验证以及同行评审之前的确定性完整性门——现在通过模型工程通道进行扩展，该通道支持可重复、防泄漏的培训存储库并审核模型验证。临床AI模型研究工程在范围内；通用人工智能科学家平台则不然。它的竞争重点是临床提交的可靠性，而不是技能数量。*
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Release](https://img.shields.io/github/v/release/Aperivue/medsci-skills?style=flat-square&color=blue)](https://github.com/Aperivue/medsci-skills/releases/latest)
 [![CI](https://img.shields.io/github/actions/workflow/status/Aperivue/medsci-skills/validate.yml?branch=main&style=flat-square&label=CI)](https://github.com/Aperivue/medsci-skills/actions/workflows/validate.yml)
-![Skills](https://img.shields.io/badge/Skills-58-brightgreen?style=flat-square)
+![Skills](https://img.shields.io/badge/Skills-59-brightgreen?style=flat-square)
 [![npm](https://img.shields.io/npm/v/medsci-skills?style=flat-square&label=npm&color=cb3837)](https://www.npmjs.com/package/medsci-skills)
 [![npm downloads](https://img.shields.io/npm/dw/medsci-skills?style=flat-square&label=npm%20downloads&color=cb3837)](https://www.npmjs.com/package/medsci-skills)
 [![Watch the 2-min intro](https://img.shields.io/badge/▶_Watch-2--min_intro-FF0000?style=flat-square&logo=youtube&logoColor=white)](https://youtu.be/MclQ_RIofpE)

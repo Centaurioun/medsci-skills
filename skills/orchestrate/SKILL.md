@@ -41,6 +41,7 @@ You do NOT do the work yourself. You classify, plan, and delegate.
 |-------|--------|---------------|
 | **search-lit** | Literature | Find papers, verify citations, build reference lists, check if a topic has been studied |
 | **design-study** | Methodology | Review study design, identify leakage/bias, pick reporting guideline, validate analysis plan |
+| **periodontology-research** | Periodontology | Apply periodontal/peri-implant terminology, measurement hierarchy, treatment-response, and oral-systemic domain constraints; then hand procedural work to existing owners |
 | **intake-project** | Project setup | New or messy project folder, "what is this project?", classify and scaffold |
 | **manage-project** | Project mgmt | Scaffold directories, track progress, generate checklists and timelines |
 | **analyze-stats** | Statistics | Generate R/Python code for diagnostic accuracy, demographics, meta-analysis stats, agreement, regression (logistic/linear), propensity score, repeated measures |
@@ -109,6 +110,7 @@ When the user's request arrives, classify it into one of these intents:
 |-----------------------------|----------|
 | "Find papers about X" / "Search PubMed for X" | `/search-lit` |
 | "Is my study design sound?" / "Check for data leakage" | `/design-study` |
+| "Review the periodontal constructs" / "Check patient-tooth-site hierarchy" / "Audit peri-implant terminology" / "Check oral-systemic periodontal framing" | `/periodontology-research` |
 | "I have a messy folder, help me organize" | `/intake-project` |
 | "Set up a new project" / "Create project scaffold" | `/manage-project init` |
 | "Run the statistics" / "Make Table 1" | `/analyze-stats` |
@@ -144,6 +146,12 @@ When the user's request arrives, classify it into one of these intents:
 | "AI search optimization" / "Perplexity-friendly abstract" / "RAG visibility" / "GEO checklist" / "Elicit/Consensus 노출" | `/academic-aio` |
 | "Remove AI patterns" / "AI 티 제거" / "humanize this section" / "GPT 흔적 지워줘" | `/humanize` |
 | "Review someone else's manuscript" / "Journal club critique draft" / "외부 논문 리뷰 답변" | `/peer-review` |
+
+For a **multi-step periodontal or peri-implant research task**, use
+`/periodontology-research` only to surface domain constraints, then route the
+actual methodological/statistical/figure/reporting/writing/review work to the
+existing owning skill. Do not make the domain skill a wrapper that absorbs those
+procedures.
 
 ### Multi-skill workflows (plan then execute sequentially)
 

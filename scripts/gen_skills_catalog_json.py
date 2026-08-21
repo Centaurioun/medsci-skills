@@ -50,6 +50,7 @@ CATEGORY_BY_OWNER_DOMAIN: dict[str, tuple[str, str]] = {
     "data_preparation": ("data_study_design", "Data & Study Design"),
     "data_documentation": ("data_study_design", "Data & Study Design"),
     "dataset_versioning": ("data_study_design", "Data & Study Design"),
+    "periodontology_domain_expertise": ("data_study_design", "Data & Study Design"),
     # Model engineering & validation (v5.0 lane — its own storefront category as of
     # the v5.0.0 major: design an architecture, scaffold a reproducible repo, validate
     # the model, report it, and evaluate models / LLMs-MLLMs on clinical tasks).
