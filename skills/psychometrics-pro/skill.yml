@@ -1,0 +1,50 @@
+schema_version: 2
+name: psychometrics-pro
+layer: D
+owner_domain: psychometrics_pro_measurement_science
+maturity: experimental
+
+when_to_use: "Apply psychometric and patient-reported outcome measurement constraints when construct definition, instrument suitability, measurement properties, score interpretation, meaningful change, cross-cultural adaptation, or psychometric claim force materially affects the research task."
+when_NOT_to_use: "Do not use merely because a questionnaire or scale is present, and do not replace ordinary statistical computation, general study design, sample-size calculation, literature discovery, source verification, figures, reporting audit, manuscript drafting, review, or persistence."
+
+inputs:
+  - "construct/outcome concept and intended use when available"
+  - "instrument/PROM name, version, population, and language/cultural context when available"
+  - "scoring rules, item/subscale/total-score structure, or study design when material"
+  - "available psychometric results or protocol/manuscript excerpt requiring interpretation"
+outputs:
+  - "psychometrics / PRO measurement-science decision notes and handoff recommendations"
+side_effects:
+  - writes_decision_notes
+downstream_consumers:
+  - orchestrate
+  - design-study
+  - calc-sample-size
+  - analyze-stats
+  - search-lit
+  - verify-refs
+  - make-figures
+  - check-reporting
+  - write-paper
+  - self-review
+  - peer-review
+forbidden_actions:
+  - replace_statistical_computation_owner
+  - write_project_artifacts_beyond_decision_notes
+  - claim_source_verification_or_citation_authority
+  - create_canonical_manuscript_or_analysis_artifacts
+
+# v2.1 quality card
+purpose: "Supply bounded measurement-science interpretation, psychometric evidence ceilings, PRO/PROM distinctions, meaningful-change constraints, cross-cultural/adaptation cues, and handoffs to existing MedSci procedure owners."
+safety_boundaries:
+  - "Measurement-science expertise does not authorize citations or verify external standards, manuals, scoring rules, thresholds, or instrument claims."
+  - "Does not compute statistics or replace /analyze-stats."
+  - "Does not replace general study design, sample-size, discovery, figure, reporting, writing, or review owners."
+  - "Does not equate reliability with validity, statistical change with responsiveness, responsiveness with meaningful change, or MCID/MID with MDC."
+  - "Current standard-dependent thresholds/rating rules require authoritative source verification rather than model-memory authority."
+  - "Advisory Layer-D output only: writes decision notes, not canonical analysis or manuscript artifacts."
+known_limitations:
+  - "Experimental methodology/domain profile; no frozen contemporary guideline or instrument-specific threshold is treated as timeless authority."
+  - "Advanced Rasch/IRT or other measurement models may be recognized as downstream needs but are not a dedicated execution engine in V1."
+  - "Licensing/copyright, automatic translation, questionnaire registries, regulatory submission, and full systematic-review workflows are outside V1."
+evidence_surface: not_yet_demonstrated
