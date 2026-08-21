@@ -6,7 +6,7 @@ description: >
   and cross-cultural-adaptation constraints without replacing MedSci's existing statistics,
   design, evidence, reporting, figure, writing, review, or persistence owners.
 triggers: psychometrics, psychometric properties, patient-reported outcome, patient reported outcome, PRO, PROM, questionnaire validation, scale validation, construct validity, content validity, structural validity, internal consistency, reliability, test-retest, measurement error, responsiveness, interpretability, MCID, MID, MDC, SEM, measurement invariance, cross-cultural validity, cross cultural adaptation, questionnaire translation validation
- tools: Read, Write, Edit, Grep, Glob
+tools: Read, Write, Edit, Grep, Glob
 model: inherit
 ---
 
