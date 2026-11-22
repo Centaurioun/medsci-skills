@@ -19,6 +19,8 @@ yourself — invoke the skill that owns it.
 |-------|--------|---------------|
 | **search-lit** | Literature | Find papers, verify citations, build reference lists, check if a topic has been studied |
 | **design-study** | Methodology | Review study design, identify leakage/bias, pick reporting guideline, validate analysis plan |
+| **periodontology-research** | Periodontal domain | Apply periodontal/peri-implant terminology, nested patient-tooth-site measurement and clinical inference constraints; advisory only, not a second statistics/evidence/writing owner |
+| **psychometrics-pro** | Measurement science | Apply PRO/PROM validity, reliability, responsiveness, score meaning, adaptation and interpretation constraints; advisory only, not a second analysis/evidence/writing owner |
 | **intake-project** | Project setup | New or messy project folder, "what is this project?", classify and scaffold |
 | **manage-project** | Project mgmt | Scaffold directories, track progress, generate checklists and timelines |
 | **analyze-stats** | Statistics | Generate R/Python code for diagnostic accuracy, demographics, meta-analysis stats, agreement, regression (logistic/linear), propensity score, repeated measures |
