@@ -478,6 +478,20 @@ Keep the head to a short greeting, a one-paragraph "in brief," an optional compa
 
 ## Step 6: Change Log
 
+**Optional cross-round issue ledger (proposal-only):** `scripts/revision_ledger.py` is a stdlib JSON state transformer for situations where R1/R2 comments need an explicit lifecycle beyond the normal change-log table. It reads a ledger from `--input` and prints a proposed updated JSON envelope to stdout; **it never writes a file, patches a manuscript, or approves its own changes**. It supports:
+
+```bash
+python3 "${CLAUDE_SKILL_DIR}/scripts/revision_ledger.py" init
+python3 "${CLAUDE_SKILL_DIR}/scripts/revision_ledger.py" add --input ledger.json \
+  --id R1-1 --round R1 --severity major --comment "Clarify the primary endpoint"
+python3 "${CLAUDE_SKILL_DIR}/scripts/revision_ledger.py" set --input ledger.json \
+  --id R1-1 --status PATCH_PROPOSED --reason "Response draft ready"
+python3 "${CLAUDE_SKILL_DIR}/scripts/revision_ledger.py" report --input ledger.json
+```
+
+States follow `OPEN → TRIAGED → EVIDENCE_REQUIRED / AUTHOR_DECISION_REQUIRED / PATCH_PROPOSED → APPROVED → APPLIED_CONFIRMED → CLOSED` with reasoned withdrawal and permitted backward transitions. `APPROVED` requires an identified author decision; `APPLIED_CONFIRMED` requires a **canonical write receipt**; `CLOSED` requires a verified location in the revised manuscript. An issue without supporting evidence or authorization remains open. This **supplements**, not replaces, the usual R1/R2 point-by-point response and `check_response_claims.py` verification. Under Academic Research, the only allowed canonical persistence is Academic Write Coordinator → Manuscript Forge. Never use a shell redirect to bypass that authority.
+
+
 **Output location:** `revision/R[N]/change_log_R[N].md`
 
 | Comment | Type | Change Made | Section | Page | Lines |
