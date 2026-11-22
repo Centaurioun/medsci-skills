@@ -119,22 +119,59 @@ def validate_ledger(obj: dict) -> None:
             reject(f"Invalid review event list for {rid}")
 
 
-def match_indexes(ledger: dict, candidate: dict) -> tuple[list[int], list[int]]:
-    same, advisory = [], []
-    for idx, old in enumerate(ledger["records"]):
-        strong = ((candidate["doi"] and old["doi"] and candidate["doi"] == old["doi"])
-                  or (candidate["pmid"] and old["pmid"] and candidate["pmid"] == old["pmid"]))
-        title_year = (
-            candidate["title"] and old["title"] and candidate["year"] and old["year"]
-            and candidate["year"] == old["year"]
-            and title_key(candidate["title"]) == title_key(old["title"])
-        )
-        if strong or (title_year and not any(
-                (candidate["doi"], candidate["pmid"], old["doi"], old["pmid"]))):
-            same.append(idx)
-        elif title_year:
-            advisory.append(idx)
-    return same, advisory
+class IdentityIndex:
+    """Indexed bibliographic identity lookup, rebuilt once per incoming batch.
+
+    Index values are record offsets, not stored cross-run record IDs. Record IDs
+    are always the ledger's durable SRnnnnnn values.
+    """
+
+    def __init__(self, records: list[dict]):
+        self.by_doi = defaultdict(set)
+        self.by_pmid = defaultdict(set)
+        self.by_title_year = defaultdict(set)
+        for offset, record in enumerate(records):
+            self.register(offset, record)
+
+    def register(self, offset: int, record: dict) -> None:
+        if record["doi"]:
+            self.by_doi[record["doi"]].add(offset)
+        if record["pmid"]:
+            self.by_pmid[record["pmid"]].add(offset)
+        if record["title"] and record["year"]:
+            self.by_title_year[(title_key(record["title"]), record["year"])].add(offset)
+
+    def find(self, candidate: dict, records: list[dict]) -> tuple[list[int], list[int]]:
+        offsets = set()
+        if candidate["doi"]:
+            offsets.update(self.by_doi.get(candidate["doi"], ()))
+        if candidate["pmid"]:
+            offsets.update(self.by_pmid.get(candidate["pmid"], ()))
+        if candidate["title"] and candidate["year"]:
+            offsets.update(self.by_title_year.get((title_key(candidate["title"]), candidate["year"]), ()))
+        matches, advisory = [], []
+        for offset in sorted(offsets):
+            old = records[offset]
+            strong = ((candidate["doi"] and old["doi"] and candidate["doi"] == old["doi"])
+                      or (candidate["pmid"] and old["pmid"] and candidate["pmid"] == old["pmid"]))
+            same_title_year = (
+                candidate["title"] and old["title"] and candidate["year"] and old["year"]
+                and candidate["year"] == old["year"]
+                and title_key(candidate["title"]) == title_key(old["title"])
+            )
+            if strong or (same_title_year and not any(
+                    (candidate["doi"], candidate["pmid"], old["doi"], old["pmid"]))):
+                matches.append(offset)
+                # Conflicting titles attached to one identifier need a human
+                # check; a matching DOI alone is not evidence that a title
+                # transcription or record mapping is scientifically correct.
+                if strong and candidate["title"] and old["title"] and (
+                    title_key(candidate["title"]) != title_key(old["title"])
+                ):
+                    advisory.append(offset)
+            elif same_title_year:
+                advisory.append(offset)
+        return matches, advisory
 
 
 def identifier_conflict(a: dict, b: dict) -> bool:
@@ -161,6 +198,7 @@ def incorporate(ledger: dict, batch: dict, import_sha: str) -> dict:
     if any(src.get("sha256") == import_sha for src in ledger["source_batches"]):
         reject("This exact import manifest was already accepted; no duplicate batch ingestion")
     stats = {"new": 0, "merged": 0, "ambiguous": 0}
+    identity_index = IdentityIndex(ledger["records"])
     for row in records:
         if not isinstance(row, dict):
             reject("Import record must be an object")
@@ -168,7 +206,7 @@ def incorporate(ledger: dict, batch: dict, import_sha: str) -> dict:
         origins = normalized_origin(row.get("origin", []))
         if not candidate["title"] and not candidate["doi"] and not candidate["pmid"]:
             reject("Imported records require title or persistent identifier")
-        matches, advisory = match_indexes(ledger, candidate)
+        matches, advisory = identity_index.find(candidate, ledger["records"])
         compatible = [i for i in matches if not identifier_conflict(ledger["records"][i], candidate)]
         collision = [i for i in matches if identifier_conflict(ledger["records"][i], candidate)]
         needs_review = bool(collision or advisory or len(compatible) > 1)
@@ -182,6 +220,7 @@ def incorporate(ledger: dict, batch: dict, import_sha: str) -> dict:
             for k in METADATA_KEYS:
                 if not old[k]:
                     old[k] = candidate[k]
+            identity_index.register(compatible[0], old)
             stats["merged"] += 1
             continue
 
@@ -196,6 +235,7 @@ def incorporate(ledger: dict, batch: dict, import_sha: str) -> dict:
             "identity_state": "PENDING_ADJUDICATION" if needs_review else "IDENTIFIED",
             "review_events": [],
         })
+        identity_index.register(len(ledger["records"]) - 1, ledger["records"][-1])
         stats["new"] += 1
         if needs_review:
             stats["ambiguous"] += 1
