@@ -371,6 +371,19 @@ Keep the head to these parts; everything else is point-by-point.
 
 ---
 
+## Optional reviewer issue continuity across rounds (proposal-only)
+
+For revision rounds needing state beyond the ordinary change log, optional
+scripts/revision_ledger.py records issue IDs and state transitions, related
+R1/R2 issue links, author decisions, source-ledger SHA guards, a real
+canonical write receipt before APPLIED_CONFIRMED, and verified revised-text
+location before CLOSED. scripts/revision_anchor_map.py gives only candidate
+exact/whitespace-normalized plaintext line ranges from a reviewer-provided
+source anchor. Ambiguous or absent anchors remain unresolved; .docx tracked
+changes are not silently flattened and native Word page/line numbers are
+not inferred. Neither helper writes, patches, approves, or saves a manuscript.
+Keep check_response_claims.py and governed AWC -> Forge persistence as owners.
+
 ## Step 6: Change Log
 
 **Output location:** `revision/R[N]/change_log_R[N].md`
