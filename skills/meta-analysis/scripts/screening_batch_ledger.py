@@ -239,6 +239,58 @@ def record_review(ledger: dict, args: argparse.Namespace) -> None:
     })
 
 
+def resolve_identity(ledger: dict, args: argparse.Namespace) -> dict:
+    """Record the human's identity decision without silently merging records."""
+    rec = next((x for x in ledger["records"] if x["record_id"] == args.record_id), None)
+    if rec is None or rec.get("identity_state") != "PENDING_ADJUDICATION":
+        reject("Only an existing pending identity can be adjudicated")
+    if not args.decided_by.strip() or not args.reason.strip():
+        reject("Identity resolution requires a named adjudicator and a reason")
+    if args.decision == "distinct":
+        if args.canonical_record_id:
+            reject("distinct cannot specify a canonical duplicate ID")
+        rec["identity_state"] = "IDENTIFIED"
+    else:
+        canonical = next((x for x in ledger["records"] if x["record_id"] == args.canonical_record_id), None)
+        if canonical is None or canonical is rec or canonical.get("identity_state") != "IDENTIFIED":
+            reject("duplicate must reference an existing identified canonical record")
+        if rec["review_events"]:
+            reject("Cannot suppress a potentially screened record as duplicate; adjudicate its review events separately")
+        rec["identity_state"] = "DUPLICATE_REFERENCE"
+        rec["canonical_record_id"] = canonical["record_id"]
+    rec.setdefault("identity_decision_events", []).append({
+        "decision": args.decision, "decided_by": args.decided_by,
+        "reason": args.reason, "linked_to": rec.get("canonical_record_id"),
+    })
+    for flag in ledger["review_required"]:
+        if args.record_id in flag.get("record_ids", []) and all(
+            x.get("identity_state") != "PENDING_ADJUDICATION"
+            for x in ledger["records"] if x["record_id"] in flag.get("record_ids", [])
+        ):
+            flag["status"] = "RESOLVED_MANUALLY"
+    return {"action": "human_identity_resolution", "record_id": rec["record_id"],
+            "identity_state": rec["identity_state"]}
+
+
+def link_report(ledger: dict, args: argparse.Namespace) -> dict:
+    """Keep record, report and study IDs separate; require human evidence."""
+    rec = next((x for x in ledger["records"] if x["record_id"] == args.record_id), None)
+    if rec is None or rec.get("identity_state") != "IDENTIFIED":
+        reject("Only a human-confirmed identified record may be linked to a report/study")
+    if not (args.report_id and args.study_id and args.decided_by and args.evidence_locator):
+        reject("Report/study links require both identifiers, adjudicator and source evidence locator")
+    if (rec.get("report_id") not in (None, args.report_id)
+            or rec.get("study_id") not in (None, args.study_id)):
+        reject("Existing report/study link conflicts: an explicit separate correction is required")
+    rec["report_id"] = args.report_id
+    rec["study_id"] = args.study_id
+    rec.setdefault("mapping_events", []).append({
+        "report_id": args.report_id, "study_id": args.study_id,
+        "decided_by": args.decided_by, "source_evidence_locator": args.evidence_locator,
+    })
+    return {"action": "human_report_study_mapping", "record_id": rec["record_id"]}
+
+
 def summarize(ledger: dict) -> dict:
     validate_ledger(ledger)
     totals = {"records": len(ledger["records"]), "pending_identity": 0,
@@ -246,7 +298,7 @@ def summarize(ledger: dict) -> dict:
               "full_text_not_available": 0}
     conflict_ids = []
     for row in ledger["records"]:
-        if row.get("identity_state") != "IDENTIFIED":
+        if row.get("identity_state") == "PENDING_ADJUDICATION":
             totals["pending_identity"] += 1
         if not row["review_events"]:
             totals["unscreened"] += 1
@@ -261,7 +313,8 @@ def summarize(ledger: dict) -> dict:
             if stage == "full_text" and "awaiting_fulltext" in latest.values():
                 totals["full_text_not_available"] += 1
     return {"counts": totals, "conflict_record_ids": sorted(set(conflict_ids)),
-            "human_identity_flags": len(ledger["review_required"])}
+            "human_identity_flags": sum(1 for x in ledger["review_required"] if x.get("status") != "RESOLVED_MANUALLY"),
+            "human_linked_records": sum(1 for x in ledger["records"] if x.get("report_id") is not None)}
 
 
 def main() -> int:
@@ -281,6 +334,22 @@ def main() -> int:
     dec.add_argument("--reason", default="")
     dec.add_argument("--locator", default="")
     dec.add_argument("--expected-ledger-sha256")
+    resolver = sub.add_parser("resolve-identity", help="Human identity adjudication without silent merging")
+    resolver.add_argument("--ledger", type=Path, required=True)
+    resolver.add_argument("--record-id", required=True)
+    resolver.add_argument("--decision", choices=["distinct", "duplicate"], required=True)
+    resolver.add_argument("--canonical-record-id", default="")
+    resolver.add_argument("--decided-by", required=True)
+    resolver.add_argument("--reason", required=True)
+    resolver.add_argument("--expected-ledger-sha256")
+    mapper = sub.add_parser("link-report", help="Explicit human record-to-report/study link")
+    mapper.add_argument("--ledger", type=Path, required=True)
+    mapper.add_argument("--record-id", required=True)
+    mapper.add_argument("--report-id", required=True)
+    mapper.add_argument("--study-id", required=True)
+    mapper.add_argument("--decided-by", required=True)
+    mapper.add_argument("--evidence-locator", required=True)
+    mapper.add_argument("--expected-ledger-sha256")
     summary = sub.add_parser("summary", help="Read-only cross-batch/dual-review status")
     summary.add_argument("--ledger", type=Path, required=True)
     args = parser.parse_args()
@@ -302,6 +371,10 @@ def main() -> int:
         elif args.command == "decide":
             record_review(ledger, args)
             details = {"action": "append_review_event", "record_id": args.record_id}
+        elif args.command == "resolve-identity":
+            details = resolve_identity(ledger, args)
+        elif args.command == "link-report":
+            details = link_report(ledger, args)
         else:
             details = summarize(ledger)
         result = {
