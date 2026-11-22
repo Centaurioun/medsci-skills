@@ -456,6 +456,8 @@ than bibliography sync, load `references/deep_reading_note_profile.md` and follo
 paper-type, evidence-depth, source-locator and TR/EN note contracts. It outputs a
 **source-grounded note proposal**, not a Zotero/Obsidian write action by default.
 
+Optional stdlib formatter: `scripts/render_deep_reading_note.py --input sourced_paper.json` accepts schema_version=1, `language` (`tr` / `en`), `paper` (title and optional verified IDs), `retrieval_depth`, `sections` (question, methods, results, critical, relevance, unknown), `claims` (claim_id, source_relation, locator/excerpt/uncertainty) and `assets` (figure/table id, source locator/caption/visual access). It emits a JSON envelope with `note_markdown`, `note_sha256`, source input hash and grounding warnings **to stdout only**. The formatter does not itself verify Zotero evidence, passage truth, PDF access or statistics, and never writes a vault or canonical note. Only format already curator-supplied source content; do not treat the result as citation authorization.
+
 - A title, DOI or abstract is not proof the full text was inspected. Label depth and
   inaccessible source portions explicitly; do not invent figure content or quotes.
 - Preserve each material observation's page/section/table/figure locator and distinguish
