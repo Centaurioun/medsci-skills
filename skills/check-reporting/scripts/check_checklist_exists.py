@@ -68,6 +68,7 @@ ALIAS_TO_STEM = {
     "amstar2": "AMSTAR2",
     "quadas": "QUADAS2",
     "quadas2": "QUADAS2",
+    "quadas3": "QUADAS3",
     "quadasc": "QUADAS_C",
     "rob2": "RoB2",
     "robinsi": "ROBINS_I",
@@ -188,6 +189,9 @@ def main() -> int:
 
     path = cdir / f"{stem}.md"
     if path.is_file():
+        if stem == "QUADAS3":
+            print("QUADAS-3 navigation guide only: obtain the current official Bristol assessment form; "
+                  "this local file is NOT a complete checklist and cannot certify a completed assessment.")
         print(f"OK: {args.guideline} -> references/checklists/{stem}.md")
         return EXIT_OK
 
