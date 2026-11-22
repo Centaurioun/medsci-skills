@@ -27,7 +27,8 @@ with specialized support for diagnostic test accuracy (DTA) meta-analyses.
 - **R templates**: `${CLAUDE_SKILL_DIR}/references/r_templates.md`
 - **Checklists**: `${CLAUDE_SKILL_DIR}/references/checklists/`
   - `PRISMA_DTA.md` -- 27-item checklist
-  - `QUADAS2.md` -- 4 domains + signalling questions
+  - `QUADAS2.md` -- legacy four-domain DTA risk-of-bias guide
+  - `QUADAS3.md` -- current QUADAS-3 six-phase estimate-level **routing aid only**; use official Bristol instrument, not this file for signalling-question scoring
   - `ROBINS_I.md` -- 7 domains + pre-assessment + synthesis recommendation
   - `RoB2.md` -- 5 domains + signalling questions + overall judgment
   - `PROBAST.md` -- 4 domains + AI extension + validation studies
@@ -60,7 +61,7 @@ with specialized support for diagnostic test accuracy (DTA) meta-analyses.
 
 | Type | RoB Tool | Statistical Model | Reporting Guideline |
 |------|----------|-------------------|-------------------|
-| **DTA** (diagnostic test accuracy) | QUADAS-2 | Bivariate / HSROC | PRISMA-DTA |
+| **DTA** (diagnostic test accuracy) | QUADAS-3 (current; source form required) or protocol-justified QUADAS-2 | Bivariate / HSROC | PRISMA-DTA |
 | **Intervention** (treatment effect) | RoB 2 (RCT) / ROBINS-I (NRSI) | Random-effects (DL/REML) | PRISMA 2020 |
 | **Prognostic** (prediction model) | QUIPS / PROBAST | Random-effects | PRISMA 2020 |
 | **Observational** (prevalence/association) | NOS / JBI | Random-effects | MOOSE |
@@ -309,12 +310,15 @@ Select tool based on meta-analysis type (see table above), then read the corresp
 
 | Tool | Checklist File |
 |------|---------------|
-| QUADAS-2 (DTA) | `${CLAUDE_SKILL_DIR}/references/checklists/QUADAS2.md` |
+| QUADAS-3 (DTA; current) | `${CLAUDE_SKILL_DIR}/references/checklists/QUADAS3.md` (navigation only; follow official Bristol assessment form) |
+| QUADAS-2 (DTA; protocol-justified legacy) | `${CLAUDE_SKILL_DIR}/references/checklists/QUADAS2.md` |
 | RoB 2 (RCT) | `${CLAUDE_SKILL_DIR}/references/checklists/RoB2.md` |
 | ROBINS-I (NRSI) | `${CLAUDE_SKILL_DIR}/references/checklists/ROBINS_I.md` |
 | PROBAST (Prediction) | `${CLAUDE_SKILL_DIR}/references/checklists/PROBAST.md` |
 | NOS (Observational) | `${CLAUDE_SKILL_DIR}/references/checklists/NOS.md` |
 | JBI (Case Series) | `${CLAUDE_SKILL_DIR}/references/checklists/JBI_Case_Series.md` |
+
+**QUADAS-3 procedure:** Before rating, obtain the current official QUADAS-3 form and its explanation-and-elaboration article (Whiting et al. 2026, DOI 10.7326/ANNALS-25-02104; https://www.bristol.ac.uk/population-health-sciences/projects/quadas/quadas-3/quadas-3-tool/). First specify each review synthesis question and its ideal test accuracy trial; then draw each study flow and identify the relevant accuracy estimates; finally assess the four domains and overall risk of bias/applicability **per selected estimate**. Preserve threshold, subgroup, source page/table, assessor and missing-information states; first three domains also consider applicability. Do not assign a single QUADAS-3 judgement to every estimate in a study, treat the local educational guide as an official assessment form, or mix QUADAS-2 with QUADAS-3 without a documented protocol decision. QUADAS-C was built for QUADAS-2 and is not presumed compatible with QUADAS-3.
 
 For AI/ML prediction models, also apply PROBAST+AI extensions.
 
@@ -436,7 +440,7 @@ occurred inside a "minor" revision-era re-analysis.
 **Goal**: Assess certainty of the body of evidence.
 
 For DTA meta-analysis, apply GRADE-DTA framework:
-1. Risk of bias (from QUADAS-2)
+1. Risk of bias (from the prespecified applicable tool: usually QUADAS-3 for current DTA reviews, or protocol-justified QUADAS-2; preserve estimate-level judgments when using QUADAS-3)
 2. Indirectness (applicability concerns)
 3. Inconsistency (heterogeneity)
 4. Imprecision (wide CIs, small sample)
