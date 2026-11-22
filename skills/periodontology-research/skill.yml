@@ -1,0 +1,42 @@
+schema_version: 2
+name: periodontology-research
+layer: D
+owner_domain: periodontology_domain_expertise
+maturity: experimental
+
+when_to_use: "Apply periodontal, peri-implant, dental, or oral-systemic domain constraints when they materially affect research terminology, measurement, hierarchy, design critique, interpretation, or manuscript consistency."
+when_NOT_to_use: "Do not use merely because oral health is mentioned, and do not replace literature discovery, source verification, statistical analysis, generic study design, figure generation, manuscript drafting, or reporting audit."
+
+inputs:
+  - "study question, protocol, or draft"
+  - "variable definitions or data dictionary when available"
+  - "analysis or results summary when interpretation is requested"
+  - "figure, table, or manuscript excerpt when domain consistency is being reviewed"
+outputs:
+  - "periodontology domain decision notes / annotations"
+side_effects:
+  - writes_decision_notes
+downstream_consumers:
+  - orchestrate
+  - design-study
+  - analyze-stats
+  - make-figures
+  - write-paper
+  - self-review
+  - check-reporting
+forbidden_actions:
+  - write_project_artifacts_beyond_decision_notes
+
+# v2.1 quality card
+purpose: "Supply bounded periodontal and peri-implant domain interpretation constraints, terminology checks, measurement/hierarchy warnings, and handoffs to existing MedSci procedure owners."
+safety_boundaries:
+  - "Domain expertise does not authorize citations or verify source claims."
+  - "Does not compute statistics or replace /analyze-stats."
+  - "Does not replace generic study-design, writing, figure, review, or reporting owners."
+  - "Does not infer unavailable clinical facts or convert missing information into certainty."
+  - "Advisory Layer-D output only: writes decision notes, not canonical analysis or manuscript artifacts."
+known_limitations:
+  - "Experimental domain profile; current guideline-specific thresholds and case definitions still require authoritative source verification."
+  - "Clinical plausibility review supports but does not replace researcher or clinician judgement."
+  - "No standalone demo or dedicated automated behavioral check is shipped with the initial profile."
+evidence_surface: not_yet_demonstrated
