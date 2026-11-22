@@ -22,6 +22,7 @@ outputs:
   - manuscript/_src/refs.bib  # SOLE WRITER via Better BibTeX auto-export "Keep updated"
   - obsidian_literature_notes
 deterministic_scripts:
+  - scripts/render_deep_reading_note.py  # optional TR/EN note proposal; no Zotero or vault write
   - scripts/check_citekey_provenance.py  # citekey ↔ library provenance; the rest uses Zotero MCP + Better BibTeX auto-export; Phase 2.7 invokes /fulltext-retrieval fetch_oa.py
 side_effects:
   - may_update_zotero
