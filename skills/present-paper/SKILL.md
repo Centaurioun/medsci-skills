@@ -480,7 +480,7 @@ Three rules that keep slides stable:
 
 For slides presenting measured clinical outcomes, diagnostic metrics, subgroup contrasts,
 study flow counts, primary figures/tables or claims from multiple papers, read
-`references/slide_evidence_manifest.md` before creating the deck. Map each material
+`references/slide_evidence_manifest.md` before creating the deck. When the presenter supplies a completed JSON manifest (schema_version=1, elements with slide_id, element_id, display_mode, source_identity, source_locator and optional expected_display_text), optionally run `scripts/audit_slide_evidence.py --manifest evidence.json --pptx talk.pptx`. This read-only OpenXML checker reports whether declared native slide text is actually present or absent and labels embedded raster figures uninspectable. It **does not** validate science, numerical agreement, images, or layout. No helper writes the deck or source data. Map each material
 slide assertion/visual to its exact source and figure/table/page locator; record units,
 denominators, uncertainty, figure rights/provenance, and whether the resulting slide
 element is **actually editable**. Missing exact values remain flagged rather than being
