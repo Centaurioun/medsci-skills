@@ -16,6 +16,7 @@ Attribution for bundled reporting guideline checklists.
 | ARRIVE_2.md | ARRIVE 2.0 | Percie du Sert N et al. PLoS Biol 2020 | CC0 |
 | PRISMA_DTA.md | PRISMA-DTA 2018 | McInnes MDF et al. JAMA 2018 | CC BY |
 | QUADAS2.md | QUADAS-2 | Whiting PF et al. Ann Intern Med 2011 | CC BY |
+| QUADAS3.md | QUADAS-3 (2026), newly authored navigation guide ONLY; official form not bundled | Whiting PF et al. Ann Intern Med 2026; doi:10.7326/ANNALS-25-02104 | Repo-authored summary text; official form copyright/licence NOT claimed |
 | RoB2.md | RoB 2 | Sterne JAC et al. BMJ 2019 | CC BY |
 | ROBINS_I.md | ROBINS-I | Sterne JAC et al. BMJ 2016 | CC BY |
 | PROBAST.md | PROBAST | Wolff RF et al. Ann Intern Med 2019 | CC BY |
@@ -26,6 +27,8 @@ Attribution for bundled reporting guideline checklists.
 | CARE.md | CARE 2013 | Gagnier JJ et al. J Clin Epidemiol 2014;67(1):46-51 | CC BY-NC 4.0 |
 | CLAIM_2024.md | CLAIM 2024 Update | Tejani AS et al. Radiol Artif Intell 2024;6(4):e240300 | RSNA, open access |
 | DECIDE_AI.md | DECIDE-AI 2022 | Vasey B et al. Nat Med 2022;28(5):924-933 | CC BY-NC 4.0 (DECIDE-AI materials) — educational summary |
+
+**QUADAS-3 notice:** `QUADAS3.md` is our own six-phase routing/recording aid, not the official instrument. The official signalling questions are deliberately not copied. Download the current form directly from the University of Bristol. Do not claim that the repository MIT license covers the original QUADAS-3 tool or article.
 
 These files are educational summaries of published assessment tools. The original
 checklist documents should be cited in any manuscript that uses them.
