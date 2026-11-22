@@ -26,6 +26,7 @@ outputs:
   - qc/refinement_regression.json
   - qc/review_coverage.json
 deterministic_scripts:
+  - scripts/report_code_lineage.py  # optional read-only static file provenance; not replication
   - scripts/check_reference_adequacy.py
   - scripts/check_perspective_structure.py
   - scripts/check_editorial_impression.py
