@@ -270,6 +270,15 @@ def record_review(ledger: dict, args: argparse.Namespace) -> None:
     events = rec["review_events"]
     if len(events) >= MAX_EVENTS:
         reject("Too many review events on one record")
+    if args.role == "adjudicator":
+        if not args.reason.strip() or not args.locator.strip():
+            reject("Adjudication requires an explicit reason and evidence locator")
+        latest = {}
+        for ev in events:
+            if ev["stage"] == args.stage and ev["role"] == "reviewer":
+                latest[ev["reviewer"]] = ev["decision"]
+        if len(latest) < 2 or len(set(latest.values())) < 2:
+            reject("Adjudication requires conflicting independent reviewer decisions")
     events.append({
         "stage": args.stage, "reviewer": args.reviewer, "role": args.role,
         "decision": args.decision, "reason": args.reason,
@@ -335,6 +344,8 @@ def summarize(ledger: dict) -> dict:
     validate_ledger(ledger)
     totals = {"records": len(ledger["records"]), "pending_identity": 0,
               "unscreened": 0, "title_abstract_conflicts": 0, "full_text_conflicts": 0,
+              "title_abstract_adjudicated": 0, "full_text_adjudicated": 0,
+              "title_abstract_insufficient_reviewers": 0, "full_text_insufficient_reviewers": 0,
               "full_text_not_available": 0}
     conflict_ids = []
     for row in ledger["records"]:
@@ -342,15 +353,35 @@ def summarize(ledger: dict) -> dict:
             totals["pending_identity"] += 1
         if not row["review_events"]:
             totals["unscreened"] += 1
+        if row.get("identity_state") != "IDENTIFIED":
+            continue
         for stage in STAGES:
             latest = {}
-            for ev in row["review_events"]:
-                if ev["stage"] == stage and ev["role"] == "reviewer":
+            last_reviewer_event = -1
+            last_adjudication = -1
+            final_decision = None
+            for index, ev in enumerate(row["review_events"]):
+                if ev["stage"] != stage:
+                    continue
+                if ev["role"] == "reviewer":
                     latest[ev["reviewer"]] = ev["decision"]
+                    last_reviewer_event = index
+                elif ev["role"] == "adjudicator":
+                    last_adjudication = index
+                    final_decision = ev["decision"]
+            if len(latest) == 1:
+                totals[stage + "_insufficient_reviewers"] += 1
             if len(set(latest.values())) > 1:
-                totals[stage + "_conflicts"] += 1
-                conflict_ids.append(row["record_id"])
-            if stage == "full_text" and "awaiting_fulltext" in latest.values():
+                if last_adjudication > last_reviewer_event:
+                    totals[stage + "_adjudicated"] += 1
+                else:
+                    totals[stage + "_conflicts"] += 1
+                    conflict_ids.append(row["record_id"])
+            effective = (final_decision
+                         if last_adjudication > last_reviewer_event else None)
+            if stage == "full_text" and (
+                    effective == "awaiting_fulltext"
+                    or (effective is None and "awaiting_fulltext" in latest.values())):
                 totals["full_text_not_available"] += 1
     return {"counts": totals, "conflict_record_ids": sorted(set(conflict_ids)),
             "human_identity_flags": sum(1 for x in ledger["review_required"] if x.get("status") != "RESOLVED_MANUALLY"),
