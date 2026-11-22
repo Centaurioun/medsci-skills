@@ -25,6 +25,42 @@ Use when the deck includes numerical primary findings, diagnostic performance, p
 | `caption_attribution` | Source citation and whether `ORIGINAL`/`ADAPTED`/`REDRAWN` |
 | `limitations` | Any uncertainty or visual degradation that must be shown to presenter |
 
+## Optional machine-readable manifest and read-only audit
+
+The existing table is the scientific design contract. To inspect a generated .pptx
+without third-party dependencies, the optional local stdlib helper
+`skills/present-paper/scripts/audit_slide_evidence.py` accepts a JSON manifest:
+
+```json
+{
+  "schema_version": 1,
+  "elements": [
+    {
+      "slide_id": "S08",
+      "element_id": "primary-result-label",
+      "claim_or_visual_type": "NUMERIC_RESULT",
+      "display_mode": "NATIVE_TEXT",
+      "expected_display_text": "SOURCE_VERIFIED_RESULT_PENDING",
+      "source_identity": "ZOTERO_ITEM_KEY_IF_VERIFIED",
+      "source_locator": "Table 2",
+      "source_review_state": "UNASSESSED"
+    }
+  ]
+}
+```
+
+The example above is **synthetic**: `SOURCE_VERIFIED_RESULT_PENDING` is a placeholder
+and not a measured value. The helper resolves real presentation slide order from PPTX
+OpenXML relationships, then reports `NATIVE_TEXT_PRESENT_SOURCE_NOT_RECHECKED`,
+`NATIVE_TEXT_MISSING_OR_SPLIT`, `RASTER_OR_IMAGE_CONTENT_NOT_TEXT_VERIFIED`, or
+another explicit inconclusive condition. Its results **never** prove source accuracy,
+citation authorization, true editable chart data, the visual layout or image fidelity.
+
+Use `python3 scripts/audit_slide_evidence.py --manifest slide_evidence.json --pptx talk.pptx`
+on a user-authorized deck if a file inspection is requested. The tool emits only JSON
+to stdout and leaves the presentation and manifest unchanged. It is not an automatic
+release/acceptance test and must not run absent a user-requested document check.
+
 ## Principles
 
 1. **Academic fidelity is more important than visually appealing images.** Do not render a clinical table, significance test, numerical label or mathematical equation as generated imagery when it can be preserved as verified editable text/table/vector.
