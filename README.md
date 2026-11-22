@@ -5,7 +5,10 @@
 > **Centaurioun fork, development only — 6.4.1-rc.0 (unreleased).**
 > This feature branch starts from the official Aperivue **v6.4.0** commit
 > `56273a0dcea1d2a62696bee9f49346defd4e9812` (21 November 2026)
-> and adds original, bounded scientific-review helpers to existing MedSci skills.
+> and adds original, bounded scientific-review helpers plus preserved
+> fork-only periodontology-research and psychometrics-pro specialists.
+> The old fork main remains unsynchronized; local Codex will merge upstream/main
+> and old fork history into a separate integration branch, then prepare a PR.
 > It does **not** replace upstream's already implemented QUADAS-3 tool.
 > The 6.4.0 official badge/citation below refer to the upstream published release;
 > this fork's modifications are untested, not published or deployed.
