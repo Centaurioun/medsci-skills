@@ -18,11 +18,10 @@ review. Sort each ask into two kinds:
                 compliance.
 
 `/peer-review` Phase 3 already states this rule in prose, and Phase 6 already
-lists it as a checkbox. Prose did not bind: in the first live review after the
-rule shipped, a draft went out with four unjustified computation requests and
-passed every neighbouring gate (word count, em-dash density, forbidden words,
-attitude markers) because those are scripts and this one was a sentence. Hence
-this file.
+lists it as a checkbox. Prose does not bind: a draft with several unjustified
+computation requests passes every neighbouring gate (word count, em-dash density,
+forbidden words, attitude markers) because those are scripts and this one is a
+sentence. Hence this file.
 
 Fires on:
   COMPUTATION_UNJUSTIFIED  a computation request with no stated reason the
@@ -45,10 +44,28 @@ accuses a disclosure request is worth more than one that catches every
 computation. It cannot know whether a number already exists in the manuscript, so
 it gates on the request's own verbs.
 
+Recommendation tier. NEW_DATA_REQUESTED exists because new data "cannot be
+satisfied within a revision". When the reviewer recommends a decision that invites
+a new submission, new data is what the resubmission needs and listing it is the
+reviewer's job. The reviewer says so explicitly with
+  --recommendation reject-and-resubmit
+and only then, exactly two finding types change, both to INFO (JSON `exempted`):
+NEW_DATA_REQUESTED, and COMPUTATION_HEAVY, whose budget exists because of a
+revision deadline that a new submission does not have (the request counts are
+still shown). COMPUTATION_UNJUSTIFIED, NESTED_P_REQUESTED and ESTIMATOR_UNNAMED are
+raised exactly as without the flag. The script never infers the tier: it does not
+read the draft's Recommendation line or any prose, and the flag must be spelled out
+(an abbreviation such as --rec is refused). The other choices (reject,
+major-revision, minor-revision, accept) and omitting the flag give audit output
+(text, JSON, exit code) byte-identical to the tier-blind gate; --help text is not
+covered. Pass reject-and-resubmit only when the journal's decision option you are
+choosing invites a new submission; for any other wording, or if unsure, omit it.
+
 Stdlib-only. Reads the review draft, never writes it.
 
 Usage:
   python3 check_review_request_types.py --review draft.md [--max-computation N]
+                                        [--recommendation TIER]
                                         [--strict] [--quiet] [--json]
 Exit: 0 clean; with --strict, 1 on any MAJOR finding; 2 on input/usage error.
 """
@@ -83,11 +100,19 @@ COMPUTE_RE = re.compile(
     r"GAMLSS|\bLMS\b|E-values?"
     r")\b", re.I)
 
+# Adjudication counts only as a request for NEW adjudication (re-, second, additional,
+# independent, new, further). Bare "adjudicated/adjudication" is how a reviewer names
+# records the authors already hold ("the adjudicated examinations", "your adjudication
+# files"), and flagging that pushed a valid disclosure ask to be reworded away.
+# A second reader may be called by any role name: operator, annotator, segmenter, labeller.
+_SECOND_ROLE = r"(?:reader|rater|observer|operator|annotator|segmenter|label(?:l)?er)"
 NEW_DATA_RE = re.compile(
     r"\b(?:"
-    r"(?:a\s+)?second\s+(?:reader|rater|observer)|two\s+(?:readers|raters|observers)|"
-    r"independently\s+(?:label|re-?read|re-?assess|score|rate)|"
-    r"re-?read|re-?assess|re-?segment\w*|re-?annotat\w*|adjudicat\w+|"
+    rf"(?:a\s+)?second\s+{_SECOND_ROLE}s?|two\s+{_SECOND_ROLE}s|"
+    r"independently\s+(?:label|re-?read|re-?assess|score|rate|segment|annotate)|"
+    r"re-?read|re-?assess|re-?segment\w*|re-?annotat\w*|"
+    r"(?:re-?|second\s+|additional(?:ly)?\s+|independent(?:ly)?\s+|new\s+|further\s+)"
+    r"adjudicat\w+|"
     r"recruit\w*|prospectively\s+collect|collect\s+(?:new|additional)|"
     r"repeat\s+the\s+validation|external\s+(?:validation\s+)?cohort"
     r")\b", re.I)
@@ -141,6 +166,33 @@ REQUEST_CUE_RE = re.compile(
     r"I (?:would )?(?:suggest|ask|request|recommend))\b", re.I)
 
 
+# A stem is not a verb. "comput" also begins "computers", "computed tomography" and
+# "computational resources", and "deriv" begins "derivation cohort"; an ask that only names
+# one of those is a disclosure request. The imaging modality is in nearly every radiology
+# review, so the bare stems turned ordinary asks into MAJOR findings. These noun phrases are
+# blanked before COMPUTE_RE reads the ask; the verbs ("compute", "derive", "computing the ...",
+# "computing time to progression") are untouched.
+# "computing <noun>" is a noun phrase only behind a determiner ("the computing time to train the
+# model", "the computing resources used per site"). Bare, "computing" is the verb: "consider
+# computing time to progression", "consider computing resources required per site". A bare noun
+# use ("report computing time on the validation set") therefore still reads as a computation
+# request, as it did before; that direction costs a false flag, the other hides a real request.
+_DET = r"(?:the|their|its|this|that|total|overall|mean|median|average|available|required|training|inference)"
+COMPUTE_NOUN_RE = re.compile(
+    r"\bcomputers?\b|\bcomputeri[sz]ed\b|\bcomputed[- ]tomograph\w*|\bcomputational\b|"
+    r"\b(?:cloud|edge|distributed|parallel|high[- ]performance|GPU)[- ]computing\b|"
+    r"\b" + _DET + r"\s+computing\s+(?:time|power|costs?|resources?|hardware|infrastructure|"
+    r"environments?|clusters?|platforms?)\b|"
+    r"\bderivation(?:\s*(?:and|or|/)\s*(?:validation|test(?:ing)?))?\s+"
+    r"(?:cohort|set|sample|group|population|dataset|data)s?\b",
+    re.IGNORECASE)
+
+
+def _without_compute_nouns(ask: str) -> str:
+    """The ask with domain noun phrases blanked, offsets kept (negators are found by position)."""
+    return COMPUTE_NOUN_RE.sub(lambda m: " " * len(m.group(0)), ask)
+
+
 def _unnegated(pat: re.Pattern, ask: str) -> bool:
     """True iff at least one match of `pat` is not preceded by a negator."""
     return any(not NEGATOR_RE.search(ask[: m.start()]) for m in pat.finditer(ask))
@@ -152,6 +204,12 @@ ESTIMATOR_NAMED_RE = re.compile(
     r"\b(?:Hodges[-–\s]?Lehmann|pseudomedian|Wilcoxon|Mann[-–\s]?Whitney|"
     r"Clopper[-–\s]?Pearson|Wilson|Fisher|Cohen'?s?\s*d|Hedges|Cliff'?s?\s*delta|"
     r"BCa|percentile\s+bootstrap|Agresti[-–\s]?Coull|Newcombe|DeLong)\b", re.I)
+
+
+# --- recommendation tier -----------------------------------------------------
+# Enumerated on the command line (argparse `choices`); never read from the draft.
+TIER_RESUBMIT = "reject-and-resubmit"
+TIERS = (TIER_RESUBMIT, "reject", "major-revision", "minor-revision", "accept")
 
 
 @dataclass
@@ -171,6 +229,9 @@ class Report:
     new_data: int = 0
     descriptive: int = 0
     findings: list[Finding] = field(default_factory=list)
+    # Set only under the reject-and-resubmit tier; otherwise the report is the tier-blind one.
+    tier: str | None = None
+    exempted: list[Finding] = field(default_factory=list)
 
     @property
     def n_major(self) -> int:
@@ -186,8 +247,12 @@ def _clip(s: str, n: int = 78) -> str:
     return s if len(s) <= n else s[: n - 1] + "…"
 
 
-def audit(text: str, source: str, max_computation: int = 2) -> Report:
+def audit(text: str, source: str, max_computation: int = 2,
+          tier: str | None = None) -> Report:
     rep = Report(source=source)
+    resubmit = tier == TIER_RESUBMIT
+    if resubmit:
+        rep.tier = tier
     for i, raw in enumerate(text.splitlines(), start=1):
         m = ASK_RE.match(raw)
         if not m:
@@ -200,14 +265,20 @@ def audit(text: str, source: str, max_computation: int = 2) -> Report:
             continue
 
         is_new_data = _unnegated(NEW_DATA_RE, ask)
-        is_compute = _unnegated(COMPUTE_RE, ask)
+        is_compute = _unnegated(COMPUTE_RE, _without_compute_nouns(ask))
 
         if is_new_data:
             rep.new_data += 1
-            rep.findings.append(Finding(
-                "NEW_DATA_REQUESTED", "MAJOR", i,
-                f"asks for data that does not exist — cannot be satisfied within a "
-                f"revision: \"{_clip(ask)}\""))
+            if resubmit:
+                rep.exempted.append(Finding(
+                    "NEW_DATA_REQUESTED", "INFO", i,
+                    f"new-data request exempted — the recommendation is reject-and-resubmit, "
+                    f"so the resubmission can supply it: \"{_clip(ask)}\""))
+            else:
+                rep.findings.append(Finding(
+                    "NEW_DATA_REQUESTED", "MAJOR", i,
+                    f"asks for data that does not exist — cannot be satisfied within a "
+                    f"revision: \"{_clip(ask)}\""))
         elif is_compute:
             rep.computation += 1
             if not JUSTIFY_RE.search(ask):
@@ -235,7 +306,14 @@ def audit(text: str, source: str, max_computation: int = 2) -> Report:
                 f"\"{_clip(ask)}\""))
 
     heavy = rep.computation + rep.new_data
-    if heavy > max_computation:
+    if heavy > max_computation and resubmit:
+        # The budget guards a revision deadline; a new submission has none.
+        rep.exempted.append(Finding(
+            "COMPUTATION_HEAVY", "INFO", 0,
+            f"{heavy} computation/new-data requests ({rep.computation} computation) exceed "
+            f"the revision budget of {max_computation}; not raised, because "
+            f"reject-and-resubmit invites a new submission with no revision deadline"))
+    elif heavy > max_computation:
         rep.findings.append(Finding(
             "COMPUTATION_HEAVY", "MAJOR", 0,
             f"{heavy} computation/new-data requests (limit {max_computation}) — each "
@@ -251,10 +329,14 @@ def format_report(rep: Report, color: bool) -> str:
            f"asks={rep.asks} disclosure={rep.disclosure} "
            f"computation={rep.computation} new_data={rep.new_data} "
            f"descriptive={rep.descriptive}"]
-    if not rep.findings:
+    if rep.tier is not None:
+        out.append(f"recommendation={rep.tier}: NEW_DATA_REQUESTED and COMPUTATION_HEAVY "
+                   f"are reported as INFO ({len(rep.exempted)} line(s)); every other "
+                   f"finding is unchanged")
+    if not rep.findings and not rep.exempted:
         out.append("every ask is a disclosure request, or a justified computation.")
         return "\n".join(out)
-    for f in sorted(rep.findings, key=lambda x: (x.line, x.kind)):
+    for f in sorted(rep.findings + rep.exempted, key=lambda x: (x.line, x.kind)):
         out.append(f"[{f.severity}] {f.kind} L{f.line}  {f.detail}")
     return "\n".join(out)
 
@@ -262,28 +344,52 @@ def format_report(rep: Report, color: bool) -> str:
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description=__doc__,
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("--review", required=True, help="the reviewer's draft (markdown/text)")
+    # "--r" and "--re" are listed so that the abbreviations argparse accepted for --review
+    # before --recommendation existed keep working (an exact match beats the ambiguity).
+    ap.add_argument("--review", "--re", "--r", dest="review", required=True,
+                    help="the reviewer's draft (markdown/text)")
     ap.add_argument("--max-computation", type=int, default=2, metavar="N",
-                    help="computation/new-data requests allowed before COMPUTATION_HEAVY (default 2)")
+                    help="computation/new-data requests allowed before COMPUTATION_HEAVY "
+                         "(default 2); under --recommendation reject-and-resubmit an "
+                         "exceeded budget is reported as INFO, not raised")
+    ap.add_argument("--recommendation", choices=TIERS, metavar="TIER",
+                    help="the decision you recommend, one of: " + ", ".join(TIERS) + ". "
+                         "Only reject-and-resubmit changes anything: NEW_DATA_REQUESTED "
+                         "and COMPUTATION_HEAVY are then INFO. Must be spelled out in full. "
+                         "Pass it only when the journal's option you "
+                         "chose invites a new submission; for any other wording, or if "
+                         "unsure, omit it")
     ap.add_argument("--strict", action="store_true", help="exit 1 on any MAJOR finding")
     ap.add_argument("--quiet", action="store_true", help="suppress the report; exit code only")
     ap.add_argument("--json", action="store_true", help="emit JSON instead of a text report")
     args = ap.parse_args(argv)
+    if args.recommendation is not None:
+        # argparse would accept an abbreviation ("--rec"), which was an unknown option before
+        # this flag existed; only the full spelling may switch the exemption on.
+        tokens = sys.argv[1:] if argv is None else argv
+        if not any(t == "--recommendation" or t.startswith("--recommendation=") for t in tokens):
+            print("error: spell out --recommendation in full; abbreviations are not accepted",
+                  file=sys.stderr)
+            return 2
     try:
         text = open(args.review, encoding="utf-8").read()
     except OSError as e:
         print(f"error: cannot read review draft: {e}", file=sys.stderr)
         return 2
-    rep = audit(text, args.review, max_computation=args.max_computation)
+    rep = audit(text, args.review, max_computation=args.max_computation,
+                tier=args.recommendation)
     if not args.quiet:
         if args.json:
-            print(json.dumps({"detector": "check_review_request_types",
-                              "source": rep.source, "verdict": rep.verdict,
-                              "asks": rep.asks, "disclosure": rep.disclosure,
-                              "computation": rep.computation, "new_data": rep.new_data,
-                              "descriptive": rep.descriptive,
-                              "findings": [asdict(f) for f in rep.findings]},
-                             ensure_ascii=False, indent=2))
+            payload = {"detector": "check_review_request_types",
+                       "source": rep.source, "verdict": rep.verdict,
+                       "asks": rep.asks, "disclosure": rep.disclosure,
+                       "computation": rep.computation, "new_data": rep.new_data,
+                       "descriptive": rep.descriptive,
+                       "findings": [asdict(f) for f in rep.findings]}
+            if rep.tier is not None:
+                payload["recommendation"] = rep.tier
+                payload["exempted"] = [asdict(f) for f in rep.exempted]
+            print(json.dumps(payload, ensure_ascii=False, indent=2))
         else:
             print(format_report(rep, color=sys.stdout.isatty()))
     return 1 if (args.strict and rep.n_major) else 0

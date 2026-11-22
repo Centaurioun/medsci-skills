@@ -7,9 +7,9 @@ a-priori effect-size assumptions behind them are *computed*, not extracted, so t
 CSV row or source-paper Table to trace to. They routinely escape both the internal-consistency
 check and the source-fidelity audit above.
 
-**Precedent failure pattern:**
-> A pilot study reported a minimum detectable effect of d = 1.67. No standard two-sample method
-> reproduces it (the correct value at the stated n, alpha, and power was about 1.24). It survived
+**The failure pattern:**
+> A pilot study reported a minimum detectable effect that no standard two-sample method
+> reproduces at the stated n, alpha, and power. It survived
 > several review rounds because no committed script computed it — the value had been hand-entered —
 > and one reviewer even cited the figure approvingly. In the same manuscript, a set of future-trial
 > sample sizes was numerically correct but had been produced with an exact noncentral-t tool, while
@@ -30,7 +30,7 @@ check and the source-fidelity audit above.
 
 3. **Recompute independently** with a standard tool, then classify:
    - **Not reproducible by any standard method** → likely a calculation error (Major; P0 if it
-     is a headline claim). This is the d = 1.67-vs-1.24 case above.
+     is a headline claim). This is the minimum-detectable-effect case above.
    - **Reproducible only by a method the committed script does not implement** (e.g. the
      manuscript value is noncentral-t but the script is a normal approximation) → provenance /
      method drift. The number may be correct, but update the committed code so it reproduces the
@@ -60,3 +60,11 @@ primary-model covariates → Major (P0 when the MDE is a headline). This is `req
 (re-simulate, not a prose edit). **`POWER_VALUE_INTERPOLATED`** — any `interpolat`/`approx`/`interp`
 token in a power/MDE CSV's provenance column means the headline value was never simulated on the
 grid; treat a non-reproducible headline power/MDE as Major.
+
+**Post hoc (observed) power cannot support "no difference".** Power computed from the
+observed effect size is a one-to-one transformation of the P value: a non-significant result always has
+low observed power, so quoting it to argue "no difference" or "adequately powered" adds no information.
+Flag it and ask for the confidence interval of the difference instead (and, for a similarity claim, a
+pre-specified margin). Power or minimum-detectable-effect calculations that use an effect size justified
+independently of the observed result (a planning value, a sensitivity analysis over plausible effects)
+are legitimate and are audited by the procedure above.

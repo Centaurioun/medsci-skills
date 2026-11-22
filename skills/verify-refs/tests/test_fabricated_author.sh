@@ -3,9 +3,8 @@
 #
 # author_cross_check() is the sole decision surface behind an AUTHOR MISMATCH status
 # (family-by-family + author-count). It is the repo's most trust-critical citation
-# check: a real AI-assembled bib once registered 7 of 10 fabricated co-author names
-# with a correct first author + DOI, and only the family/count cross-check catches
-# that. This test locks the logic so a refactor cannot silently drop the MISMATCH
+# check: a correct first author and DOI can coexist with fabricated co-author
+# names. This test locks the logic so a refactor cannot silently drop the MISMATCH
 # path. Stdlib-only, no network (the pure function is tested in isolation, so no
 # PubMed/CrossRef/OpenAlex call is made).
 set -u
@@ -63,6 +62,23 @@ check("first-author degrade -> #1 mismatch", any("#1 family" in x for x in m))
 # 9. First-author degrade clean (first_author_guess matches source).
 m, n = author_cross_check([], ["Liu", "Wang"], 0, 2, first_author_guess="Liu")
 check("first-author degrade clean -> no mismatch", m == [])
+
+# 10. A short fabricated surname spelled inside the real one is still a different person.
+#     Raw substring containment let "Li" match "Williams" and "Kim" match "Kimura".
+m, n = author_cross_check(["Kim", "Li", "Park"], ["Kimura", "Williams", "Parker"], 3, 3)
+check("short surnames inside longer ones -> 3 mismatches", len(m) == 3)
+from verify_refs import author_surnames_match as same
+for cited, actual in (("Li", "Williams"), ("Ho", "Thompson"), ("Kim", "Kimura"),
+                      ("Lee", "Fleet"), ("Smith", "Smithers"), ("Ng", "Young")):
+    check(f"{cited!r} vs {actual!r} -> different surname", not same(cited, actual))
+
+# 11. Negative controls: the whole-word and particle variants the tolerance exists for still agree.
+for cited, actual in (("Garcia", "Garcia-Lopez"), ("Garcia Lopez", "Garcia"), ("Berg", "van der Berg"),
+                      ("von Elm", "Elm"), ("Dela Cruz", "De la Cruz"), ("Vandenberg", "van den Berg"),
+                      ("Abd-alrazaq", "Abd Alrazaq"), ("Li", "Li"), ("Kim", "KIM")):
+    check(f"{cited!r} vs {actual!r} -> same surname", same(cited, actual))
+m, n = author_cross_check(["Kim", "Li", "Park"], ["Kim", "Li", "Park"], 3, 3)
+check("short surnames that are right -> no mismatch", m == [])
 
 print(f"\nfails={fails}")
 sys.exit(1 if fails else 0)

@@ -19,14 +19,14 @@ trap 'rm -rf "$WORK"' EXIT
 cat > "$WORK/manuscript_v8.md" <<'EOF'
 ## Results
 The complete-case analysis included 95.7% of the cohort.
-Inter-rater agreement was substantial (kappa = 0.923).
+Inter-rater agreement was substantial (kappa = 0.871).
 EOF
 
 # stale supplement: disagreeing values for the same labels
 mkdir -p "$WORK/aux"
 cat > "$WORK/aux/supplement.md" <<'EOF'
 Footnote: complete-case retention was 7.5% after exclusions.
-Reliability sub-analysis: kappa = 0.904.
+Reliability sub-analysis: kappa = 0.842.
 EOF
 
 # checklist built against an older manuscript version
@@ -39,7 +39,7 @@ EOF
 mkdir -p "$WORK/clean"
 cat > "$WORK/clean/supplement.md" <<'EOF'
 Footnote: complete-case retention was 95.7%.
-Reliability: kappa = 0.923.
+Reliability: kappa = 0.871.
 EOF
 
 run() { python3 "$SCRIPT" "$@" 2>/dev/null; }
@@ -130,6 +130,40 @@ run --manuscript "$WORK/reframe/numbound.md" --old-value 1.72 --quiet
 run --manuscript "$WORK/reframe/manuscript.md" --aux "$WORK/reframe/clean_suppl.md" \
     --retired-term "location-stratified benchmark" --old-value 1.72 --quiet
 [ $? -eq 0 ] && ok "no survivors after full reframe -> exit 0" || bad "clean reframe should pass"
+
+# --- .docx sidecars and empty scans (regressions: both used to PASS having read nothing) ---
+python3 - "$WORK" <<'PY'
+import os, sys, zipfile
+w = sys.argv[1]
+W = 'xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"'
+def docx(path, *paras):
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    body = "".join(f"<w:p><w:r><w:t>{a}</w:t></w:r><w:r><w:t>{b}</w:t></w:r></w:p>" for a, b in paras)
+    # Deflated, as Word writes it: a stored (uncompressed) fixture let a reader that
+    # treated the zip as text see the words anyway.
+    with zipfile.ZipFile(path, "w", zipfile.ZIP_DEFLATED) as z:
+        z.writestr("word/document.xml", f"<w:document {W}><w:body>{body}</w:body></w:document>")
+# the retired framing split across two runs, as Word stores it
+docx(os.path.join(w, "docxaux", "supplement.docx"), ("Table S2: location-stratified ", "benchmark results"))
+docx(os.path.join(w, "docxlabel.docx"), ("Reliability sub-analysis: ", "kappa = 0.842."))
+os.makedirs(os.path.join(w, "pdfonly"), exist_ok=True)
+open(os.path.join(w, "pdfonly", "supplement.pdf"), "wb").write(b"%PDF-1.4 not parsed here")
+os.makedirs(os.path.join(w, "figsrc"), exist_ok=True)
+open(os.path.join(w, "figsrc", "plot_forest.py"), "w").write(
+    "# kappa = 0.842 was the draft value\nHR_LABEL = 'HR 1.72'\n")
+PY
+run --manuscript "$WORK/manuscript_v8.md" --aux "$WORK/docxaux" --retired-term "location-stratified benchmark" --quiet
+[ $? -eq 1 ] && ok "retired term inside a .docx sidecar (split runs) -> exit 1" || bad ".docx sidecar survivor was missed"
+run --manuscript "$WORK/manuscript_v8.md" --aux "$WORK/docxlabel.docx" --quiet
+[ $? -eq 1 ] && ok "explicit .docx aux: stale labeled value -> exit 1" || bad "explicit .docx read as bytes, drift missed"
+run --manuscript "$WORK/manuscript_v8.md" --aux "$WORK/pdfonly" --quiet
+[ $? -eq 2 ] && ok "aux with no readable file -> exit 2, not PASS" || bad "empty scan should not pass"
+run --manuscript "$WORK/manuscript_v8.md" --aux "$WORK/figsrc" --old-value 1.72 --out "$WORK/fig.json" --quiet
+[ $? -eq 1 ] && ok "superseded value in a figure script -> exit 1" || bad "figure-script literal was missed"
+python3 -c "
+import json,sys; d=json.load(open('$WORK/fig.json')); t={f['type'] for f in d['findings']}
+sys.exit(0 if 'stale_old_value' in t and 'labeled_value_drift' not in t else 1)
+" && ok "figure script swept for literals only, not label drift" || bad "figure script produced label drift"
 
 echo ""
 echo "test_cross_artifact_stale: $PASS passed, $FAIL failed"

@@ -1,13 +1,12 @@
 #!/usr/bin/env bash
 # Deterministic verifier for the density-complaint challenge card.
 #
-# The bug this gate exists to catch is not hypothetical. A DTA meta-analysis was told by four
-# reviewers that it was too dense; the revision answered each comment point-by-point and came back
-# 613 words LONGER, every named term higher than before. It took three rounds to do what the
-# reviewers asked in round one, because point-by-point response rewards adding text and "too long"
-# is the one comment adding text cannot answer.
+# The bug this gate exists to catch is not hypothetical: a revision answers a "too dense" comment
+# point-by-point and comes back LONGER than the version that drew the complaint, every named term
+# higher than before. Point-by-point response rewards adding text, and "too long" is the one
+# comment adding text cannot answer.
 #
-# So the fixtures reproduce that exact arithmetic:
+# So the fixtures reproduce that arithmetic:
 #   v_prev       -> what the reviewers saw
 #   v20_longer   -> answered point-by-point, body got LONGER   -> DENSITY_COMPLAINT_UNADDRESSED
 #   v21_shorter  -> actually cut, body got SHORTER             -> OK
@@ -30,7 +29,7 @@ ck "point-by-point revision got longer -> UNADDRESSED" 1 "$?"
 
 # ...and it must NAME the verdict, not merely exit nonzero
 python3 "$DET" --comments "$FIX/decision_letter.md" --previous "$FIX/v_prev.md" \
-  --revised "$FIX/v20_longer.md" 2>&1 | grep -q "DENSITY_COMPLAINT_UNADDRESSED" \
+  --revised "$FIX/v20_longer.md" 2>&1 | grep "DENSITY_COMPLAINT_UNADDRESSED" >/dev/null \
   && ck "the verdict token is printed" 0 0 || ck "the verdict token is printed" 0 1
 
 # 2) the revision that actually CUT -> silent

@@ -24,7 +24,9 @@ DEFAULT TIERS — only the unambiguous, deterministic errors halt by default:
 
 A check whose inputs are absent is recorded "skipped" (NA), never a blocker — so
 the gate is tolerant of projects that lack a cover letter, rendered docx, copies,
-etc. The offline references pass is deterministic and catches duplicates +
+etc. A check that RAN and failed (a traceback, an unexpected exit code, or a
+"missing input" exit code while its inputs are present) is recorded "error",
+which makes submission_safe false and the gate exit 2 — never "skipped". The offline references pass is deterministic and catches duplicates +
 pagination placeholders; an online /verify-refs --strict (PubMed/CrossRef) remains
 the authoritative fabrication/author check.
 
@@ -45,7 +47,7 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parents[3]
 SCRIPTS_DIR = Path(__file__).resolve().parent
 sys.path.insert(0, str(SCRIPTS_DIR))
-from sync_submission import resolve_canonical, submission_md_path  # noqa: E402
+from sync_submission import resolve_canonical, bundle_binding  # noqa: E402
 
 PY = sys.executable
 
@@ -301,6 +303,39 @@ def _argv_figure_readiness(c):
     return argv
 
 
+# --- genuine-skip guards ------------------------------------------------------
+# A sub-check's "missing input" exit code is shared with its error paths (argparse
+# usage errors, caught exceptions, decode failures). The gate only invokes a check
+# once its own inputs resolved, so a skip-coded exit is accepted as "skipped" only
+# when a structured signal says the input really is absent; otherwise the check ran
+# and failed, which is an "error", never a silent skip.
+
+def _skip_sync_drift(c, proc, artifact_json):
+    # sync_submission.py audit prints its JSON payload with status MISSING_SUBMISSION
+    # when the canonical exists but the submission copy does not; every other exit 2
+    # ("Submission sync error: ...") is an error.
+    try:
+        return json.loads(proc.stdout).get("status") == "MISSING_SUBMISSION"
+    except (json.JSONDecodeError, AttributeError):
+        return False
+
+
+def _skip_cover_letter(c, proc, artifact_json):
+    # exit 1 is "input missing or malformed"; only the former is a skip.
+    return not (c.manuscript and c.manuscript.is_file()
+                and c.cover_letter and c.cover_letter.is_file())
+
+
+def _skip_copy_divergence(c, proc, artifact_json):
+    # Copies are named explicitly (--copy); a named copy that is absent is an error.
+    return not (c.manuscript and c.manuscript.is_file())
+
+
+def _skip_cross_document_n(c, proc, artifact_json):
+    # A report that lists unreadable files means the scan ran with incomplete coverage.
+    return not (isinstance(artifact_json, dict) and artifact_json.get("unreadable_files"))
+
+
 CHECKS = [
     {"id": "placeholders", "tier": "P0", "build": _argv_placeholders,
      "exit_map": {0: "ok", 1: "finding", 2: "skipped"}, "artifact": "placeholder_audit.json"},
@@ -310,26 +345,27 @@ CHECKS = [
      "exit_map": {0: "ok", 1: "finding", 2: "skipped", 3: "skipped"},
      "artifact": "reference_audit.json", "post": "references"},
     {"id": "sync_drift", "tier": "P0", "build": _argv_sync_drift,
-     "exit_map": {0: "ok", 1: "finding", 2: "skipped"}, "artifact": None},
+     "exit_map": {0: "ok", 1: "finding", 2: "skipped"}, "artifact": None,
+     "skip_guard": _skip_sync_drift},
     {"id": "cross_artifact_stale", "tier": "P1", "build": _argv_cross_artifact,
      "exit_map": {0: "ok", 1: "finding", 2: "skipped"}, "artifact": "cross_artifact.json",
      "strict_promote": True},
     {"id": "cross_document_n", "tier": "P1", "build": _argv_cross_document_n,
      "exit_map": {0: "ok", 1: "finding", 2: "skipped"}, "artifact": "cross_document_n.json",
-     "strict_promote": True},
+     "strict_promote": True, "skip_guard": _skip_cross_document_n},
     {"id": "xref", "tier": "P1", "build": _argv_xref,
      "exit_map": {0: "ok", 1: "finding", 2: "skipped"}, "artifact": "xref_audit.json",
      "strict_promote": True},
     {"id": "copy_divergence", "tier": "P1", "build": _argv_copy_divergence,
      "exit_map": {0: "ok", 1: "finding", 2: "skipped"}, "artifact": "copy_divergence.json",
-     "strict_promote": True},
+     "strict_promote": True, "skip_guard": _skip_copy_divergence},
     {"id": "scope_drift", "tier": "P1", "build": _argv_scope_drift,
      "exit_map": {0: "ok", 1: "finding", 2: "skipped"}, "artifact": "scope_drift.json",
      "strict_promote": True},
     # cover_letter_drift has INVERTED exit codes: 0 clean, 2 drift, 1 missing input.
     {"id": "cover_letter_drift", "tier": "P1", "build": _argv_cover_letter,
      "exit_map": {0: "ok", 2: "finding", 1: "skipped"}, "artifact": "cover_letter_drift.json",
-     "strict_promote": True},
+     "strict_promote": True, "skip_guard": _skip_cover_letter},
     {"id": "asset_anonymization", "tier": "P1", "build": _argv_asset_anon,
      "exit_map": {0: "ok", 1: "finding", 2: "skipped"}, "artifact": "asset_anon.json",
      "double_blind_promote": True},
@@ -368,6 +404,14 @@ def _load(path: Path):
         return json.loads(path.read_text(encoding="utf-8"))
     except (OSError, json.JSONDecodeError):
         return None
+
+
+def _stat(path):
+    try:
+        st = path.stat() if path else None
+    except OSError:
+        return None
+    return (st.st_mtime_ns, st.st_size) if st else None
 
 
 def _message(check_id, status, artifact_path, stdout):
@@ -434,9 +478,17 @@ def run_check(spec, ctx, args):
                 "status": status, "blocker": False, "artifact": None, "message": msg}
 
     ctx.qc.mkdir(parents=True, exist_ok=True)
+    before = _stat(artifact_path)
     proc = subprocess.run(argv, capture_output=True, text=True)
     rc = proc.returncode
     base = spec["exit_map"].get(rc, "error")
+    # An uncaught exception is a check that crashed, whatever exit code it maps to.
+    if "Traceback (most recent call last):" in (proc.stderr or ""):
+        base = "error"
+    if base == "skipped" and spec.get("skip_guard"):
+        fresh = artifact_path is not None and _stat(artifact_path) not in (None, before)
+        if not spec["skip_guard"](ctx, proc, _load(artifact_path) if fresh else None):
+            base = "error"
 
     # references offline: exit 0 can still carry UNVERIFIED -> advisory warn
     if base == "ok" and spec.get("post") == "references":
@@ -448,6 +500,8 @@ def run_check(spec, ctx, args):
         status = "blocker" if effective_p0 else "warn"
     elif base == "warn_post":
         status = "warn"
+    elif base == "skipped" and in_require:
+        status = "error"
     else:
         status = base  # ok / skipped / error
 
@@ -461,6 +515,7 @@ def run_check(spec, ctx, args):
             "script": _rel(S[_script_key(cid)]), "ran": True, "exit_code": rc,
             "status": status, "blocker": status == "blocker",
             "artifact": _rel(artifact_path) if (artifact_path and artifact_path.exists()) else None,
+            "invocation": [_rel(Path(a)) if Path(a).is_absolute() else a for a in argv],
             "message": msg}
 
 
@@ -536,7 +591,16 @@ def main() -> int:
         sys.stderr.write(f"ERROR: project root not found: {ctx.root}\n")
         return 2
 
+    # This identifies the declared bundle present during the run. It is not
+    # per-file inspection coverage (some checks inspect only a selected DOCX).
+    def snapshot():
+        try:
+            return bundle_binding(ctx.root, ctx.journal)
+        except (OSError, ValueError, KeyError, TypeError):
+            return None
+    binding_before = snapshot()
     checks = [run_check(spec, ctx, args) for spec in CHECKS]
+    binding_after = snapshot()
 
     summary = {k: 0 for k in ("ok", "warn", "blocker", "skipped", "error")}
     for c in checks:
@@ -545,14 +609,30 @@ def main() -> int:
     gate_error = any(c["status"] == "error" for c in checks)
 
     report = {
-        "schema_version": 1,
+        "schema_version": 2,
         "generated_by": "preflight_gate.py",
         "project_root": str(ctx.root),
         "journal": ctx.journal,
         "strict": args.strict,
         "online": args.online,
         "double_blind": args.double_blind,
-        "submission_safe": not halt,
+        # Compatibility field: no configured blocker/error, NOT submission approval.
+        "submission_safe": not halt and not gate_error,
+        "submission_safe_scope": "configured_checks_only",
+        "readiness": "not_assessed",
+        "coverage": {
+            "status": "incomplete" if summary["skipped"] or summary["error"] else "executed",
+            "invoked": [c["id"] for c in checks if c["ran"]],
+            "executed": [c["id"] for c in checks if c["status"] in {"ok", "warn", "blocker"}],
+            "skipped": [c["id"] for c in checks if c["status"] == "skipped"],
+            "errors": [c["id"] for c in checks if c["status"] == "error"],
+            "visual_review": "not_assessed",
+            "source_claim_fidelity": "not_assessed",
+            "reuse_permissions": "not_assessed",
+        },
+        "bundle_binding": binding_before,
+        "bundle_unchanged_during_checks": bool(binding_before and binding_before == binding_after),
+        "bundle_binding_scope": "declared sources, render dependencies and package bytes; other check inputs are not bound",
         "halt": halt,
         "summary": summary,
         "checks": checks,
@@ -579,8 +659,9 @@ def main() -> int:
             blockers = [c["id"] for c in checks if c["blocker"]]
             print(f"\nHALT: {len(blockers)} blocker(s) — {', '.join(blockers)}. Submission is NOT safe.")
         else:
-            print("\nOK: no blockers. Submission pre-flight passed"
-                  + (" (P1 warnings may remain — see table)." if summary["warn"] else "."))
+            print("\nNo configured blockers. "
+                  f"{summary['skipped']} checks skipped; {summary['warn']} warnings. "
+                  "Submission readiness, visual fidelity and permissions are not assessed.")
 
     if gate_error:
         return 2

@@ -28,6 +28,12 @@
 | Combination (line art + halftone) | 600 | 600 | |
 | Color figures | 300 | 300 | |
 | Review/presentation | 150 | 300 | PNG acceptable |
+| Poster presentation | 150 | 200 | Lower is acceptable for large-format prints |
+| Screen/web only | 72 | 150 | Not for print submission |
+
+Screen captures (e.g., HyperSnap): set the capture DPI to the journal requirement, compose the
+figure in PPT at high zoom, capture at the target DPI, save as TIFF/PNG, and verify the final
+dimensions match the journal's column width.
 
 ---
 
@@ -80,6 +86,22 @@ WONG = ['#000000', '#E69F00', '#56B4E9', '#009E73',
 - Never rely on color alone; combine with line style, marker shape, or hatching.
 - Test figures in grayscale to ensure readability.
 - Avoid pure red (#FF0000) and pure green (#00FF00) adjacent to each other.
+
+### Colour that carries meaning across figures
+
+When the figures of one paper are drawn by different authors, matching their look is not enough:
+a reader links two figures by colour, so a hue must mean the same thing wherever it carries meaning.
+Before unifying a multi-author set, write a short palette lock (`PALETTE_LOCK.md`, beside the figure
+manifest) and build every figure from it:
+
+- **Hex → meaning**: each semantic colour and the one thing it stands for in this paper.
+- **Where it applies**: the figures that use the mapping. A colour given a meaning is reserved for
+  it; unrelated categories elsewhere get other colours or shapes, since the visual link survives
+  a legend that is silent about it.
+- **The ramp**: for a quantity compared across panels, fix unit, range, colour map and any
+  diverging midpoint; where panels are normalised separately, say so in each legend.
+- **The font**: one family for the set. Confirm which font the build environment selects, and
+  check the font and line breaks in the exported file.
 
 ---
 
@@ -178,6 +200,30 @@ WONG = ['#000000', '#E69F00', '#56B4E9', '#009E73',
 ```
 - Use `matplotlib.gridspec.GridSpec` for custom layouts
 - Use: main result (A) with supporting details (B, C)
+
+---
+
+## Per-Type Conventions (types without an `exemplar_plots/` model)
+
+ROC, forest, KM, calibration, Bland–Altman, confusion matrix and the other modelled types follow
+their anatomy model in `exemplar_plots/`. For these three:
+
+**Box/violin plot**
+- Show individual data points (jittered) overlaid on box or violin.
+- Mark median and mean distinctly.
+- Statistical annotation brackets with significance stars (* p<0.05, ** p<0.01, *** p<0.001, ns for non-significant).
+
+**Bar chart**
+- Error bars: 95% CI (preferred) or SD, stated in caption.
+- Individual data points overlaid if n < 30.
+- Horizontal orientation for many categories.
+- Sort by value (descending) unless order is meaningful.
+
+**Heatmap**
+- Annotate cells with values.
+- Use sequential colormap for correlation (coolwarm diverging if centered at zero).
+- Mask diagonal for correlation matrices.
+- Cluster rows/columns if appropriate.
 
 ---
 

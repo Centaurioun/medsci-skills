@@ -2,7 +2,1586 @@
 
 ## [Unreleased]
 
+### Fixed
+
+- **`/sync-submission`: the anonymization check now reports a Zotero library id left in a
+  `.docx`.** Citations inserted with the Zotero plugin from a synced library store the library's
+  numeric user or group id in the citation data, and documents written from the
+  same library can be linked by it. `check_asset_anonymization.py` reads it from the citation fields
+  under `word/` and, in bookmark mode, from the citation properties in `docProps/custom.xml`, and reports it as `review`
+  (`docx_reference_manager_id`): it fails only when the check runs with `--strict`. A local,
+  unsynced library carries no such id and is not reported. A `docProps/custom.xml` that cannot
+  be parsed is now reported as an unreadable part.
+- **Shipped files no longer point at paths on the maintainer's machine.** Files in ten skills cited the maintainer's personal rule files, by a home-directory path or
+  by bare file name; those files are not part of this package, so the pointer led nowhere for
+  anyone else. The pointers are removed; where one stood
+  in for a checklist, the text now names the shipped file instead. Two printed messages
+  (`check_reverse_coding.py`, the `likert_summary.py` template) lose a trailing "see ..."
+  clause; what they flag is unchanged.
+
+- **`/find-journal`, `/write-paper`: the AJNR and JNIS profiles had drifted from the journals'
+  author pages.** AJNR: Original Research is 4000 words counted with references and tables, a
+  350-word abstract, 50 references, 5 tables and 7 figures in 15 parts; the "What This Adds" box
+  is replaced by a three-cell summary section after acceptance; supplemental material is one PDF
+  cited as "Supplemental Data"; case reports are not an article type. JNIS: article types and
+  limits follow the page, double-anonymised review needs two files, key messages are three to
+  five sentences under three headings, and the AI section follows the publisher's policy. A value
+  the page does not state is marked as not found instead of filled in.
+
+- **A second set of guidance sentences that overstated a rule.** A two-group test is invalid when
+  it treats a subset and the cohort containing it as independent samples (the probes said any
+  subset-versus-parent P value was invalid); "two-gate sampling overestimates accuracy" and "closed
+  APIs are non-deterministic" become "can"; events-per-variable levels and the three-run floor in
+  `/mllm-eval` are labelled rules of thumb; odds-ratio size labels are removed from
+  `/calc-sample-size`; a covariate imbalanced in Table 1 is requested as an adjustment only when the
+  comment argues it is a confounder; included-study labels are matched to the reference list by
+  report, not by year string; a date known only to the month or year keeps its original value and
+  precision in `/clean-data`; records the identifier match leaves unmatched are deduplicated by
+  hand in `/meta-analysis`. Case-like numbers were removed from two probes, and references to
+  private rule paths in two shipped files were replaced by in-repository ones.
+
+### Changed
+
+- **Guidance from candidates that had been waiting for a second occurrence, in thirteen skills.**
+  `/peer-review`: what to do when the authors' response or previous version is missing, anchoring
+  comments without readable line numbers, naming the remedy when a statistic cannot support a
+  claim, what an external dataset can provide before proposing it, re-reading a heading after
+  softening a comment, and checking the data a proposed re-analysis would run on. `/deidentify`:
+  a self-run check on a file that may hold identifiers prints only counts and true/false
+  results. `/analyze-stats`: score point tables are compared with the defining publication,
+  hand-written estimators are checked against a worked example, and the survival guide covers the
+  censoring date, weights for loss to follow-up and fixed-time outcomes. Also `/present-paper`
+  (stable slide keys, counting what a safety pass replaced, confirming a correction),
+  `/verify-refs`, `/calc-sample-size`, `/design-study`, `/clean-data`, `/imaging-data`,
+  `/search-lit`, `/find-journal` and `/make-figures`.
+
+## [6.4.0] - 2026-11-21
+
+**Re-check three things if you used an earlier version:** (1) in `/clean-data`, several
+implausible-value rules listed the normal relation where they meant the violation (dates in order,
+a recomputed BMI that matches, menopause age below current age), so an agent following them could
+flag correct records; (2) `/check-reporting` told you to score a regression-based prediction model
+against TRIPOD 2015 only, and now uses TRIPOD+AI for regression and machine-learning models alike;
+(3) `/sync-submission`'s anonymization check missed names and accounts kept in some parts of a
+`.docx`, so a file it passed is worth scanning again before it goes out for anonymous review. A new
+deck from `/present-paper` now starts from the bundled mono slide template unless you ask for
+another style.
+
+### Fixed
+
+- **`/sync-submission`: the anonymization check missed places where a `.docx` keeps a person's
+  name.** `check_asset_anonymization.py` now also reads the Manager and Company properties, the
+  tracked-change author in every XML part under `word/`, and the account identifier Word stores
+  beside a tracked-change author, which survives when the author name is replaced. Parts are
+  parsed as XML, so quoting, prefixes, CDATA, entities and encoding no longer decide whether a name
+  is seen, and a part that cannot be read is reported instead of discarding the other findings. A
+  value counts as tool-written only on an exact match: a prefix match used to clear real names that
+  begin with a placeholder word, and tool values such as `python-docx` were reported as people.
+  A file that passed before can now fail if it holds a name in one of these places.
+
+- **`/peer-review`: the request-type check no longer flags new-data requests under a
+  reject-and-resubmit recommendation.** `check_review_request_types.py` takes
+  `--recommendation {reject-and-resubmit,reject,major-revision,minor-revision,accept}`. Under
+  `reject-and-resubmit` the new-data and heavy-computation findings are reported as informational
+  exemptions, because those two exist for a revision deadline; unjustified computation, nested-group
+  P values and unnamed estimators are flagged as before. The script does not read the tier from
+  the draft. Without the option, and for the other values, output and exit codes are unchanged.
+
+- **Guidance sentences that were wrong or overstated as general rules, in twelve skills.** A
+  reproduced table shows internal consistency, not that the data are genuine (`sr_ma` P0); a P
+  value comparing a subset with the cohort that contains it is invalid because the groups are
+  nested (`diagnostic_accuracy` D2, `observational_confounding`); k is the number of distinct
+  studies contributing to an analysis, and a CSV row count equals it only with one row per study
+  (`/meta-analysis` DI-7); the implausible-value rules in `/clean-data` listed the normal relation
+  where they meant the violation (dates, recomputed BMI, age, eGFR, totals, menopause age);
+  TRIPOD+AI covers regression-based models as well as machine learning (`/check-reporting`);
+  events-per-variable and the n > 30 and expected-count-below-5 conventions are labelled rules of
+  thumb (`/calc-sample-size`, `/analyze-stats`); a never-smoker's years since cessation is not
+  applicable, not zero (`/define-variables`); a registration amendment is filed when the registered
+  protocol changes, not bundled (`/meta-analysis`); reader recruitment follows the target reader
+  population (`/design-study`). Several case-like examples in the probes were replaced by generic
+  wording. Three sentences state hazards no automated check covers: rater columns from different
+  occasions, sharing a whole build folder, and a Fisher P value computed by resampling on a table
+  larger than 2 × 2.
+
+- **`/revise`: the density gate ended the body at a sentence.** `check_density_complaint.py` stopped
+  counting at any line beginning with "Supplementary", "Funding", "Conflict" and similar words,
+  so a prose line such as "Supplementary Table 2 lists ..." hid everything after it in both
+  versions and a revision that had been cut was reported as unchanged. A line without a heading
+  mark now ends the body only when it is a section name, alone or as a run-in label such as
+  "Funding: ..."; a markdown heading ends it as before, and "## Acknowledgements" now does too.
+  The report states which lines were counted (`measured_span`).
+
+- **`/polish-language`: a plural now counts as a use of its abbreviation.** "95% CIs" was not
+  read as a use of CI, so `lint_consistency.py` reported an abbreviation the text needed as
+  "defined but never used". A plural definition, "confidence intervals (CIs)", now defines CI, and
+  the uses of a defined abbreviation are counted by its own token, so one such as "IL2R" or "H2AX"
+  is no longer reported unused because the use pattern could not read its shape.
+- **`/self-review`, `/sync-submission`: "Materials & Methods" is the Methods section.**
+  `check_reviewer_team_consistency.py` and `scope_drift_check.py` recognised only "Methods" and
+  "Materials and Methods". Under an ampersand heading (also pandoc's `\&`), "Material and
+  Methods", "Patients and Methods" or "Methods and Materials", the Methods text was empty and the reviewer-team check passed without
+  seeing the dual-review claim. When no Methods heading is recognised at all,
+  `check_reviewer_team_consistency.py` now says so on stderr, in the report, and as
+  `methods_section_found: false` in its JSON. The exit code is unchanged.
+- **`/peer-review`: "computers", "computed tomography" and "derivation cohort" are not computation
+  requests.** `check_review_request_types.py` matched the stems `comput` and `deriv`, so an ask
+  that only named the imaging modality was flagged `COMPUTATION_UNJUSTIFIED`. A fixed list of noun
+  phrases is now set aside before the stems are read; the verbs still fire.
+- **`/manage-refs`: a table caption beside its table is a caption.** `check_xref.py` read table
+  captions only under a caption heading, so a manuscript that places each table after its first
+  citation (`**Table 1.** ...` directly above or below the table) was blocked with `MISSING_BODY`.
+  The table must be a real table block (a pipe table whose header and delimiter rows have the same
+  number of cells, a closed grid table, or an HTML table), one table defines one caption, and a
+  caption line with no table beside it is still not a definition.
+- **`/check-reporting`: an unreadable PRISMA figure source is "not assessed", not a mismatch.**
+  When `check_prisma_figure.py` read no count from the figure source (or from the body) it exited
+  `1` and wrote `audit_safe: false` without naming a defect. It now exits `2`, the code already
+  documented for unparsable input, and writes `"status": "not_assessed"`. An arithmetic mismatch
+  on the side that was read is still listed in `action_items`.
+
 ### Added
+
+- **`/present-paper`: a slide template and handout that are now the default look for a new deck.**
+  `templates/slide_template/` ships `medsci_slides.pptx`, a template with no slides (31 layouts, including ten for research
+  talks), `new_deck.py` with five starter decks, a plain Word handout, and the scripts that
+  build them. The research-talk layouts have no band, rule or box; colours are `mono` (default),
+  `stone` or `pine`, or your own through `--accent`, `--palette-file` and similar, and a colour
+  below WCAG AA contrast stops the build. The Nature / Lancet style stays available on request.
+
+- **`/revise`: `check_response_claims.py --extra-source <path>`** (repeatable) for text the revision
+  changed outside the manuscript file: a title page, a supplement, a figure source. Text absent
+  from the manuscript and present word for word in a named file is reported as minor
+  (`RESPONSE_QUOTE_IN_EXTRA_SOURCE`, `RESPONSE_CITATION_IN_EXTRA_SOURCE`) with the file named,
+  instead of as a major unverified claim. A near match there changes nothing.
+### Changed
+
+- **`/meta-analysis`, `/check-reporting`, `/verify-refs`: review-conduct guidance.** A registration
+  amendment is scoped against the current registry record, field by field; a study-level value
+  stated more than once is identified (which statistic, population, time point) before it is
+  extracted; each reviewer's independent screening decisions are frozen before agreement is
+  computed; every reported number, table and figure is traced to its source; an archived search
+  string is re-run before a count is called unreproducible. `/check-reporting` keeps its top-line
+  note when a requested guideline fits the design less well than another, and `/verify-refs`
+  treats a claim an abstract does not mention as unresolved.
+- **`/self-review`, `/peer-review`, `/mllm-eval`, `/check-reporting`, `/fill-icmje-coi`: author-side
+  checks and literature-backed additions.** `/self-review` re-runs the whole-document gates after
+  any edit, checks each figure citation against the cited panel, anchors comments that criticise a
+  claim to the current draft, checks a label against the source that assigns it, and guards panel
+  reviews against truncated replies and against a fix limit hiding a design point. Shared probes:
+  growth-endpoint definition sensitivity (`observational_confounding` O16); planning, conduct and
+  timing as separate questions for a registered review (`sr_ma` P16); how prompts were executed
+  (`mllm_evaluation`, citing the MI-CLEAR-LLM 2025 update); what the AI did and showed in an
+  assisted reader arm (`diagnostic_accuracy` D12, citing CONSORT-AI); two published guides as
+  background reading (`ai_overclaiming`). `/peer-review` Phase 1 checks that the journal permits an
+  AI tool before the manuscript is entered into it (ICMJE Recommendations II.C.3).
+  `/check-reporting` names FLAIR and REFINE with pointers to their publications and asks that item
+  numbers be checked against the official instrument; `/fill-icmje-coi` treats item 1 as each
+  author's own answer.
+
+- **`/design-study`, `/design-ai-benchmarking`, `/model-assessment`: design-stage guidance that was
+  missing.** Reader studies: decide the claim's scope for readers and for cases separately (fixed
+  set or defined population) before spending budget on reader breadth; fix a dichotomy's
+  definition before the confirmatory read and record the boundary-defining attributes per reader
+  and case; each record identifies the instrument version the rater actually used. A novelty claim
+  of the form "study X did not do Y" needs X's full text before the design is locked. Benchmarks:
+  the timed comparison read and the reference standard are separate roles; per-category tallies
+  shown to raters are a bias path; merging rating records from several devices must not let an
+  opened or unsubmitted record replace a submitted one. Validation: tie each result to the tool
+  version and configuration that produced it, and compare cohorts only under the same
+  pre-specified inference configuration.
+
+- **`/peer-review` (and the domain probes `/self-review` shares): reviewer-side checks that were
+  missing.** Phase 2 gains an arithmetic-closure step for original articles on the first round,
+  as the SR/MA branch already had (`references/arithmetic_and_completeness.md`), asks what
+  acquisition parameters an imaging study leaves out, and reads an attached reporting checklist's
+  negative marks first, then verifies negative and positive marks alike. Phase 4 item 15 now covers claims
+  about the manuscript's own tables and availability statements, absence claims about the files
+  received, the provenance of criticised sentences in R1+ rounds, and estimators with two
+  conventions. The salvage-reframe self-audit triggers on the remedy a comment asks for rather than
+  on a Reject-leaning recommendation. Domain probes: `sr_ma` P21 for checklist-adherence reviews, also routed for
+  meta-research and reporting audits (item-level agreement, denominators, dual-scoring coverage, unreported planned analyses), the
+  paper's own multiplicity procedure in P9, very small k in P17, reading a leave-one-out table in P2, estimator
+  conventions in P0, demographics in the characteristics table (P13); `diagnostic_accuracy` D2 on
+  validation samples stratified on the index test and on outcome-dependent subsets;
+  `clinical_prediction_model` CP2 on discrimination metrics carrying risk claims;
+  `survival_prognostic` S2 on visit-detected event times.
+- **`/clean-data`, `/define-variables`, `/analyze-stats`, `/calc-sample-size`: what to confirm and
+  record before analysis.** `/clean-data` asks what a new delivery of an existing dataset is before
+  combining it, what a blank input to a derived column means, at what precision a partial date
+  was recorded, what an age that does not move with the event date refers to, and what precision
+  the source system stores. `/define-variables` gains a `Value source` column and three failure
+  modes (a registry value taken for a study-read value, no time axis at the analysis unit, chart
+  abstraction checked only against its own source). The test-selection guide says that
+  independent-samples variance tests do not apply to paired measurements, and `/calc-sample-size`
+  that a precision target for a pooled rate does not give one per item.
+
+- **Writing and submission guidance in seven skills.** `/find-journal`: when a rejection asks for
+  what the data cannot supply, decide first which claim the data support; POLICY now says how to
+  search before writing that something was not found. `/add-journal`, `/find-journal` POLICY:
+  verification dates written into a profile are given at month precision. `/write-paper`: the
+  journal's own rule on suggested reviewers comes first, and omitting optional ones is decided
+  with the user; AI used in the conduct of the study is reported in Methods from what was
+  done. `/sync-submission`: an earlier deck is only a candidate figure source, checked against the
+  approved figure; after sections are merged, check what the journal requires of the section;
+  an edit script checks the saved file against independent expected values. `/revise`: re-check
+  every sentence whose claim or citation link changed. `/manage-refs`: judge table wrapping in the
+  journal's review PDF when one exists. `/publish-skill`: a real-paper example is kept only when
+  accurate, non-identifying and redistributable; otherwise a synthetic one.
+- **`/make-figures`, `/present-paper`: added figure and deck guidance.**
+  `/make-figures` now asks for the source of every asset inside a co-author's assembled figure, rules
+  out decorative generative assets in a paper that is itself about AI reliability (a model output
+  under study is kept and labelled), keeps figure numbers out of the image, checks image mode and
+  text collisions before export, and adds a palette lock for figure sets drawn by several authors;
+  the forest-plot and flow-diagram references say what to look at in the rendered file.
+  `/present-paper` now measures a reused figure before any licence work, treats an empty licence
+  lookup as a failed lookup, checks notes against the source when a figure is swapped, and checks
+  where the minutes of an outline go; its references describe four more slide and speaker-note
+  habits. Thresholds in this text are labelled as rules of thumb.
+
+- **`/find-journal` POLICY: the promotion checklist no longer forbids every `[TODO: verify at journal site]` marker.**
+  `/add-journal` tells profile authors to mark a value they cannot find instead of guessing it, and
+  public profiles already carry such markers. The checklist item now asks that each remaining marker
+  name a value the journal's pages do not state, and that values the pages do state are transcribed.
+- **`/deidentify`: dropped a generic three-bullet "Anti-Hallucination" block** about journal metadata,
+  DOIs and package names. None of it concerned de-identification; the skill's own safety rules are
+  unchanged.
+
+## [6.3.0] - 2026-11-10
+
+**Re-check one review suggestion:** before 6.3.0, `/peer-review` and `/self-review` (probe AO2) suggested rewording an unsupported "outperforms" as "comparable to". A non-significant difference is not evidence of similarity, so a review or manuscript drafted with an earlier version that carries that wording should report the difference with its CI instead, and keep "comparable" for a pre-specified margin.
+
+### Fixed
+
+- **`/peer-review`, `/self-review`: probe statements that pushed reviews the wrong way.**
+  `ai_overclaiming.md` AO2 advised reframing an unsupported "outperforms" as "comparable to"; a
+  non-significant difference is not evidence of similarity, so it now asks for the difference with its
+  CI and reserves "comparable" for a pre-specified margin. AO2 also no longer treats overlapping
+  marginal CIs or a small sample alone as grounds to flag. `clinical_prediction_model.md` CP3 treated
+  EPV 10 as sufficient and low-EPV subgroup models as necessarily descriptive; EPV is now a rough screen
+  beside the sample-size criteria for model development, counted over candidate parameters. CP6 called
+  bootstrap and cross-validation "not validation"; they are internal validation when every development
+  step is repeated per resample, and the overclaim is presenting them as external evidence. CP2 read a
+  null incremental-value result as "does not improve prediction" without asking whether its
+  uncertainty excludes a meaningful gain.
+
+### Added
+
+- **`/peer-review`, `/self-review`: new diagnostic-accuracy, prediction-model and DTA meta-analysis
+  probes.** D13 (the test's role in the pathway decides the metric and comparison that can carry the
+  claim), D14 (a significant group difference is not diagnostic performance; judge differences
+  against measurement error in units, not ICC), D15 (one metric chosen from many candidates);
+  CP7 (prediction claim supported only by association statistics), CP8 (univariable screening,
+  stepwise selection, data-driven dichotomisation, complete-case exclusion, table-versus-model
+  mismatch, reporting completeness versus risk of bias); P20 (bivariate/HSROC pooling with a stated
+  univariate fallback, threshold effect judged from thresholds and SROC shape rather than a test).
+  D3 now covers thresholds of any quantitative index test, D6 adds "not significant is not
+  equivalent" and observed power, D8 adds Methods-promised versus Results-reported, CP1 adds
+  Hosmer–Lemeshow, P12 adds interpretation of risk-of-bias domains. Each new probe states when not
+  to flag (exploratory analyses declared as such, sparse-data fallbacks, small calibration samples).
+- **`/peer-review`: editor block in four parts, with a provisional record.** The confidential
+  block now gives the main claim, major issues ranked by their effect on it with a fixability call
+  (fixable with existing data / fixable with additional work on the existing material, scope
+  stated / not fixable in this submission / unclear), the balance of contribution and limitations,
+  and a recommendation consistent with the fixability calls. A provisional version is recorded after
+  the first read; a change of recommendation in either direction is logged with the new fact or
+  corrected reasoning. `recommendation_calibration.md` defines the three fixability levels.
+- **`/write-paper`, `/self-review`: comparison language and observed power.** The Discussion guide
+  matches "superior", "non-inferior", "equivalent" and "comparable" to what the design supports;
+  the Abstract guide keeps its purpose and conclusion aligned with the Introduction and Discussion;
+  Phase 2.5a-2 flags observed power used to argue "no difference".
+
+## [6.2.0] - 2026-11-01
+
+**Re-check de-identified data:** with 6.1.0, `/deidentify` could write an original identifier to the output and the audit log when source IDs already had the shape of its replacements (an MRN such as `ID0002`), and in a table that repeated a column name the earlier of those columns was dropped without review. Re-run `/deidentify` on such inputs (#701, #704).
+
+### Added
+
+- **`/deidentify`: a Spanish locale pack (`--locale es`).** Detects DNI and NIE numbers (also with a
+  space or hyphen before the letter), Social Security affiliation numbers (NUSS/NAF), Spanish IBANs,
+  mobile and landline numbers (including +34 and 0034), and street addresses with their common
+  abbreviations (C/, Avda., Av., Cl., P.º), and maps Spanish column names with and without accents.
+  The synthetic fixture's DNI, NIE and IBAN values carry invalid check characters. Contributed by
+  @rtmalikian (#687).
+- **`/manage-refs`: a Methods of Information in Medicine CSL** (`methods-of-information-in-medicine.csl`,
+  Thieme), identical to the upstream style. Contributed by @rtmalikian (#692).
+- **`/find-journal`, `/write-paper`: a JAMA Surgery profile.** Built from the journal's Instructions for
+  Authors, For Authors and About pages: article types and limits, the Original Investigation and
+  meta-analysis abstracts, when Key Points and a reporting checklist are required, the open-access
+  charge, transfer to other JAMA Network journals, and the AI policy quoted as written. Contributed by
+  @Steve0012345 (#690).
+- **`/make-figures`: a funnel plot exemplar** (`exemplar_plots/funnel_plot.md`) for small-study
+  effects. It matches the asymmetry test to the measure and says when not to test (k < 10, studies
+  of similar size, no 2×2 counts for an OR or RR). It also covers contour shading, multi-arm studies,
+  and trim-and-fill as a sensitivity analysis only. Contributed by @Steve0012345 (#691).
+- **`/manage-refs`: the official JMIR CSL** (`journal-of-medical-internet-research.csl`), identical to
+  the upstream style the JMIR reference guide links. It lists every author: 2025 JMIR papers use both
+  that and AMA's first three + et al., and the guide accepts minor variation. The author-name test now
+  requires the et-al rule a style declares, so a style that declares none must print every author.
+- **`/manage-refs`: `render_pandoc.sh` warns about cited journal entries the style prints in full**
+  (#699). Every bundled independent style prints the short journal title, which falls back to the full
+  one for an entry without `shortjournal`. After the render the cited entries affected are named; the
+  render never fails because of it, and says so when the check could not run.
+- **`/deidentify`: `--mapping-in` reuses a previous run's mapping.json** (`apply`/`full`), so
+  separately de-identified batches of one cohort keep each patient's pseudonym, ID and date offset
+  instead of restarting at 0001 and colliding patients when merged. The imported file is validated
+  before use and refused with the section and entry position, never the value. Contributed by
+  @rtmalikian (#697), fixing #695 reported by @Dr-HSU.
+- **`/make-figures`: a raincloud plot exemplar** (`exemplar_plots/raincloud_plot.md`) for comparing a
+  continuous outcome across groups: common-scale half-violins, every participant, median and IQR,
+  per-group denominators, and a design-aware contrast with its interval. Contributed by
+  @dhruva207-ctrml (#703).
+- **`/find-journal`, `/write-paper`: a JAMIA profile.** Built from the journal's Instructions to
+  Authors, About page and OUP's AI policy: article types and limits, the Research and Applications and
+  tutorial abstracts, title page, alt text, the Data Availability Statement and dataset citations, and
+  the AI disclosure rules, including OUP's ban on creating or altering clinical or diagnostic images
+  with AI. Contributed by @rtmalikian (#705).
+
+### Fixed
+
+- **`/deidentify`: a source ID already shaped like a replacement is no longer written out
+  unchanged.** Pseudonyms and IDs are numbered `P0001`, `ID0001`, …, so a source value such as
+  `ID0002` was handed out as its own replacement (or another patient's) and appeared in the output
+  and the audit log. New replacements now skip every original value in the anonymized columns, the
+  patient key column and a `--mapping-in` file. A plain mapping whose original IDs are 64-hex
+  strings is reusable again: every mapping.json now records `hash_mode`, and the all-hex-keys guess
+  applies only to older files.
+  Blank duplicate headers are reported as unnamed columns rather than as a bare `''`.
+- **`/deidentify`: a table that repeats a column name is refused** before any report is written. The
+  CSV reader kept only the last of the repeated columns, so the earlier one was never reviewed.
+  Contributed by @dajiaohuang (#701).
+- **`/render-pdf-doc`: Korean and English spacing in the PDF.** `render_pdf.sh` always sets
+  `CJKmainfont`, which loads xeCJK with Chinese defaults: the space after curly quotes and en/em
+  dashes was deleted (`“no difference”and`), and a space
+  was inserted wherever Latin letters or digits met Hangul (`AI를` printed as `AI 를`). The wrapper now
+  classes quotes and dashes as Western text and turns the automatic Latin–CJK space off
+  (`scripts/xecjk_korean.tex`), appended to the document's `header-includes` (a Lua filter) or added
+  as one more `-H` when the caller passes `-H`. `--xecjk-defaults` restores xeCJK's behaviour (#696).
+- **`/manage-refs`: `fill_journal_abbrev.py` no longer breaks the bib it fills** (#698). Its insertion
+  pattern knew only tab indentation, so on a two-space bib it appended `shortjournal` after a last
+  field with no comma and pandoc could not read the file. It now inserts after the journal value in
+  the entry's own indentation, falls back to CrossRef (naming each CrossRef value, often ISO 4 rather
+  than NLM), reports a failed lookup instead of passing it as "no record", and refuses to write when
+  the input or its own output does not parse.
+- **`/manage-refs`: `check_csl_render.py` verdicts** (#698). A run with nothing to compare ends
+  NOT_ASSESSED (exit 2) instead of PASS; `--md` judges only the keys pandoc reads as cited; a preprint
+  server named as the journal is not a missing abbreviation; a `jmir` spec is added.
+- **Skill instructions that pointed at things that no longer exist** (#678–#680). These are
+  corrections from an audit of SKILL.md text. No detector or script verdict changed.
+  - `/self-review` sent diagnostic-accuracy panels to the meta-analysis probe. It now routes them to
+    `diagnostic_accuracy.md` (D1–D12). The fixed 3–7 Major / 400–800-word report caps are gone:
+    they forced merging or dropping gate-generated Majors. The report may now be longer.
+  - `/peer-review` pointed at sections that never existed ("3C-1", "1C"), counted eight survival
+    probes where there are nine, and kept an inline copy of Phase 2F. Its Reject checklist now
+    follows Phase 2F as written.
+  - `/write-paper` and `/revise` halted on a verify-refs status the script never emits, so a
+    non-first-author MISMATCH or a duplicate reference passed. They now halt on
+    `submission_safe: false`, or any UNVERIFIED row under `--strict`. The 7.1 row now says that
+    more than 25 em-dashes is a Minor that does not halt, as the script does. The write-paper
+    critic no longer computes a 0–120 score. The revise 5,000-word response floor is removed.
+  - `/check-reporting`: CONSORT-AI and SPIRIT-AI are scored with their base guideline;
+    TRIPOD+AI, STARD-AI and TRIPOD-LLM replace theirs.
+  - `/batch-cohort` compares countries by the ratio of ORs (95% CI; P), as `/cross-national` does.
+  - Ten more skills (`/orchestrate`, `/make-figures`, `/ma-scout`, `/intake-project`,
+    `/publish-skill`, `/model-scaffold`, `/define-variables`, `/fill-protocol`, `/present-paper`,
+    `/obsidian-paper-vault`) had fixes to script paths that failed from a project directory, to
+    stale years and frontmatter field names, and to rules that contradicted a sibling skill.
+- **`/sync-submission` marked-manuscript build no longer stops at Word's file-access prompt** (#684).
+  Word for Mac is sandboxed and was handed the revised manuscript as a path it had never opened, so
+  Compare waited on a Grant File Access dialog until it timed out, and the error then advised a
+  longer `--timeout`. Both inputs are now copied into a private folder inside Word's container,
+  compared there and moved to `--out`. The folder is removed on success and on failure, and an
+  `--out` that is one of the inputs is refused before anything is deleted.
+- **PROSPERO eligibility rule** (#688). `meta-analysis/references/PROSPERO_template.md` stated an
+  outdated rule (registration allowed until extraction is completed) and called it defensible to
+  mark extraction "Not started" after a protocol change. It now quotes the current form: a review
+  that has started data extraction at initial submission is not eligible, and an incorrect status
+  is grounds for retracting the record.
+- **`/write-paper` 7.1 gate row** said that an AI disclosure in the body halts. The 7.1 call passes
+  neither `--profile` nor `--disclosure-placement`, so `check_classical_style.py` reports it as a
+  Minor and does not halt; the row now says so. A § section cross-reference still halts.
+- **`/write-paper` JAMA and JAMA Network Open abstracts** gave Design, Setting and Participants as one
+  heading. Both journals ask for three at submission ("for manuscript submission these sections should
+  be kept separate") and combine them only during editing. The templates now list three headings and
+  add Trial Registration, which clinical trials need. The fixed heading counts are gone: they did not
+  hold for trials or meta-analyses.
+
+### Changed
+
+- **Register before the search, and word the claim from the dates** (#688). `/meta-analysis` records
+  the registration's initial submission date in Phase 1 and, when none is recorded, stops at the
+  start of Phase 2 and asks before the formal search. An AI first-pass screen or extraction draft
+  counts as screening or extraction. Under `/orchestrate --e2e` this is a `REGISTRATION_PENDING`
+  halt, a second interrupt besides PHI, released by a recorded submission date or by the user's
+  recorded choice to proceed without one. The meta-analysis chain now starts at `/meta-analysis`
+  instead of running `/search-lit`, which selects papers and extracts results, ahead of it. The
+  write-paper templates choose "prospectively registered" (submitted before screening began),
+  "registered retrospectively" or "not registered" from the dates instead of defaulting to
+  "prospectively". P16 and `/check-reporting` step 4c compare the initial submission date and check
+  every copy of the claim, including portal paste text. `REGISTRATION_CHRONOLOGY` in
+  `check_claim_artifact.py` is unchanged and still compares the search end date.
+- **Writing guidance drawn from co-author edits** (#685). `/revise`: unify terminology from a
+  one-page term table before editing sentences, and after compressing a response letter, check its
+  evidence item by item. `/revise` and `/write-paper`: words left under a journal cap are not a
+  target. `/write-paper`: a general-purpose method validated on one task leads with the method.
+  `/design-study`: fix the reader-study analysis model at design (a crossed mixed model for a
+  conditional estimand, GEE or a marginalized model for a population-average one). Guidance only.
+- **Reviewer guidance drawn from co-author edits** (#686). `/self-review`: a sentence that
+  pre-empts an objection is not a strength, and pre-emptive defence and revision history in the body
+  are raised. AO1 (`/peer-review`, synced to `/self-review`): "AI falls short" reaches only the
+  evaluated model, version and configuration. `/peer-review` Phase 6 reconciles a finding inventory
+  so a shortening pass cannot drop a verified finding. `/check-reporting` STARD notes separate the
+  item 10b follow-up duration from the item 22 interval. Guidance only.
+- **Unused code removed** (#681). A one-off `ruff check --select F` over the shipped Python found
+  39 unused imports, unused variables and placeholder-free f-strings, none of them a bug. They are
+  removed with no behaviour change. No lint step is added to CI.
+
+### CI
+
+- **`validate_skills.sh` check 5 removed** (#682). It matched only `${SKILL_DIR}/references`, a form
+  no skill uses any more, so it could not fail. Asset paths are checked by
+  `validate_routing_assets.py --strict`.
+- **`test_csl_author_names.sh` checks editors too.** A book with editors and no author must print
+  the editors family-first in every bundled style that prints them. In #692, an empty `<name/>`
+  added to a `<substitute>` shorthand printed them given-name-first while the author checks passed.
+  The renders now use `--wrap=none`, so a name split across a line break cannot slip past the
+  checks.
+
+### Documentation
+
+- `/mllm-eval` Known limits now say that manifest mode does not check that a declared metric suits
+  the task (#682).
+- `CLAUDE.md`: a cloud session reviews the final diff blind before merging.
+- `THIRD-PARTY-NOTICES.md` said the bundled CSL files were unmodified. Six of the 28 are adapted (an
+  added `<name/>`, a renamed or retitled copy, one local style), and it now names them.
+  `citation_styles/README.md` says which slug-refreshable styles need the local `<name/>` put back,
+  and that the `<substitute>` shorthands are left alone (#692).
+- This file: an `## [Unreleased]` heading left inside the 5.25.0 section is removed. The entries
+  under it, from Demo 5 on, shipped in 5.25.0.
+
+## [6.1.0] - 2026-10-04
+
+**Hotfix:** 6.0.1 could tell a user something wrong that they would have believed. Gates cleared work they had not checked: `/model-assessment` printed "OK: task-correct metrics with uncertainty reported." for a manifest that declared no metric, `/radiomics-ml` skipped its high-dimension check when a count was missing, `/mllm-eval` passed a classification plan with no metric, and a `/self-review` PASS could rest on categories that were never worked. Skill guidance carried statistics that recomputation showed to be wrong: `/analyze-stats` named statsmodels `fit_regularized` (an L1 penalty) as a Firth fit, `/calc-sample-size` listed odds-ratio and hazard-ratio rows as Cohen's conventions, `/meta-analysis` gave PROSPERO IDs the wrong length and a Park 2022 item rate of 35% (the paper's text gives 5 of 18), and `/batch-cohort` said minimal adjustment always overestimates. Re-run `/model-assessment`, `/mllm-eval` and `/radiomics-ml` on declared manifests checked with 6.0.1, and re-check any sample size, Firth fit or PRISMA-item rate taken from those skills' guidance. 22 corrected claims are listed under Documentation, each recomputed in R or Python and re-run independently.
+
+### Fixed
+
+- **ma-scout** (#606): parse_pubmed esearch exits 2 on an error body instead of reporting 0 results.
+  PROSPERO in the README templates is now a recorded status with query and date instead of a fixed
+  ✅. The k_realistic gate states the raw × 0.15–0.30 multiplier.
+- **model-selection** (#607): the provenance gate no longer clears suffixed MSD/Decathlon names,
+  string-typed dataset lists, absent developed_on/evaluation_arms/intended_use, or spaced NC licence
+  and intended-use spellings.
+- **calc-sample-size** (#608): Test 7 (log-rank) blocks compute the dropout hazard in the unit of
+  the time inputs (new `time_unit`: months|years); year-unit inputs were silently under-sized (e.g.
+  490 instead of 606).
+- **cross-national** (#609): the NHANES fasting-glucose diabetes composite is now limited to the
+  fasting domain and fasting weight, with a non-fasting HbA1c/self-report variant for exam-weight
+  models (one-sided NA bias, F1).
+- **replicate-study** (#610): the alcohol harmonization now uses one definition across
+  KNHANES/NHANES/CHNS (adds NHANES ALQ111; CHNS U41 no longer relabels light drinkers as
+  'Occasional'), with a regression test.
+- **design-ai-benchmarking** (#611): the anchor-and-rotate sizing code now rejects infeasible inputs
+  (pool <= anchor, m < 1, R < m) and never reports more raters per item than readers; new regression
+  test wired into CI.
+- **deidentify** (#612): date-shift offsets now come from the OS CSPRNG instead of a guessable seed.
+  Scan now detects common written-out and two-digit-year date formats, Korean 070 numbers and US
+  ZIP+4 codes, and leaves NDC drug codes alone.
+- **clean-data** (#613): the profiling template now counts '.'/'missing' cells as missing (they were
+  profiled as 0% missing), and check_structural_zero.py flags non-numeric or negative-sentinel doses
+  at the reference level as REVIEW_INVALID_DOSE (exit 1 under --strict) instead of clearing them.
+- **generate-codebook** (#614): flag mixed code+label columns and bare-code text columns as needing
+  a dictionary, keep number-string measurements unflagged, and stop classing integer years as
+  epoch-nanosecond dates.
+- **search-lit** (#615): parse_pubmed keeps titles/abstracts whole through inline markup; snowball
+  reports FAILED/TRUNCATED fetches as INCOMPLETE and exits 1; check_doi_record_match flags DOIs of
+  correction/retraction notices (Crossref update-to) as DOI_IS_UPDATE_NOTICE.
+- **model-scaffold** (#616): hygiene gate counts only reachable code (decorated CLI commands
+  included), catches inline, positional and wrapped training on val/test, and never clears a script
+  it did not find. scaffold refuses a 1-class finetune head, refuses a silent random-init pretrained
+  fallback, strips patient IDs, and can reuse imaging-data's split (--preprocessing-manifest).
+- **verify-refs** (#617): BibTeX entries are now separated by brace depth. Indented, spaced,
+  parenthesised and same-line entries are each audited, and an '@' in a field value no longer splits
+  an entry or refuses the file. Surname matching rejects bare substrings (Li/Williams). A PubMed
+  title-only match is OK only when the authors agree.
+- **lit-sync** (#618): check_citekey_provenance now reports MISMATCH when a real key sits on another
+  library paper's DOI, and UNPARSED for unclosed literature frontmatter. It also scans vaults under
+  ../ or dot-folders, reads BOM-prefixed and long-frontmatter notes, and under --strict exits 2 when
+  no literature note is found.
+- **fulltext-retrieval** (#619): a retraction notice, erratum, correction, corrigendum or expression
+  of concern carrying the work's title and DOI is now `unresolved`
+  (`correction_or_retraction_notice`), not `consistent`.
+- **obsidian-paper-vault** (#620): extract_pdfs.py no longer writes or counts an empty .txt for
+  image-only PDFs (reported FAILED, needs OCR), and rejects max_pages < 1 or non-integer with exit
+  2; new extractor test wired into CI.
+- **write-paper** (#621): the placeholder gate now blocks unfilled write-paper template tokens and
+  [VERIFY]/[VERIFY-CSV]/[UNVERIFIED - NEEDS MANUAL CHECK] markers; the backbone full-text gate no
+  longer accepts a paper that only cites the backbone in its References; the title-page checker now
+  reads one-author-per-line bylines.
+- **humanize** (#622): the rewrite-fidelity gate now catches swapped values (NUMBER_REASSIGNED),
+  flipped inequality signs, multi-key/locator citation changes and citations moved to another
+  sentence (CITATION_MOVED), without flagging reordered sentences or ASCII arrows.
+- **review-paper** (#623): scoping and systematic reviews now scaffold IMRaD with a Methods/Results
+  slot for every applicable PRISMA-ScR / PRISMA 2020 item; the 7-part skeleton is kept for narrative
+  reviews (F1).
+- **sync-submission** (#624): preflight records a sub-check that ran and failed as an error (not
+  skipped); copy divergence flags stale numbers left in a copy; the word-count cap is read only from
+  a structured profile field; cross-document N scans per-journal cover letters and supplement/ and
+  reports unreadable files; the cover-letter body count shares the word-cap gate's section walker.
+- **find-journal** (#625): the acceptance-readiness pre-flight now rejects .docx/PDF/non-UTF-8 input
+  with exit 2, skips the reference list, stops flagging routine methods wording (circular ROI,
+  marginal structural model, proxy/FIB-4 covariates, technical feasibility), and its empty result no
+  longer reads as a design clearance; unsourced impact factors and acceptance percentages were
+  removed from 19 journal profiles.
+- **fill-icmje-coi** (#626): an empty seed string, title, date or author name now exits 2 instead of
+  being skipped. Before, it silently left the seed author's name in every form. The Phase-3 verifier
+  now uses the actual seed strings.
+- **fill-protocol** (#627): form values are written exactly as typed (no YAML retyping); empty or
+  list values and malformed YAML exit 2; placeholders inside hyperlinks/tracked insertions are
+  replaced; new optional `section_end` keeps a trailing block after the last section, and the [OK]
+  line reports end-of-document replacement.
+- **render-pdf-doc** (#628): the scan_glyph_coverage.py --font check now covers every drawable
+  non-ASCII character, not just 5 classes, and render_pdf.sh reads missing glyphs from pandoc's JSON
+  log so a pass-through --quiet can no longer turn exit 4 into "ok".
+- **orchestrate** (#629): --e2e post-skill validation now blocks the DOCX build on a self-review
+  fatal finding (fatal_count > 0 sends the run to N8) and on MISSING reporting-checklist items
+  (reads qc/reporting_checklist.json). N8 now triggers on severity 'fatal' instead of category names
+  self-review never emits.
+- **manage-project** (#630): `migrate_project_to_ssot.py --mark-complete` now validates and marks
+  SSOT-native projects (from `init --ssot`), so they can reach Phase 1C enforce; SKILL.md no longer
+  implies `--ssot` alone enables blocking.
+- **author-strategy** (#631): journal tier is no longer inferred from journal-name substrings (now
+  'unavailable [VERIFY]', no high-tier rate). A supplied ORCID or initials that contradicts a
+  same-surname author is no longer attributed to that namesake. A3 'AI-pivot hybrid' no longer
+  surfaces on non-AI corpora ('multimodal'/'claim' terms removed, duplicate AI-fraction signal
+  merged, new no-clinical-foundation negative).
+- **present-paper** (#632): deck checks now measure table text and read slides and notes in
+  presentation order; check_deck_budget gains --backup-from N and prints where the clock stops; the
+  sharing strip clears every notes-page shape, review comments, author fields and (on request)
+  hidden slides; batch figure extraction no longer crops another paper's page and fails on a skipped
+  item.
+- **publish-skill** (#633): audit_skill.sh no longer reports CLEAN for a check that could not run.
+  It now errors on grep failures, including the UTF-8 locale failure that disabled the Academic
+  Roles scan, and on an invalid user regex. It reports INCOMPLETE (--strict exits 3) when binaries
+  are present without exiftool, and it checks EXIF fields for emails and the case-insensitive user
+  pattern.
+- **contribute** (#634): the submit step now accepts a safety scan only if it covered exactly the
+  files being sent (sha256 per file; binary, missing, stale or unrelated scans are refused), and the
+  scanner now catches sk-ant-/sk-proj- and AIza API keys.
+- **check-reporting** (#635): the PRISMA figure audit now checks assessed = sought - not retrieved;
+  the cascade check exits 2 on a missing --manuscript and reports UNVERIFIED (exit 1 under --strict)
+  when no stage count is found; the Part D example's compliance_pct is corrected to 82.1, with a
+  null rule when every item is N/A, and placeholder or sample-size fixes are never fixable_by_ai.
+- **peer-review** (#636): the authors' block keeps its sub-headings for the length and two-box
+  gates. The PDF injection guard flags text the page does not show (render mode 3, opacity 0, an
+  opaque cover, text on its own colour) and keeps it out of --sanitize. A label over an image or a
+  gradient, and a faint watermark, stay clean.
+- **mllm-eval** (#638): the deterministic gate's SKILL.md section lists its known limits: it checks
+  that a term is present, not negation or sense, so "No human evaluation was performed" still covers
+  that axis. No detector change.
+- **meta-analysis** (#639): PRISMA flow identities the SSOT cannot decide (assessed - excluded vs k
+  without `included.reports`, reports < k, reasons summing above the excluded count) report
+  NOT_ASSESSED instead of FAIL; Table 1 IDs match across case, spacing and punctuation;
+  STAGE_TRANSFER_LOSS names likely ID-style mismatches. The after_dedup -> full_text_assessed step
+  is not checked (no SSOT key for records removed before screening), as on the previous release.
+- **model-card** (#640): the completeness gate flags each required field left as an upper-case
+  `[NEEDS INPUT]`/`[VERIFY]` token (UNFILLED_FIELD) and ignores markdown links, HTML comments and
+  fenced code. A bare N/A no longer fills Intended Use, Training/Evaluation Data, Metrics or
+  Quantitative Analyses.
+- **academic-aio** (#641): the summary-box detector anchors and bounds the box, counts only
+  top-level bullets, accepts Radiology's 'Key Results' label and 'Label.' bare lines, and requires
+  non-empty Research-in-context sub-blocks; the schema validator fails unfilled placeholders
+  (`--template` to allow) and checks DOIs and ORCIDs (including the check digit) in every
+  identifier shape; the crosswalk drops unverified item numbers.
+- **manage-refs** (#642): six citation and cross-reference false clearances closed (H1-H6).
+  `check_csl_render` cites its sample and judges DOI and journal abbreviation from bib fields; a
+  full title contained in its own abbreviation ('Cancers (Basel)') is NOT_ASSESSED, not FAIL.
+- **make-figures** (#643): legend reconcile and the figure critic no longer report a pass for a
+  check they never ran; the cascade helper rejects unrecognised configs. Flow-diagram boxes that
+  list parts without a stated total (PRISMA 2020 identification box, exclusion reasons,
+  sub-cohorts) are NOT_ASSESSED instead of a false CASCADE_IMBALANCE.
+- **model-assessment** (#644): uncertainty_method and explainability values are normalised and
+  checked against a vocabulary (unknown values exit 2); a "none" sanity check no longer counts as a
+  check. The split-leakage gate prints the ID/split columns it audits and gives a Minor
+  ID_COL_NOT_PATIENT_LEVEL advisory for an auto-picked non-patient ID column. The metric gate is
+  unchanged; its keyword limits (MSD, negation, "saliency map" as mAP) are listed in SKILL.md.
+- **self-review** (#645): refinement_stop returns INDETERMINATE for a ceiling-only run or a crashed
+  or empty gate JSON; the Table 1 P parser reads scientific notation and footnoted or missing
+  markers (an unreadable P cell exits 2); percentages are checked at their printed precision, with
+  a Minor PERCENT_PRECISION_NOTE for a footnoted near miss. The reported-P alpha rules and the
+  E-value binding change were withdrawn and are listed as known limits.
+- **revise** (#646): a claimed numeric citation is matched by whole element when the body bracket
+  holds only numbers, so [15] no longer satisfies a claimed [5]; ';' lists, range middles, common
+  dashes and pandoc's `\[5\]` and '--'/'---' ranges are read. Other brackets keep the previous
+  prefix match. The quote-content, citation-intent and density-boundary changes were withdrawn and
+  are listed as known limits.
+- **mllm-eval** (#648): the completeness gate reads a declared `eval_manifest.json`
+  (`--manifest`) instead of plan keywords, so "no human evaluation was performed" or a
+  patient-split "data leakage" no longer clears an axis. Each field is checked against an
+  allow-list drawn from `evaluation_axes.md` (an off-list value, wrong type or unknown key exits
+  2; `other:<description>` is a Minor `UNLISTED_METHOD`); only an adjudicated expert reference
+  clears the reference standard and only a blinded reader study clears the reader-study axis.
+  `--plan` keeps the keyword check unchanged and prints a PROSE_MODE notice.
+- **model-assessment** (#650): the metric-reporting gate reads a declared `metrics_manifest.json`
+  (`--manifest`) instead of results keywords, so "we did not compute HD95", "FROC was not
+  performed", a "saliency map" or the Decathlon "MSD" no longer counts as a reported metric.
+  Values come from an allow-list drawn from `metric_guide.md` (grounded synonyms folded; an
+  off-list value, wrong type or unknown key exits 2; `other:<description>` is a Minor
+  `UNLISTED_METHOD`). `--report` keeps the keyword check and prints a PROSE_MODE notice.
+- **revise** (#651): `check_response_claims.py --values revision_values.json` checks the declared
+  revision-time numerical audit table against the body: each value must be in the paragraph or
+  table row that holds its anchor (number formats folded; .docx tracked changes read as
+  accepted), else `RESPONSE_VALUE_MISMATCH` (major); unreadable numbers or an approximate anchor
+  give `RESPONSE_VALUE_NOT_ASSESSED` (minor). Output without `--values` is unchanged.
+- **self-review** (#654): two declared inputs close the open SR-01/SR-02 limits when given.
+  `check_claim_artifact.py --evalues evalues.json` recomputes each declared RR's VanderWeele-Ding
+  E-value (point and near-null CI limit) and flags `EVALUE_DECLARED_MISMATCH` only when the
+  rounding intervals do not overlap. `check_reported_p_from_counts.py --tests p_tests.json`
+  recomputes a row's P with its declared crude test and flags `P_ALPHA_CROSSING` only when the
+  reported P's printed interval and the recomputed P sit on opposite sides of alpha; adjusted,
+  paired, multi-group and missing-data rows are `P_NOT_ASSESSED`. Output without the flags is
+  unchanged.
+- **model-assessment** (#653): Phase 9 lists every metric-reporting Major that must be zero.
+- **radiomics-ml: the pipeline gate fails closed.** `check_radiomics_ml.py` no longer clears
+  features >= events because dimensionality reduction is declared, counts events as the minority
+  class, flags a missing or unrecognised feature-selection stage, accepts stability and
+  external-validation values only from an allow-list, and rejects malformed counts as input errors
+  (exit 2). The strong challenge fixture now has 40 candidate features.
+- **analyze-stats: two gates stop clearing what they cannot see.** `check_separation.py` flags
+  quasi-complete separation at a tied boundary and joint separation across predictors (when scipy is
+  present); its OK line no longer claims the MLE exists unless the joint check ran.
+  `check_generated_code.py` no longer accepts an unseeded generator (`default_rng()`,
+  `RandomState(None)`, `random_state=None`, `set.seed(NULL)` and similar) as a seed, and ignores
+  calls named only in comments or docstrings.
+- **imaging-data: two false clearances closed.** `check_dataset_profile.py` reads a single metric
+  string as one metric, so `ACCURACY_UNDER_IMBALANCE` fires on `metrics=accuracy`.
+  `check_preprocessing_leakage.py` treats a transform as data-fitted when its type is a known fitted
+  op or the manifest declares a dataset-level `fit_scope` for it.
+- **version-dataset: `verify` reports tabular changes the column hashes miss** — a duplicate CSV
+  header re-written by pandas, a `\x1e` moved across a cell boundary, and a binary table whose bytes
+  changed while every column hash matched (with a newly built lock). Locks built by the previous
+  script still verify an unchanged CSV/TSV clean.
+- **find-cohort-gap: data exports are no longer read as codebooks.** `build_cohort_profile.py`
+  routed a file with a `name`/`code`/`item`/`field`/`column` header as a codebook and wrote its row
+  values (for example patient names) into the profile. Headers are normalised, a weak name column
+  counts only when every other header is a codebook title, and an ambiguous file stops with exit 1
+  and writes no profile.
+- **Tests no longer fail when a program writes its output in pieces.** Eleven test scripts piped a
+  program's output into `grep -q` under `set -o pipefail`. `grep -q` exits at the first match, so a
+  program still writing (Python with `PYTHONUNBUFFERED=1`, common in containers) died of a broken
+  pipe and the check failed: the diagram-edge challenge card failed intermittently and the
+  portal-mirror card every time. The scripts now let `grep` read the whole output.
+- **The tag-cleanup gate test works with a system ripgrep.** To force the gate's `grep` branch it
+  removed every PATH directory holding `rg`; with ripgrep in `/usr/bin`, that removed `bash` and
+  `grep` as well. It now puts a directory linking to everything except `rg` in its place.
+- **Stated counts.** `paper.md` said four end-to-end demonstrations (there are five) and that every
+  detector ships a challenge card (coverage is partial); the Korean and Chinese READMEs said ten
+  locale packs (there are eleven).
+- **The catalog-count gate reads the translated READMEs.** `README.ko.md` and `README.zh-CN.md`
+  restate the guideline, skill and detector counts and the locale-pack count in their own words,
+  and only the shields badge was checked, which is how both stayed at ten locale packs after the
+  English README moved to eleven. `validate_catalog_consistency.py` now checks each of those
+  claims: the first three against disk, the locale-pack count against the English README (so a
+  one-file locale-pack contribution is never failed on prose). A reworded sentence fails instead of
+  going unchecked. Self-test: `tests/test_catalog_translated_claims.sh`.
+- **The rest of the `| grep -q` pipes are gone.** Twenty-two checks across ten scripts still fed a shell
+  variable to `grep -q` through a pipe under `pipefail`; they now pass it as a here-string, so there
+  is no pipe to break whatever the output size.
+- **Declared-manifest gates report an empty or partial declaration instead of clearing it** (#663).
+  model-assessment `check_metric_reporting.py --manifest` flags `CLASSIFICATION_METRIC_MISSING` /
+  `SEGMENTATION_METRIC_MISSING` (Major; Minor when only an `other:` metric is declared) when the
+  task's headline metric is absent; it had printed "OK: task-correct metrics with uncertainty
+  reported." for `metrics: []`. mllm-eval adds a Minor `CLASSIFICATION_METRICS_NOT_ASSESSED` (its
+  schema has no classification-metric field); radiomics-ml adds a Minor `HIGH_DIM_NOT_ASSESSED` when
+  a count is missing instead of skipping `HIGH_DIM_LOW_EVENTS` silently. Manifest-mode runs print
+  `OK (as declared): ...` and write `"basis": "declared"`; a run with only Minor claims prints
+  `No Major issue: N Minor` instead of an OK line.
+- **model-scaffold reads imaging-data's QC** (#665). Given `--preprocessing-manifest` or the new
+  `--imaging-qc PATH`, `scaffold.py` reads the dataset-profile, preprocessing-leakage and
+  normaliser-domain reports beside the manifest. An unacknowledged Major refuses to scaffold (exit 1,
+  nothing written) until `--ack-qc CODE=reason`, which is recorded in `IMAGING_QC.md`, `config.yaml`
+  and `REPRODUCIBILITY.md`; Minor claims are carried forward into `IMAGING_QC.md`, so a profiling
+  warning now reaches a file the next step reads (demo 05's `INTENSITY_SCALE_INCONSISTENT`). Missing
+  or unreadable reports are recorded NOT ASSESSED. Without the flags the output is unchanged.
+- **self-review recomputes P from reported test statistics** (#674). New
+  `check_test_statistic_p.py` recomputes P for `t(df)`, `F(df1, df2)`, `χ2(df)` and `z` with their
+  P in the same sentence, allowing for rounding on both sides. An inconsistent result is Minor
+  `P_STAT_INCONSISTENT`; Major `P_STAT_DECISION_ERROR` only when the whole recomputed and reported
+  ranges sit on opposite sides of alpha. One-sided, adjusted, exact or robust P values are never
+  Major, and a statistic written with a thousands separator or exponent is listed as not checked.
+  `--grim` checks declared means for GRIM feasibility (Major `GRIM_INCONSISTENT`).
+- **self-review records what it covered** (#672). The JSON carries a `coverage` ledger for
+  categories A–L and each loaded probe module; `check_review_coverage.py` flags a PASS over a
+  `not_assessed` entry (Major; Minor for advisory category L). A JSON without a ledger is
+  NOT_ASSESSED.
+- **meta-analysis checks report-level PRISMA arithmetic and ratio CI symmetry** (#673). Optional
+  `prisma2020:` counts add flow identities (sought − not retrieved = assessed, and so on); an
+  identity with an undeclared term is NOT_ASSESSED, and output without the section is unchanged.
+  New `check_ratio_ci_symmetry.py` flags an OR/RR/HR/IRR whose CI cannot hold the estimate
+  (Major) or is log-asymmetric beyond rounding (Minor; profile, exact and bootstrap CIs are
+  skipped).
+- **analyze-stats** (#671): known-answer tests for `likert_summary.py`, `forest_plot.py` and
+  `sample_size.R`, with values from R/metafor/epiR runs; `check_generated_code.py` adds Minor
+  `API_DEFAULT_STUDENT_T` (scipy `ttest_ind` without `equal_var`) and `API_DEFAULT_PENALIZED_OR`
+  (default-penalised `LogisticRegression` whose `coef_` is exponentiated).
+
+### CI
+
+- **No minimum wait between releases.** `check_release_cadence.py` no longer requires 14 days
+  since the last release (maintainer decision); `--min-days N` restores a wait. A release still
+  needs a changelog section with something a user would notice.
+- **The validate job's Python packages are pinned** (#664). `.github/requirements-ci.txt` holds
+  the full transitive set CI resolved on Python 3.11, so an upstream release cannot change a
+  numerical test's result between two runs of the same commit; its header says how to refresh it.
+- **Detector result convention, enforced for new detectors** (#666). `docs/detector-conventions.md`
+  separates what CI enforces (the `"detector"` key; `summary.verdict` in {OK, MAJOR_CANDIDATE,
+  NOT_ASSESSED}) from the target for new or modified detectors (counts, `*_NOT_ASSESSED` claims,
+  final-line forms, exit codes). `check_detector_envelopes.py` reads each detector's verdict from
+  source; the 65 detectors that do not conform yet are listed with their current values, and the
+  list can only shrink.
+- **A failing gate no longer hides the rest.** `validate` gates run after an earlier gate fails
+  (`if: !cancelled() && steps.setup.outcome == 'success'`), so one run reports every failure; a
+  failed setup still skips them all.
+- **The installer is now run on Python 3.9, the floor the README promises.** Stock macOS ships 3.9,
+  and `check_python_floor.py` only parses user-facing code under 3.9 grammar. A new `python-floor`
+  job runs the installer, updater and hook tests and `install.py --self-test` on a real 3.9
+  interpreter with no third-party packages.
+- **`validate.yml` hardening.** The workflow token is read-only (`permissions: contents: read`); a
+  new push to a pull request cancels the run it supersedes (pushes to `main` and `release/**` are
+  never cancelled); each job has a timeout (30 minutes for `validate`, 15 for the others) instead of
+  GitHub's six-hour default.
+- **The release workflow waits up to 30 minutes for npm.** The "npm must actually carry this
+  version" step now polls the registry for 1800 s instead of 600 s. 6.0.1 took about 25 minutes to
+  appear, so a release that had published correctly was marked failed and its npm payload
+  comparison never ran. Running out of time still fails the step.
+
+### Documentation
+
+- **Claims checked against their PubMed sources** (#669): Park 2022 item 13d is 5 of 18 (28%);
+  Reinke 2024 is cited for class imbalance as a pitfall source; ResNet-50 is no longer called
+  well-calibrated; the CHNS biomarker N is flagged for a codebook check.
+- **Seed runs ≥ 5 where recommended; Dice message wording** (#670). model-card, model-scaffold and
+  the mllm-eval guidance now match model-assessment's ≥ 5 runs (mllm-eval's checked floor stays
+  3), and the metric-reporting messages say Dice penalises the same boundary error more on small
+  structures.
+- **Claims that failed recomputation are corrected** (#659, #660, #661). Each claim was recomputed
+  in R or Python and re-run by a second agent; only claims both found wrong were changed, and every
+  new number comes from that recomputation. calc-sample-size: the OR, HR, ICC and kappa rows leave
+  the "Cohen's conventions" table (Cohen defines none; OR 2.0 and 3.0 are d ≈ 0.38 and 0.61), and
+  only criterion 1 binds in the survival pmsampsize example. analyze-stats: `check_separation.py`
+  no longer names statsmodels `fit_regularized` (an L1 penalty) as a Firth fit; the IPTW coverage
+  figures without a reproducible source are removed and the Austin 2016 citation now states what
+  that paper found; the epiR and ICC sample-size comments name the right call and method.
+  batch-cohort: residual confounding can bias either way, the multiplicity correction applies
+  whenever more than one test is reported, and EPV counts model parameters. meta-analysis: the
+  PROSPERO ID is 14 characters, Park 2022 percentages carry their own denominators (one value is
+  marked for verification), and the "recomputation did not run" heuristic is stated as a
+  possibility. find-cohort-gap: the grade tables no longer overlap or leave gaps, and the
+  repeated-measures efficiency claim depends on the estimand. model-assessment, imaging-data,
+  model-selection, model-scaffold: seed-SD precision, AUPRC and ECE figures, AMOS22 scope,
+  `NormalizeIntensityd` defaults, the Dice size sensitivity and the scaffold methods sentence are
+  corrected.
+- **Hub and skill command lines point at the declared-input gates** (#657): mllm-eval
+  `--manifest`, model-assessment `--manifest`, revise `--values` and self-review `--tests` appear in
+  `skill.yml`, and peer-review mentions the `--values` audit table.
+- self-review states `EVALUE_NON_PRIMARY` as the advisory flag the gate emits (#656) and its JSON
+  output reference names the 12 categories A-L (#658).
+- `citation_styles/README.md` says why `vancouver.csl` and `nlm-citation-sequence.csl` are
+  byte-identical: JKMS resolves its parent by the second filename, and the first is the fallback a
+  user picks, so neither can be removed.
+
+## [6.0.1] - 2026-10-01
+
+**Hotfix:** four checks could report a clearance they had not made: `/verify-refs` passed an invented title on a real DOI or PMID, `/deidentify` applied a review to data changed after it, the `/imaging-data` leakage check called an empty manifest leakage-safe, and `/analyze-stats` translated a negative correlation as an increase. Re-run `/verify-refs` on reference lists audited with an earlier version, re-check any de-identified output whose input file was edited between review and apply, and re-read any plain-language translation written from a negative correlation.
+
+### Added
+
+- **`/deidentify`: an Italian locale pack (`--locale it`).** Detects the Codice Fiscale (including
+  omocodic and lower-case forms, also in columns whose name the pack does not map), Italian phone
+  numbers and street addresses, with a synthetic fixture whose codes carry invalid check
+  characters. Contributed by @rtmalikian (#544).
+- **`/peer-review`: a comparator-adequacy exemplar review.** A synthetic teaching example for a
+  manuscript that claims added value over a comparator that is absent, trivial or mismatched: it
+  shows how to anchor the finding, ask for the paired difference with its interval, and calibrate
+  severity. Contributed by @aniruddhaadak80 (#542).
+
+### Changed
+
+- **Text files are checked out with LF on every platform** (`.gitattributes`, #588). A Windows
+  checkout with Git's default line-ending conversion produced a distribution manifest that could
+  never match CI; CSV files keep their committed bytes.
+
+### Fixed
+
+- **`/verify-refs` checks that a DOI or PMID resolves to the work the reference names.** A
+  reference whose identifier resolved and whose authors matched was OK whatever title it carried,
+  so an invented title on a real DOI passed, and a wrong DOI passed beside a right PMID. Each
+  identifier's record is now compared with the reference, and the reference is a MISMATCH unless
+  a BibTeX or TSV title has at least half of its words in the record's title, or a line of a
+  Markdown, DOCX or text reference list contains most of the record's title (or of its part
+  before a colon). Subtitles, publisher markup, British spelling and a PubMed original-language
+  title do not count as differences; a title in a script other than Latin is not compared. A
+  `booktitle` field listed before `title` was read as the title, and a quoted `title` in the last
+  field was not read; both are fixed.
+- **`/deidentify` will not apply a review to data that changed after the scan.** Apply checked
+  the decisions and the column names but not the data, so a value put into a kept column after
+  the review was written to the output. The scan report now carries a salted PBKDF2 fingerprint
+  of the table (blank rows excluded), and review and apply refuse a table that no longer matches
+  it. A report made by an earlier version has no fingerprint and is refused too: scan and review
+  again.
+- **The `/imaging-data` preprocessing-leakage check no longer passes a manifest it could not
+  check.** An empty manifest printed "leakage-safe" and passed `--strict`; it is now an input
+  error (exit 2), as are a transform without a type and a split row without a patient ID or
+  split. A patient ID of 0 was dropped as missing, so its rows were never checked for overlap.
+  When only transforms or only split rows are declared, the OK line names the check that did not
+  run.
+- **`/analyze-stats`: the plain-language translation of a correlation dropped its sign.** The
+  formula used `|rho|`, so a negative association read as an increase, and it treated Spearman's
+  rho as if it fixed a change in outcome units, which a rank correlation does not. The guidance
+  now translates a regression or per-SD slope with its sign, says to fit that slope when the
+  result is a correlation, and to report fitted values at the two percentiles when the
+  association is monotonic but curved.
+- **The analyze-stats template test let a crash pass.** It counted the PASS/FAIL lines its
+  Python block printed, so a crash after the first check dropped every later check and the test
+  still passed. It now fails when the block exits non-zero or reports fewer than its 15 checks.
+- **`docs/install.md` said the toolkit never runs R.** `/calc-sample-size`, `/meta-analysis`,
+  `/cross-national` and the `/make-figures` flow diagrams do, as do `/batch-cohort` and
+  `/replicate-study` with an R template, and `/analyze-stats` writes R code beside its Python
+  analysis; the page now says so.
+
+## [6.0.0] - 2026-10-01
+
+**Hotfix:** several results were wrong in ways a user may have relied on: `/calc-sample-size` returned sample sizes up to about four times too small, `/deidentify` wrote cell values into its reports and let columns it could not classify through on Enter, and `/verify-refs` could report a reference with a DOI that does not exist as OK. The first section below lists what to re-check.
+
+v6 also shortens every skill, consolidates the imaging and model-engineering skills (the old names work as aliases until v7) and replaces the README with a short one. [`MIGRATION-v6.md`](MIGRATION-v6.md) lists the renamed skills and how to update from each install channel.
+
+### Re-check results made with an earlier version
+
+Several fixes in this release change numbers, not only wording. If you used one of these skills
+before v6, re-run it before relying on the result:
+
+- **`/calc-sample-size`.** Several formulas returned the wrong size, some about four times too
+  small (details under Fixed). Re-run every sample size computed with an earlier version.
+- **`/deidentify`.** Columns the scan could not classify (free text, ID-like numbers, a column
+  whose name contains an identifier word, a single address) were marked safe, and pressing Enter
+  kept them. Re-open any output made by accepting the recommendations and check those columns.
+  Scan reports from earlier versions contain cell values, and earlier audit logs use an unkeyed
+  hash; keep both with the raw data, not with the de-identified output.
+- **`/meta-analysis`.** `meta_analysis.R` exponentiated mean and standardised mean differences as
+  if they were ratios. Re-run any continuous-outcome analysis made with the template.
+- **`/verify-refs`.** A reference with a DOI that does not exist and an invented title could be
+  reported OK. Re-run the audit on any bibliography checked with an earlier version.
+- **`/radiomics-ml`.** The nested cross-validation template split by row, so lesions from one
+  patient could sit on both sides of a split and inflate AUROC. Re-run with the patient-grouped
+  template.
+- **`/analyze-stats` templates.** Re-run any of these produced with an earlier version: a
+  survey-weighted OR or CI (the CI ignored the design and was far too narrow), a Cox HR (the default
+  fit was penalised toward 1), a propensity-score effect or its SE, an OR for a categorical
+  predictor, a decision curve (models were recalibrated), a clustered ICC, calibration-in-the-large,
+  a Table 1 P value, or sensitivity and specificity at the default threshold (chosen on the same
+  data).
+
+### Changed
+
+- **Shorter skill files (v6).** The `SKILL.md` files together went from about 159,000 to
+  107,000 words. Repeated boilerplate (a generic anti-hallucination block, communication rules,
+  disclaimers, pointers to rule files that were never shipped) is gone, and material that only some
+  runs need moved into each skill's `references/` folder. Script paths, section numbers other files
+  cite, and the declared outputs in each `skill.yml` are unchanged.
+- **A short README (v6).** The front page went from 1,070 to under 200 lines. Install options and
+  updating moved to `docs/install.md`, workflows and skill boundaries to `docs/workflows.md`, and
+  the demos to `docs/demos.md`; links to the old README's sections still land on the right place.
+  The Simplified Chinese README is now a 100-line summary, a Korean summary (`README.ko.md`) is
+  new, and [`MIGRATION-v6.md`](MIGRATION-v6.md) lists the renamed skills and how to update from
+  each install channel.
+
+- **Imaging and model-engineering skills consolidated, 12 → 7 (v6).** `model-selection` replaces
+  `architecture-zoo` and `model-sourcing`; `imaging-data` replaces `profile-imaging` and
+  `preprocess-imaging`; `model-assessment` replaces `model-evaluation`, `model-validation`,
+  `uncertainty-imaging` and `explainability`. Each keeps the absorbed skills' steps as phases, and
+  every detector keeps its script name, flags and JSON output; the heading of its text report now
+  names the new skill. The eight old names still work as
+  name-only aliases (not chosen by the model on its own) until v7. The installer backs up a
+  locally modified old skill before replacing it with its alias.
+
+- **`/check-reporting` scores the guideline you name (v6).** Its rules pick a guideline when you
+  name none; when you do, it now scores that one and puts a line at the top of the report if another
+  instrument fits better (STARD-AI for an AI index test, for example) with the command to rerun. In an
+  isolated comparison, a request for STARD on an AI diagnostic-accuracy manuscript was sometimes
+  rescored as STARD-AI without being asked.
+- **Skill descriptions say when to use the skill, in 300 characters or fewer (v6).** The model picks
+  a skill from its description, and those ran to 945 characters (median 304) of feature lists.
+  Each now opens with "Use when …", names the situation in the words a user would type, and
+  where two skills look alike, which one takes over (`verify-refs` audits, `manage-refs` writes;
+  `self-review` is your own manuscript, `peer-review` someone else's). `triggers` moved unchanged
+  under `metadata`. `tools` is removed because hosts ignore it; it was not turned into
+  `allowed-tools`, which pre-approves tools rather than listing them. Two Claude Code fields
+  remain outside the Agent Skills standard, `model` in six skills and `disable-model-invocation`
+  in the eight aliases, so the standard's `skills-ref validate` and a claude.ai skill upload
+  reject those 14 files (see `docs/host_compatibility.md`). `model: inherit`, which is Claude
+  Code's default anyway, is removed from 48 skills. `validate_skills.sh` checks the shape, the
+  length, and that `tools` stays gone.
+- **The skill validator no longer rewards length or boilerplate.** `scripts/validate_skills.sh`
+  failed any SKILL.md without an "Anti-Hallucination" heading, counted occurrences of the word
+  "gate", and warned "THIN tier — consider expanding" below 150 lines. Those checks pushed every
+  skill toward the same generic sections and more text. They are removed; the size ceiling in
+  `check_phase_budget.py` stays. The contributor template (`docs/SKILL_TEMPLATE.md`) replaces its
+  fixed Anti-Hallucination and Language blocks (the latter hard-coded one user's language) and
+  its length-based quality tiers with a short Gotchas section and a size limit.
+- **A first pull request now sees every check, not only the manifest.** The distribution-manifest
+  checks fail whenever a change adds or edits a shipped file without regenerating `metadata/`,
+  which is the usual state of a first contribution. They ran early, and a CI job stops at its
+  first failing step, so a contributor saw that one failure and none of the checks after it. They
+  now run last and still fail the job.
+- **`main` accepts changes only through a pull request whose CI passed.** `CONTRIBUTING.md` now
+  lists what to run before pushing and leaves the full suite to CI; the local mirror stays for
+  reproducing a CI failure. The weekly adoption snapshot can no longer commit to `main`, so it
+  appends to the data-only [`metrics` branch](https://github.com/Aperivue/medsci-skills/tree/metrics)
+  instead, and `IMPACT.md` and the README link there.
+- **`/peer-review` reviewer profiles now carry only what each journal publishes.** Each profile
+  in `references/reviewer_profiles/` keeps the journal's submission system, review model, the
+  comment structure from its public reviewer guide, and its reviewer-AI policy, each linked to the
+  journal's own page. Recommendation options, scorecard items and scales, required form fields and
+  portal checklists are removed: they differ by journal and change without notice, so they are
+  read from the live review form and kept out of a public repository. The Radiology: Artificial
+  Intelligence profile now gives the double-anonymized review model its author instructions state.
+
+- **Releases publish only a commit that passed CI on `main` (v6).** The release workflow now
+  fails unless the tagged commit is on `main` and every Validate run on it succeeded, and a
+  recovery run dispatched from another commit is rejected, so the provenance attached to a
+  release names the commit whose files were published. Publishing uses npm trusted publishing
+  (Node 24), and the newest release must become npm `latest`. The maintainer guide and
+  `CONTRIBUTING.md` no longer say an `NPM_TOKEN` secret is required.
+- **Installer (v6).** The macOS classroom `install-macos.command` runs on double-click again (it
+  was never executable in git). `npx medsci-skills install --enable-update-notify` installs the
+  skills as well as turning on update reminders. `--target cursor` installs skills Cursor reads,
+  and an existing Cursor rule is backed up before it is replaced. Logs go to
+  `~/.medsci-skills/logs`, so a read-only package no longer fails after a good install, and
+  `--dry-run` writes nothing. The transaction journal records each move before making it,
+  rollback can be re-run, a lock stops two installs into the same target at once, and symlinks
+  you added inside a skill are backed up as links. The npm package now ships the setup check
+  (`installers/doctor.py`) and no longer ships skill test folders.
+- **Install and host documentation matches current behaviour (v6).** The install guide covers
+  staying on one release, `npx skills add` and the per-agent `gh skill` install paths; the setup
+  guides install Claude Code rather than the desktop app; the READMEs lead with the route that
+  needs no terminal; the migration guide notes that Codex shows the renamed-skill aliases to
+  the model.
+  Marketplace plugins carry a display name, author, homepage and keywords. `SECURITY.md` lists
+  supported versions and what counts as a vulnerability in a skill collection.
+
+### Removed
+
+- **`/batch-cohort` no longer ships its unused KNHANES template, generator and variable list (v6).**
+  `SKILL.md` never pointed to them, and the template was wrong in two ways: the generator left its
+  data-path slot unfilled, so every generated script failed on its first read, and it dropped rows
+  before declaring the survey design, which `/analyze-stats`' survey guide forbids because it
+  misstates the standard errors. Its variable codings included definitions still to be checked
+  against the KNHANES codebook. The skill clones the validated script you bring, as before.
+
+### Fixed
+
+- **Instructions that did not match the code, found while shortening the skills (v6).**
+  - `/revise` wrote the response letter only under `revision/R[N]/`, while its claim check and
+    `/sync-submission` read `revision/response_to_reviewers.md`, so the check read a file the skill
+    never wrote.
+  - `/orchestrate` sent the user's own manuscript to `/peer-review`, which that skill forbids; it now
+    uses `/self-review`.
+  - Several commands could not run from an installed skill: `/fill-icmje-coi` used `${SKILL_DIR}`,
+    which is never substituted, and other skills used paths relative to the current folder. They
+    now use `${CLAUDE_SKILL_DIR}`.
+  - `/sync-submission` documented `--figure-accept tiff jpeg eps`, which argparse rejects.
+  - `/publish-skill` re-audited the untouched original, so its PII re-audit could never reach zero.
+  - `/find-cohort-gap` graded every Green topic Blue; it now follows its own final-grade table.
+  - `/batch-cohort` required weighted analysis for NHIS, which has no sampling weights, and
+    `/cross-national` named the wrong NHANES single-cycle weight (`WTMEC2YR` is correct).
+  - `/fill-icmje-coi` counted the text "None" inside words such as "Nonenzymatic".
+  - `/verify-refs` described an author mismatch as FABRICATED; the script reports MISMATCH.
+
+- **AI-use disclosure now follows the target journal, and the authors confirm their own
+  statements.** `/write-paper` put a disclosure in Methods by default while its own Phase 7.1
+  gate halted on a disclosure in the body, and `/humanize` told you to delete body disclosures
+  even for journals that require one in Methods. Both now take the location from the journal
+  profile, as the classical-style check already did. The drafted statements about what the
+  authors did (reviewed, verified, approved; what the tool was not used for) sit inside a
+  `[TODO authors confirm: …]` marker, and the placeholder check blocks submission until an
+  author resolves it. `/humanize` no longer suggests rewording a required disclosure into a
+  vaguer one that does not name the tool.
+- **The ICMJE fallback for AI-use disclosure matches the ICMJE Recommendations.** With no journal
+  policy to follow, `/add-journal`'s profile template said ICMJE limits AI to language editing and
+  wants it disclosed in Methods, and `/write-paper` fell back to Methods + Acknowledgments. The
+  Recommendations (section II.A.4) put writing assistance in the Acknowledgments and use in data
+  collection, analysis or figures in the Methods, disclosed in the cover letter as well, and do not
+  limit what AI may be used for. Both skills now say so, as do the two journal profiles that had
+  copied the old default.
+- **`/humanize` states one em-dash threshold** (per 1000 words, as its pattern reference does)
+  instead of "per page" in one place and "per 1000 words" in another.
+- **Stale references:** `/model-validation` pointed to `/mllm-eval` "when available" (it is),
+  `/fill-protocol` pointed to the retired `generate-pptx` (now `/present-paper`), and the
+  `render_pandoc.sh` usage text still showed its old file name.
+- **`/sync-submission` cross-artifact check now reads Word files, and no longer passes after
+  reading nothing.** `check_cross_artifact_stale.py` skipped `.docx` files in an `--aux` folder
+  and read an explicitly named `.docx` as raw zip bytes, then printed PASS. A retired claim or a
+  superseded number left in a Word supplement therefore went unreported, although this check is
+  the one the skill relies on for exactly that. It now reads the text of `.docx` files, sweeps
+  figure scripts (`.py`/`.R`) for stale hard-coded values, lists documents it cannot read, and
+  exits 2 when an `--aux` path holds no readable file.
+- **Blinded submissions: tracked-change and comment authors are checked.**
+  `check_asset_anonymization.py` read the author only from the file properties. The name
+  recorded on every tracked change and comment (and in `word/people.xml`) was not checked, so a
+  marked-up blinded manuscript could name its editors while the check passed. A real-looking
+  name there is now reported; neutral names such as "Author" are not.
+- **`/peer-review` reviewer-profile guide no longer contradicts itself.** Its "adding a journal"
+  steps asked for the review round and date in the evidence pointer, which the rules a few lines
+  above forbid because a round and a day-precision date identify the reviewer's timeline. The
+  step now says month only.
+- **Scripts that skills tell you to run now ship with those skills.** `/meta-analysis`,
+  `/sync-submission` and `/manage-project` pointed at seven scripts in the repository's
+  root `scripts/` folder (`prisma_5way_consistency.py`, `extraction_consensus_log_init.py`,
+  `tag_cleanup_gate.sh`, `verify_package_integrity.py`, `init_project.py`,
+  `migrate_project_to_ssot.py`, `validate_project_contract.py`). An installed copy does not
+  contain that folder, so those steps failed anywhere except a clone of the repository. Each
+  script now lives in the skill that owns it; the old root paths still work.
+- **Cross-skill commands no longer assume one particular folder.** Seventeen commands in
+  `/self-review`, `/write-paper`, `/lit-sync`, `/search-lit` and `/sync-submission` fell back to
+  `$HOME/workspace/medsci-skills`, which exists only on the maintainer's computer. They now use
+  `${CLAUDE_SKILL_DIR}/../<skill>/`, which resolves the same way in an installed skills folder
+  and in a clone. Nine more cross-skill references in `/humanize`, `/analyze-stats`, `/revise` and
+  `/self-review` that named another skill's script only in prose now give its full path.
+- **`/lit-sync`: a citekey shared by two papers is no longer reported as OK.** Keys such as
+  `Author_Year` repeat across a library, and some arrive as URLs. The citekey check now reports a
+  key carried by two or more library entries as `AMBIGUOUS` and a key containing `/` or starting
+  with `http` as `UNUSABLE`, and it never suggests renaming a note to such a key. Match notes to
+  papers by DOI, not by key.
+- **`/lit-sync`: a note without a DOI is no longer called "never added".** A note with no DOI and
+  no PMID is now reported as `NO_IDENTIFIER`, a PMID is used to find the library entry when the DOI
+  is missing, and `UNRESOLVED` now says "not found with this note's identifiers". The old wording
+  led to re-importing papers the library already held.
+- **`/manage-refs`: the journal-abbreviation check looks at every reference.** With an
+  abbreviation expected, `check_csl_render.py` judged only the two references in its render
+  sample. It now fails, naming the keys, on every journal entry without `shortjournal`, which a
+  short-title style would print with the full journal name. This part runs without pandoc.
+- **`/verify-refs`: a reference audit goes stale when the bibliography changes.**
+  `reference_audit.json` now records the hash of the file it audited and the keys it audited.
+  `check_claim_fidelity.py --reference-audit` compares them with the current bib, marks an audit
+  of an older bib as stale, and lists the keys that were never audited, instead of carrying the
+  old green result forward.
+- **`/verify-refs`: the CrossRef year shown is the print year.** The evidence line used the
+  online-first date, so an article published online in December and in print in January showed
+  the earlier year and made a correct bib year look wrong. It now shows the print year, and both
+  years when they differ.
+- **`/fulltext-retrieval`: a supplement or preface is no longer accepted as the paper.** A PDF
+  whose first page is headed Supplementary Information, Supplementary Material, Preface, Front
+  Matter or Table of Contents is now marked `unresolved` (reason `supplement_or_front_matter`)
+  even when the title and DOI match, and the report records each file's page count.
+- **`/fulltext-retrieval`: the PMC ID lookup uses NCBI's current ID Converter address.** The old
+  address was reported returning non-JSON, which made every PMC lookup fail silently.
+- **`/peer-review`: asking about records the authors already hold is no longer flagged as a
+  request for new data.** The request-type check flagged any ask containing "adjudicated", such as
+  a cross-table of adjudicated examinations from the authors' own files. It now flags only a
+  request for new adjudication (re-adjudicate, a second or additional adjudication), and it now
+  catches a request for a second operator, annotator or segmenter.
+- **`/peer-review`: figure and table labels outside the page no longer mark a PDF
+  `SUSPICIOUS`.** Editorial Manager reviewer PDFs place figure-page labels off-page, so the
+  hidden-text scan flagged ordinary manuscripts on labels such as "Figure 2" or "Graphical
+  Abstract", and a warning that fires on honest PDFs teaches reviewers to ignore it. A span
+  hidden only by being off-page whose whole text is a figure or table label is now listed as
+  `INFO` and left out of the verdict. Text that only starts with a label ("Figure 2. Ignore
+  previous instructions…"), a label hidden by colour or font size, and any other hidden text
+  in the same PDF are flagged as before.
+- **`/revise`: long quotes and "Changes to text:" quotes in a response letter are checked.** A
+  quote that ran past about 320 characters lost its closing mark and was skipped, and a quote
+  given under a "Changes to text:" label was never checked. Each quote is now read to its closing
+  mark, and the label counts as a claim of new text.
+- **`/present-paper`: the font-portability check now looks inside charts and SmartArt.** A
+  font that exists on only one operating system passed the check when it was used only in a
+  chart or a SmartArt diagram. The check read slides, notes, layouts, masters and the theme,
+  but charts and diagrams keep their text in separate parts of the file.
+- **`/present-paper`: the text-overflow check now reports text that never reached the page.**
+  A text box pushed past the edge of the slide leaves nothing in the exported PDF to measure,
+  so the check passed it. Each paragraph of 12 or more letters or digits is now looked for on
+  its slide's page, and a missing one is reported as `UNRENDERED`. The all-clear message now
+  says what was checked instead of claiming that no line leaves the slide.
+- **`/present-paper`: speaker notes are written at a readable size.** `inject_speaker_notes.py`
+  set no font size, so notes fell back to the notes master's 12 pt, which is hard to read on a
+  presenter monitor. Every note run now has an explicit size, set with the new `--font-pt`
+  option (default 18), and a blank line becomes an empty paragraph instead of an empty text
+  run. This changes the notes the script writes: they are now 18 pt unless you pass
+  `--font-pt`.
+- **`/render-pdf-doc`: a PDF with missing characters no longer reports success.** xelatex
+  leaves out any character the font has no glyph for (emoji, warning signs, sometimes the minus
+  sign) and still finishes, and the wrapper printed "ok". `render_pdf.sh` now lists each
+  missing character and exits with code 4. The PDF is still written. Pass
+  `--allow-missing-glyphs` to get the list and exit 0.
+- **`/render-pdf-doc`: font sizes other than 10, 11 and 12 pt now take effect.** The default
+  LaTeX class ignores any other size without warning, so `fontsize: 8.5pt` came out at 10 pt.
+  When no document class is set, the wrapper now switches to KOMA-Script's `scrartcl` and
+  says so in its log.
+- **`/manage-refs` duplicate-bibliography check: every reference entry is counted.** An entry
+  whose first author has a lowercase particle ("van der Berg", "de Vries") or a guideline whose
+  title starts with its year ("2021 … Guidelines") was not recognised, so a 4-entry list was
+  reported as 1 entry — and a duplicated list made of such entries passed as a single list.
+- **`/sync-submission` word-count gate counts the body's subheadings.** The rendered document,
+  and Word's count of it, include every subheading, but the estimate left them out. A
+  manuscript with many subheadings could be over the journal's limit while the gate reported
+  it as only near the limit, and `--strict` let it through.
+- **`/self-review` supplement check resolves "Table S4", "Supplementary Figures S2 and S3" and
+  "Figs S1–S3", and tells tables from figures.** Those forms used to match nothing, and a
+  figure callout resolved against a table with the same number, so a supplementary figure
+  cited in the text but missing from the supplement passed.
+- **`/humanize` fidelity check catches a reversed comparison or a dropped minus sign.** A
+  rewrite that turned "18% lower" into "18% above", or "−2.4" into "2.4", kept every digit and
+  passed. A percentage is now read together with its direction word and a leading minus is
+  kept, so either change is reported as `NUMBER_DRIFT`.
+- **`/humanize` fidelity report shows where each changed number sits.** `NUMBER_DRIFT` listed
+  bare tokens and counts, so telling a renumbered slide from a changed statistic meant
+  searching both files by hand. Each changed token now carries a short before/after snippet,
+  in the printed report and the JSON.
+- **`/self-review` editorial-impression check no longer reads the YAML front matter as prose.**
+  A changelog in the front matter that said "hypothesis-generating" four times made the check
+  report the phrase as repeated in the manuscript when the body said it once.
+- **Word text split across formatting runs is read as one word.** Word often stores a single
+  word in two pieces when its formatting or spell-check state changes partway through. The
+  `/manage-refs` check that new manuscript text reached the rebuilt Word file, and the
+  `/sync-submission` check for internal audit text left in a submission file, put a space
+  between the pieces, so text that was in the document was reported missing and an audit
+  token split this way was not found. Both now join the pieces and break only at paragraph
+  ends, tabs and line breaks.
+- **`/model-scaffold` evaluation scripts fail when they predict nothing.** A generated
+  `evaluate.py` given an empty or wrongly pointed test set finished normally and exited 0 with
+  an empty predictions file. Every generated evaluation script now stops with an error unless
+  it produced a prediction for every test case and there was at least one.
+- **`/sync-submission` cover-letter check holds a word count stated next to the journal's
+  limit to the room left under it.** A cover letter saying "3,998/4,000 words" passed against
+  a measured 3,940 because body counts are allowed about 5% either way, and the stated limit
+  was itself read as the word count. When the letter states the limit and the count is that
+  close to it, the count must now match the measured body within the words left under the
+  limit.
+- **`/present-paper` deck-density message reports what it measured.** The deck-level
+  `SLIDE_TOO_DENSE` finding called a high median "the deck's habit", including after sparse
+  divider slides were deleted, which raises the median without making any slide denser. It
+  now gives the median and the 75th percentile and the number of slides they were measured
+  over, and says that removing sparse slides raises the median. When it fires is unchanged.
+- **The local CI mirror names the jobs it does not run.** `scripts/run_ci_mirror.py` runs the
+  `validate` job only, but its summary said nothing about the workflow's other jobs, so a
+  green mirror was read as a green CI while the macOS/Windows `foundation-os` job failed. The
+  summary and `--list` now name every job it skipped.
+- **The catalog-count check ignores numbers inside quotation marks.**
+  `validate_catalog_consistency.py` read a quoted example of what not to write (such as a
+  single "N detectors, validated by …" claim) as the current count and failed the build. A
+  count inside double quotes is now treated as a mention; the same count written unquoted is
+  still checked.
+- **`/fulltext-retrieval`: `manual_needed.txt` names the PubMed Central copy.** When a PMCID
+  was found but no PDF could be downloaded, the list gave only the DOI, so an article that is
+  freely available in PubMed Central looked the same as a subscription one. The line now also
+  carries the PMCID and the article's PubMed Central address.
+
+- **`/check-reporting`: CONSORT 2025 and SPIRIT 2025 items say everything the statements say.**
+  Eight items had been shortened when the checklists were transcribed, while each file said its items
+  matched the published table. CONSORT 18 had lost "describing any steps to conceal the sequence
+  until interventions were assigned"; CONSORT 26 had lost the requirement to present both absolute
+  and relative effect sizes for binary outcomes; CONSORT 9, 12b, 14 and 24a had lost their examples;
+  SPIRIT 18 and 21b had been paraphrased. All eight now carry the published text. The checklist
+  fidelity check now compares each item's text, not only its number, with Table 1 of the statement
+  for STARD 2015, CONSORT 2025 and SPIRIT 2025; the published text is extracted from the Europe PMC
+  full text by a script, so no model retypes it. Those extracts stay in the repository's tests and are
+  not installed.
+- **`/check-reporting`: STARD items 1 and 2 end where the published items end.** The vendored
+  checklist carried the next section's heading ("Abstract", "Introduction") at the end of each
+  item's text, left over from extraction; the file's own check compared item ids only.
+- **`/check-reporting`: five bundled checklists are no longer reported as unknown.** The
+  checklist guard answered QUADAS-3, PRISMA 2020 for Abstracts, GATHER, "SQUIRE 2.0" and "ARRIVE 2.0"
+  with `UNKNOWN_GUIDELINE`, so the skill asked the user about instruments it ships. Three files had
+  no alias at all, and name normalisation drops a year but keeps a version number such as "2.0".
+  The test now also requires every bundled checklist to be reachable by some name.
+- **`/check-reporting`: the CARE licence record matches the checklist file.** `LICENSES.md` listed
+  CARE as CC BY-NC 4.0 from a publisher statement; the checklist's own header records that Crossref
+  carries only a text-and-data-mining licence and treats it as non-open. The row moves to the
+  non-open table.
+
+- **`/verify-refs`: an in-press or e000 reference is no longer reported OK.** Gate 6 was meant to
+  downgrade a resolved reference whose pagination is a placeholder (`e000–e000`, "in press", "TBD")
+  to UNVERIFIED, but it compared against a `VERIFIED` status the script never emits (it emits OK),
+  so online such a reference stayed OK and passed `--strict`. The offline regression test could not
+  see it, because offline every record is already UNVERIFIED; it now also calls the gate on a
+  resolved record.
+
+- **`/verify-refs`: a made-up reference no longer passes as verified (v6).** A reference with a
+  DOI that does not exist and an invented title came out OK: a CrossRef 404 was recorded as
+  UNVERIFIED, and the PubMed title fallback accepted any search hit without comparing titles. The
+  fallback now needs the same title similarity as the OpenAlex branch. After a CrossRef 404 the
+  DOI is looked up at doi.org, which covers every registration agency: a DOI registered nowhere is
+  FABRICATED (MISMATCH when a title search finds the real paper) and blocks rendering, a DOI
+  registered elsewhere (DataCite, for example) is never flagged, and a failed lookup stays
+  UNVERIFIED. A DOI is looked up as cited (a trailing `/` or a legacy SICI DOI ending in `#` is
+  kept, and a SICI DOI is never called FABRICATED), and the title comparison counts short words
+  such as CT and MR and single letters such as the B in hepatitis B, so a paper on the other
+  modality or virus is not taken for the cited one. In Markdown
+  manuscripts a `# References` heading is recognised, so body text is no
+  longer read as references, and the `/manage-refs` render step reports how many references are
+  UNVERIFIED instead of "clean".
+- **`/self-review`: the documented Phase 2 gate commands run (v6).** Three of them passed a flag
+  their scripts reject, so no result reached the loop controller and it could report "no edits
+  required" while a Major finding was open. The commands and the named verdict codes now match the
+  scripts.
+- **`/calc-sample-size`: formulas reproduce the reference packages (v6).** Too small: log-rank
+  event counts lacked the allocation factor (62 vs 247 events at HR 0.7, 1:1); kappa (20 vs 74);
+  logistic regression with a binary predictor used the continuous-predictor formula (103 vs 424);
+  equivalence ignored the joint power of the two one-sided tests; diagnostic accuracy used
+  prevalence where specificity was the limiting target; reader studies treated crossed readers as
+  nested. Too large: one-way ANOVA multiplied statsmodels' total N by the number of groups (474 vs
+  159); non-inferiority lost its direction when the new method is expected to be better (683 vs
+  76); ICC with three or more raters. Equivalence with a true difference near the margin no longer
+  stops early on a non-finite power (3,073 vs 4,947 per group), and a non-inferiority or
+  equivalence input that no sample size can satisfy is an error instead of a number. Each formula
+  now records a check against gsDesign,
+  kappaSize, powerMediation, TrialSize, TOSTER, epiR, pwr or ICC.Sample.Size, and
+  `tests/test_worked_examples.py` recomputes them.
+- **`/meta-analysis`: templates and guides (v6).** `meta_analysis.R` no longer exponentiates MD
+  or SMD, uses REML with a Hartung-Knapp interval that cannot come out narrower than the
+  common-effect one, and picks the small-study test to suit the effect measure (none with fewer
+  than 10 studies). `dta_meta_analysis.R` runs again, gives a genuine Deeks test and LR and DOR
+  with intervals from the bivariate model plus a prediction region, and fits a binomial GLMM when
+  any cell is zero.
+  `forest_plot.py` works on Python 3.14 and matplotlib 3.10 and honours its flags. The guides pool
+  single-arm proportions with a GLMM, reconstruct Kaplan-Meier curves correctly, rank network
+  treatments in the right direction, and separate QUIPS (prognostic factors) from PROBAST
+  (prediction models). A rising curve is converted to survival only when the paper confirms it is
+  1 − KM: a competing-risk cumulative incidence is pooled as such, never rebuilt into a Cox HR. The
+  small-study test is skipped by the number of studies actually pooled, so a template run with
+  fewer than 10 usable studies no longer stops with an error.
+- **`/analyze-stats`: templates reproduce the reference implementations (v6).** Each defect was
+  reproduced on synthetic data, and each fixed template matches R. The survey template uses
+  design-based variance with strata and PSUs and analyses subgroups as domains (`svyglm`, including
+  the design degrees of freedom); it used frequency weights. The Cox fit is unpenalised (`coxph`),
+  the number at risk is counted correctly, and the RMST difference has a CI. Propensity-score
+  matching honours the ratio and caliper (matched sets equal MatchIt's), weighted fits use robust
+  SEs (`sandwich`), and rows dropped for missing data no longer crash the template or misalign the
+  score. Regression encodes categories after dropping missing rows, computes VIF with a constant
+  and no longer reports Hosmer-Lemeshow as calibration. The decision-curve template no longer
+  recalibrates predictions through `as_probability`, and interventions avoided come from dcurves.
+  Agreement needs the measurement level and gives CIs for every kappa; the clustered-ICC formula
+  measured lesion similarity, not rater agreement. The diagnostic template needs a prespecified
+  threshold (Youden only on request, and labelled). Table 1 chooses tests by skewness and uses
+  Welch's t, with no normality-test gate; repeated measures use actual visit times; six templates
+  that crashed on current SciPy run. The guides estimate calibration-in-the-large with the slope
+  fixed at 1, decide on missing data by mechanism and pool with Rubin's rules, prespecify the
+  survival estimand instead of switching on a Schoenfeld test, and their reporting templates carry
+  placeholders instead of conclusions ("significant", "adequate calibration"). `/check-reporting`'s
+  TRIPOD notes say Hosmer-Lemeshow is not calibration evidence and events per variable alone does
+  not justify a development sample size. `tests/test_stats_templates.sh` covers each fix.
+- **ML validation and study-design guidance (v6).** `/radiomics-ml`'s nested cross-validation
+  template splits by patient, and a test runs it on null data where a row split reports AUROC
+  near 0.99; "fewer features than events" is described as a floor, not a sample size.
+  `/model-assessment` reports a patient-level bootstrap interval as the headline uncertainty,
+  calibration by intercept, slope and a flexible curve, AUPRC with the test-set prevalence, and
+  conformal coverage on a test split disjoint from calibration; its Dice check needs a named
+  boundary metric. `/design-study`'s adjustment-set helper no longer flags a set the backdoor
+  criterion accepts; models are compared pairwise with Wilcoxon signed-rank or sign tests and Holm
+  correction (Benavoli, Corani & Mangili, *JMLR* 2016) instead of Nemenyi mean ranks, whose
+  verdict on two models depends on which other models are in the pool; target-trial emulations
+  are reported against TARGET; and a misquoted site count in a cited auto-contouring evaluation is
+  corrected. `/design-ai-benchmarking` uses planted controls to check raters, not as evidence of
+  reliability. `/mllm-eval` reports classification per class.
+- **Content checked against its primary sources (v6).** A peer-review paper was attributed to the
+  wrong authors, and other citations carried wrong authors or identifiers. `/define-variables` had
+  the MetALD/ALD alcohol ranges swapped between the sexes and credited FIB-4, BMI action points and
+  renal cutoffs to the wrong sources. NHANES diabetes used serum-panel glucose, which CDC says not
+  to use for this; it now uses fasting glucose (`GLU_J`) with fasting weights, and other table and
+  variable mappings are corrected. `/cross-national` and `/replicate-study` declare the survey
+  design on the full file and restrict it with `subset()`, and the KNHANES income variable is coded
+  as quartiles. In `/cross-national`, NHANES weights follow the files (WTMEC2YR with the
+  single-cycle `_J` tables, WTMECPRP only with the pre-pandemic `P_` files, NCHS rules for pooling
+  cycles), blood pressure is the mean of the 2nd and 3rd readings as in KNHANES, subgroup
+  differences are tested with an interaction term, and countries are compared by the ratio of their
+  odds ratios with its CI (Altman & Bland, *BMJ* 2003) instead of a direction-agreement tick.
+  Requirements dropped from CHEERS 2022, SQUIRE 2.0, TARGET, DECIDE-AI, TRIPOD-LLM, RECORD and CLEAR
+  are restored. Journal profiles match the current author guidelines of npj Digital Medicine, Nature
+  Medicine, European Radiology, JAMA, The BMJ, Radiology, Radiology: Artificial Intelligence, AJR
+  and KJR.
+- **`/academic-aio`: npj Digital Medicine has no plain-language summary box.** The skill said the
+  journal requires one for all primary research; its guidelines describe none, and Articles carry
+  an unstructured abstract of up to 150 words. The plain-language-summary format stays available
+  through `--format` for journals that do require one.
+- **`/check-reporting`: SQUIRE 2.0 is recorded as CC BY-NC.** The checklist reproduces Table 1 of
+  the statement and its header said no licence was found; the Europe PMC record gives CC BY-NC.
+  The header, `LICENSES.md` and `THIRD-PARTY-NOTICES.md` now say so, and the file is not covered by
+  the repository's MIT licence.
+- **Scripts and CI (v6).** Six scripts that crashed on import under Python 3.9 now start, and the
+  Python-floor check now catches import-time union annotations across `skills/`. The local CI
+  mirror exits non-zero when a selection matches nothing, labels subset runs as partial, and no
+  longer counts steps skipped after a failure as passed. The v5-to-v6 upgrade test also runs on
+  macOS and Windows. `check_xref.py` accepts `/write-paper`'s inline figure captions.
+
+### Security
+
+- **`/manage-refs`: the CWYW example no longer carries a real Zotero user id.** The documented
+  `inject_zotero_cwyw.py` command (SKILL.md and the script's usage text) passed a concrete
+  `--user-id`. The script writes that id into every citation link, so a copied example would point
+  a user's citations at someone else's library. It is now a `<zotero-user-id>` placeholder.
+
+- **The repository's publication check no longer prints the value it caught.** When
+  `scripts/validate_skills.sh` found a personal name, home-directory path or email address in a
+  file, the failure message included the matched text. CI logs of a public repository are public
+  and outlive a force-push that removes the offending commit, so the check republished what it
+  had just caught. It now reports the file and line (for document metadata, the field name). The
+  text scan also covers `.jsonl`, `.jsonld`, `.R`, `.qmd`, `.js`, `.svg`, `.xml` and the
+  installer scripts, which it previously skipped. A regression test plants a leak and fails if
+  the matched token appears in the output.
+
+- **`/deidentify`: uncertain columns need a decision, and reports carry no data values (v6).**
+  Columns the tool cannot classify (free text, a column whose name contains an identifier word,
+  ID-like numbers, a single address) are now REVIEW_NEEDED instead of SAFE, Enter no longer keeps
+  them, and the auto-accept recommendation is removed. `apply` refuses a report nobody reviewed and
+  any column without an explicit decision. Date shifting asks which column identifies the patient
+  instead of applying one offset to the whole file, and an offset is never zero (1 to 365 days in
+  either direction), so no date comes out unchanged. A row with more fields than the header stops
+  the run instead of passing its extra values through unreviewed. Scan and review reports contain no
+  cell values, and the audit log uses a keyed hash. Separators and country codes are normalised
+  before matching (a Korean RRN without its hyphen, a +82 phone number, and the same class in other
+  locales). Native Excel dates are shifted instead of replaced, keeping fractional seconds.
+  `SKILL.md` lists what the tool does not do (ages over 89, year-only dates, small cells).
+- **`/orchestrate`: the PHI safety gate runs for every data file (v6).** It fired only when no
+  `*_deidentified.*` file existed, and the project-state table skipped it whenever `audit_log.csv`
+  was present, so a de-identified copy of one file, or an audit log from an earlier run, let every
+  other raw file through without the PHI question. It now asks for each CSV or Excel file the task
+  will read that is not itself a de-identified output.
+- **`/search-lit` and `/model-scaffold`: user text can no longer run as code (v6).**
+  `pubmed_eutils.sh` pasted the query into Python source, so an apostrophe (Crohn's disease) broke
+  the search and a crafted query could run code; queries now reach Python as arguments.
+  `/model-scaffold` escapes the values it writes into generated Python literals (ID columns,
+  pretrained sources), so a quote no longer breaks or injects into the generated script.
+
+## [5.28.0] - 2026-09-29
+
+**Hotfix:** `/deidentify scan` could classify a column that carries PHI as SAFE, and a SAFE column is passed through un-stripped.
+
+This happened in two ways. First, lower-case letter-bearing IDs and postcodes were never matched. Second, a column with only a few PHI values was judged from a random sample that could miss them. If you de-identified data with an earlier version, scan it again.
+
+### Fixed
+
+- **`/deidentify`: a column is called SAFE only after every value has been checked.**
+  The scan judged each column from a random sample of at most 500 values. A column with
+  only a few PHI values could therefore come out SAFE: three phone numbers in 2,000
+  clinical notes did in 4 of 10 runs. The same file could also classify differently from
+  one run to the next. Every non-empty value is now checked, and `sample_size` in the
+  scan report counts them. Scanning 2 million cells now takes about 6 s instead of under
+  1 s.
+- **`/deidentify`: letter-bearing IDs and postcodes are matched in any case.** UK
+  National Insurance numbers, Indian PAN numbers, and UK and Canadian postcodes written
+  in lower case were not recognised, so a column of them under an unmapped name was
+  classified SAFE. National-ID and postcode patterns are now case-insensitive in every
+  locale pack, including a custom `--locale-file`.
+- **`/analyze-stats`: the incremental-value table guide no longer treats a DeLong test of
+  ΔAUC as the test of added value.** When nested models are fitted and evaluated on the
+  same data, that test is conservative and underpowered (Demler, Pencina & D'Agostino,
+  *Stat Med* 2012; Vickers, Cronin & Begg, *BMC Med Res Methodol* 2011).
+  - Added value is now tested through the new term's coefficient, with a likelihood-ratio
+    test.
+  - ΔAUC is reported as an estimate with its confidence interval.
+  - Paired DeLong remains for comparing two models that were frozen before evaluation on
+    held-out patients.
+  - The guide no longer recommends the continuous NRI as evidence of added value, because
+    it can overstate a marker's value even in independent validation data (Kerr et al.,
+    *Epidemiology* 2014).
+- **Journal of Breast Cancer profile: the fifty-reference limit is restored.** The author
+  guidelines state it in words ("limited in number to fifty"), which an earlier review
+  missed. Contributed by @dr-jeong.
+
+### Added
+
+- Seven oncology journal profiles for `/find-journal` and `/write-paper`:
+  - Journal of Clinical Oncology
+  - Annals of Oncology
+  - Clinical Cancer Research
+  - ESMO Open
+  - npj Breast Cancer
+  - Journal of Breast Cancer
+  - Cancer Research and Treatment
+
+  Contributed by @dr-jeong.
+- A figure-anatomy exemplar for the SHAP summary (beeswarm) plot. It covers the
+  elements the figure must state: the ordering of features, the output and class being
+  explained, the explainer and its background distribution, and the spread of values for
+  each feature. It also covers the readings it does not support: SHAP values are not
+  causal effects, they are not changes in the patient's risk, and a ranking of correlated
+  predictors depends on the model. Contributed by @aniruddhaadak80.
+
+### Changed
+
+- The skill validator now refuses three kinds of disclosure that a literal blocklist
+  cannot see: co-reviewer and editor-decision prose, submission IDs, and quoted
+  assessment language.
+- Journal profiles record when a guideline was checked to the month. Journal facts keep
+  day precision.
+- Release integrity: after publishing, the release workflow now reads the npm registry
+  directly. It retries while the registry catches up, and treats a timeout as a failure.
+
+## [5.27.0] - 2026-09-23
+
+### Added
+
+- Eleven oncology and breast-cancer citation styles: Journal of Clinical Oncology,
+  Annals of Oncology, Journal of Breast Cancer, the AACR house style (with Clinical
+  Cancer Research dependent on it), The Lancet (with The Lancet Oncology), the
+  Elsevier Vancouver house style (with The Breast), Breast Cancer Research and
+  Treatment and Clinical Breast Cancer. Every file is an unmodified copy from the
+  Citation Style Language project with its `<rights>` element intact, and each
+  dependent style's parent ships beside it. The registry also records four journals
+  that have no dedicated style, with the fallback each one's own guide specifies.
+  Contributed by @dr-jeong.
+- Four figure-anatomy exemplars for oncology treatment studies: the waterfall plot
+  of best response, the swimmer plot of time on treatment, the spider plot of
+  tumour-burden trajectory, and the cumulative incidence function under competing
+  risks. Each names the elements the figure must carry and, more usefully, the ways
+  it misleads when one is missing — an unmarked new-lesion progression, an absent
+  ongoing-status arrow, a relabelled Kaplan-Meier complement. The study-type table
+  routes oncology trials to them. Contributed by @dr-jeong.
+- Prespecified binary diagnostic-accuracy runs produce full precision tables,
+  confusion-matrix PDF/PNG and an execution record in the existing analysis
+  manifest. Data/configuration/code/output hashes, exact denominators and read-only
+  audit/compare commands expose changed versions without implying study validity.
+  An original synthetic demo and independent arithmetic/interval controls run
+  within the existing analysis CI step.
+- Submission build accepts a declared bundle of final Word/PDF, supplement,
+  cover-letter and other files. Existing metadata/manifest outputs record byte
+  hashes, pinned render inputs, declared reuse rights and unassessed visual and
+  content fidelity. Preflight records executed/skipped checks and bundle binding.
+- Claim-fidelity reports include sentence/citation evidence rows and an optional
+  Markdown table linking source hashes, retrieval identity, metadata audit context,
+  and attributed source comparisons. Existing JSON remains the evidence store;
+  changed inputs and unmatched review records stay visible on rerun.
+
+### Fixed
+
+- Three of the new oncology exemplars and their index pointed readers to a response
+  table in `analyze-stats` that does not exist; they now describe the table the user
+  builds. The cumulative-incidence exemplar's cross-reference to the survival table
+  type carried the wrong directory.
+- The bundled STARD-AI checklist's header declared a split that its own table
+  contradicted: the numbered-item denominator (40) was applied to a row-level
+  split, giving 22 unchanged items where the table carries 30 across 48 rows.
+  The header now states both denominators, the section heading names the row
+  count, and the split reconciles with the published statement's own count of
+  new-or-modified items. The reference now also carries the guideline's 2026
+  author correction, with a note that it changes no checklist item.
+- The diagnostic-accuracy template uses a valid SciPy version lookup, preserves
+  a 2-by-2 confusion matrix when a class is absent, and reports zero-denominator
+  metrics as undefined rather than zero performance. Importing the template is quiet.
+- Submission sync refuses missing-package freeze, frozen/edited output overwrite,
+  unregistered-file loss and colliding paths. Malformed metadata fails explicitly;
+  staged copies preserve source bytes and cooperating mutations share a lock.
+  A required preflight check that exits without running cannot report a safe pass.
+- Claim-fidelity output no longer equates an absence of automated findings with
+  source support. Citation prefixes and page locators are preserved in the evidence
+  inventory. New controls run within the existing validation job.
+
+### Changed
+
+- Skill documentation no longer repeats generic anti-hallucination instructions that
+  the surrounding guidance already carries. Contributed by @embed-Rayn.
+- The contributing checklist is the source of its own counts; the prose above it no
+  longer states a number that can drift from the table.
+
+## [5.26.2] - 2026-09-06
+
+**Hotfix:** shipped PDF identity and presentation overflow checks could report a match or clean result without measuring the relevant evidence.
+
+### Fixed
+
+- Inspect the actual npm tarball and classroom ZIPs against the selected release
+  source, including file hashes, existing private-identifier/credential patterns,
+  PDF text and binary/Office metadata. Publish the inspected tarball and download
+  both channels to compare the delivered payload. Recovery runs record the selected
+  tag commit and also verify npm versions that are already published.
+- Replace a contextual comment in an npm-shipped synthetic R fixture with neutral
+  wording. The test computation and expected result are unchanged.
+- Presentation overflow checks now request line coordinates from poppler instead of
+  silently treating word-only output as a clean measurement. Real-PDF regression
+  tests run in the existing CI step. The Nature/Lancet builder uses readable
+  outline/glossary text and native bullets, reserves space for wrapped headings
+  and captions, and supports choosing installed fonts without rewriting content.
+  Font-check success no longer implies the fonts are installed at the venue.
+- Consistency linting no longer reports a single COVID-19 spelling as mixed, splits
+  numeric/hyphenated abbreviations into partial tokens, or treats grammatical
+  follow-up/follow up and long-term/in the long term pairs as spelling drift.
+  Synthetic US/UK normal controls supplement the existing seeded-error challenge.
+- PDF rendering now honors frontmatter before wrapper/OS defaults for fonts,
+  page geometry, font size, line spacing and link colors. Explicit pandoc overrides
+  remain available. Glyph scans support an explicitly selected TTC/OTC face and
+  report why font coverage could not be checked; different faces are never combined.
+  Synthetic font and pandoc regressions extend the existing render test step.
+- Full-text retrieval no longer treats scattered title words or body/reference mentions
+  as a title match. Report schema 2 separates download results from advisory first-page
+  title/identifier evidence and records the PDF hash; related versions and incomplete
+  evidence remain visible for review. Existing retrieval counts and downloaded files are
+  preserved. Search and library-sync guidance carries the identity evidence downstream.
+
+## [5.26.1] - 2026-09-05
+
+**Hotfix:** published examples retained manuscript-specific details after the privacy cleanup.
+
+### Fixed
+
+- Complete the privacy cleanup of illustrative cover-letter output and citation-order
+  test data and reference-check commentary with synthetic values and neutral prose.
+  The expected arithmetic
+  and citation-order findings are preserved; no detector behavior changes.
+- This patch supersedes v5.26.0. Existing tags and published package versions remain
+  unchanged.
+
+## [5.26.0] - 2026-09-05
+
+### Fixed
+
+- Remove local source paths from the bundled DOCX's hidden custom properties.
+  The reference renderer now strips CSL and bibliography source metadata after
+  citation processing; rendered citations remain intact. The existing asset
+  anonymization check also inspects all DOCX XML parts and relationships, including
+  custom properties and Windows paths. Repository validation checks tracked DOCX files.
+- Extend the existing hashed-identifier check to path and project-slug components.
+  Replace private project examples and manuscript-specific anecdotes with generic
+  descriptions and synthetic challenge values. Public author attribution stays permitted.
+- Cursor project rules no longer embed the installer's local checkout path; writes
+  are atomic and preserve file permissions.
+- Opt-in CLAUDE.md routing updates use atomic writes, preserve CRLF and permissions,
+  follow symlinks without deleting them, and reject malformed or duplicate markers.
+  A file without a final newline still gains one; concurrent installers are not locked.
+- Correct stale contribution and evaluation inventory counts.
+
+### Added
+
+- Optional task routing with `install.py --claude-project <folder>` or `--claude-user`.
+  Both are off by default; `--remove-routing` removes the managed block.
+- Presentation guidance for generated illustrations, source attribution, spoken
+  notes and bilingual decks.
+
+### Changed
+
+- Explain why plugin installations use namespaced skill commands while direct
+  installations use bare names, and document `orchestrate` for broad requests.
+- No new manuscript detector or blocking gate is introduced in this release.
+  Historical Git objects and previously published package versions are unchanged.
+
+## [5.25.0] - 2026-08-17
+
+### Added
+
+- **`/obsidian-paper-vault` — a folder of PDFs becomes an Obsidian vault.** The reference
+  pipeline could sync a Zotero library into literature notes (`/lit-sync`), but not start from the
+  PDFs themselves. This skill writes one templated note per paper — frontmatter that Dataview can
+  query, an embed link to the source, a summary written from the paper's own text — and, once ten
+  notes exist, drafts atomic concept notes for the ideas that recur across three or more of them.
+
+  **Batch notes are written from pre-extracted text, never from PDF paths handed to subagents.**
+  A subagent that cannot open a file does not report the failure; it writes the note from training
+  data, and the output is fluent, correctly formatted, and wrong in its sample sizes and p-values.
+  `scripts/extract_pdfs.py` (PyMuPDF) makes the text the only thing a subagent can read, and an
+  acceptance gate spot-checks two values per batch against the source text.
+
+  It shares vault folders with `/lit-sync` and enters them from the opposite end — citekey-named
+  notes from bibliographic records, title-named notes from PDFs — so neither skill overwrites the
+  other's notes. Korean-structured vaults are supported through
+  `references/locale/ko/note_templates.md`, mirroring the `/lit-sync` ko locale, and the skill
+  honors whatever folder layout a vault already uses rather than imposing its own.
 
 - **Demo 5 rung 3b — the counterfactual arm, and the panel's second Fatal finding closed by
   measurement.** The review panel was right that the study asserted a cause its design could not
@@ -138,7 +1717,403 @@
   assumed correlation to be stated and varied, since primary studies almost never report it. DTA
   was already covered by the bivariate/HSROC requirement; nothing else was.
 
+### Added
+
+- **A gate that makes every vendored checklist say what it is and what was checked.**
+  `scripts/check_checklist_provenance.py`, wired to CI with a challenge card. It requires four
+  declarations per file — **version, source with DOI, licence, and verification status** — and it
+  fails a file that claims **"Verified"** without naming what it was compared against. That exact
+  shape appeared twice in this audit (`STROBE_MR.md`, `PRISMA_ScR.md`); between them those two files
+  were wrong in ten ways under their stamps. **A file that honestly says "not compared" passes** —
+  the gate is about honesty, not about having done the work.
+
+  On first run it found **two more bare claims nobody had spotted by hand**: `QUADAS_C.md` and
+  `REMARK.md`.
+
+  **What it deliberately does not do.** It never reads the instrument. It cannot: the sources are
+  copyrighted and cannot ship here, so CI can never re-derive content. Automating even the *DOIs*
+  was tried and abandoned — a Crossref bibliographic query returned a **Who's Who biography** for
+  NOS, a **Letter to the Editor** for ROBIS, and a **code listing** for QUADAS-C, all above the
+  similarity threshold that looked reasonable. Writing those in would have mass-produced the exact
+  defect this audit exists to remove. The gate's scope is the honest one: declarations, not content.
+
+  **Backlog ratchet.** 32 files predate the gate and several need a DOI read off the actual article.
+  They are named in a `BACKLOG` set: a file *not* on the list must satisfy every declaration, so new
+  files comply from the start; a listed file is reported but does not block. `--audit-backlog` fails
+  if an entry has quietly become compliant and was not removed, so the list can only shrink and
+  cannot decay into a rubber stamp. It earned its keep immediately — it caught six entries that were
+  already compliant when the list was first written.
+
+  The challenge card builds its fixtures at runtime (this repository ships no deliberately
+  undeclared checklist) and asserts **exit codes**, including that an empty input directory exits 2
+  rather than reporting success. Two of its eight cases are the real defect shapes; against a gate
+  without the check they fail.
+
+  **The first draft of this gate rejected four files whose wording was correct** — it demanded the
+  word "verified" and broke on markdown emphasis inside `has **not** been compared`. That is this
+  repository's dominant historical defect, a checker that accepts only its own preferred notation,
+  reproduced by the person auditing it. It now matches against a de-emphasised copy and accepts the
+  notation the files actually use. A later draft also fired on an item description reading "when
+  groups are **compared**"; a verification *claim* is now the word itself, and ordinary prose is not
+  a claim.
+
+  **241 gates** (was 238).
+
+### Changed
+
+- **Six checklists gain a partial verification record — item count checked, item text not — and say
+  so in those words.** SWiM (9), CHEERS 2022 (28), CLEAR (58), GATHER (18), REMARK (20) and
+  CONSORT 2025 (30) each match the count their own statement gives, confirmed against the PubMed
+  Central record.
+
+  **They are not marked verified**, and the header says why: *a matching count is not evidence that
+  the items would match*. STARD carried the right count of 30 while omitting two items, collapsing
+  three sub-item pairs and inventing a fourth (#483). Recording a count check as verification would
+  be the same false stamp this audit spent its whole length removing — the difference is that this
+  time the temptation was mine.
+
 ### Fixed
+
+- **STARD 2015 was missing two items and had invented a sub-item split.** Extracted from the
+  published checklist (Bossuyt et al., *BMJ* 2015;351:h5527, CC BY 4.0) and compared programmatically.
+  The statement has **30 items in 34 rows** — items 10, 12, 13 and 21 each split into **a** and **b**.
+  The file had 30 rows ending at item 28. It:
+
+  - **invented a split at item 8** (8a/8b, where the statement has one item);
+  - **collapsed the a/b pairs at 12, 13 and 21** into single rows;
+  - **omitted items 29 and 30 entirely** — where the full study protocol can be accessed, and sources
+    of funding with the role of funders.
+
+  The collapsed pairs matter: the a/b halves are separate requirements, describing the index test and
+  the reference standard, defining cut-offs, stating blinding, and reporting severity distributions
+  **for each side separately**. Collapsed into one row, a study satisfies half an item and scores
+  complete. Rebuilt to all 34 rows, asserted against the extracted original.
+
+  **STARD is CC BY**, which breaks the pattern this audit has been reporting for a third time. It is
+  neither an extension nor paywalled, and it had a structural defect. The three generalisations
+  offered so far — "extensions are the dangerous class", "paywalled sources are", and now anything
+  narrower than "any file that was never compared" — have each survived until the sample widened.
+  **The only predictor that has held is whether the file was ever checked against its source.**
+
+- **RECORD verified clean, 13/13.** The item set (1.1, 1.2, 1.3, 6.1, 6.2, 6.3, 7.1, 12.1, 12.2, 12.3,
+  13.1, 19.1, 22.1) matches the statement exactly. A duplicate `Source:` line left by the
+  backlog sweep is removed.
+
+- **STROBE now says *why* it is unverified.** The checklist table is not carried in the statement's
+  PubMed Central record — it lives in the explanation-and-elaboration paper and on the STROBE website
+  — so it could not be compared here. Saying which is more useful to a reader than a bare
+  "not verified".
+
+### Changed
+
+- **CONSORT-AI and SPIRIT-AI verified clean — and they correct the pattern this audit had been
+  claiming.** Both enumerated from the articles' own checklist tables via PMC XML and compared
+  label-by-label. **CONSORT-AI: 14/14** (11 Extensions, 3 Elaborations). **SPIRIT-AI: 15/15**
+  (12 Extensions, 3 Elaborations). Nothing missing, nothing invented, labels exact.
+
+  The audit had been reporting that *extension* checklists were the dangerous class — four for four
+  at the time. That generalisation does not survive these two. The variable that actually separates
+  the good files from the bad is **whether the source could be opened**:
+
+  | Source | Files | Worst defect found |
+  |---|---|---|
+  | **Open (CC BY)** | TRIPOD+AI, CONSORT-AI, SPIRIT-AI, PRISMA 2020 | wording drift — PRISMA 2020's items 4 and 13b |
+  | **Paywalled (JAMA, ACP)** | PRISMA-DTA, STROBE-MR, PRISMA-ScR, PROBAST, QUADAS-2 | **structural** — an instrument that was not the instrument, all 30 sub-items dropped, a renumbered checklist, an invented section |
+
+  Every structural defect came from a file whose source was behind a paywall. Where the table could
+  be opened and transcribed, it was transcribed. Where it could not, someone reconstructed it from
+  the base instrument or from memory — and that is where invented sections, dropped sub-items and
+  closed numbering gaps come from. This predicts the risk in the 35 files not yet audited far better
+  than "is it an extension".
+
+  Both files also gain a distinction the statements make and the files did not: an **Extension** is a
+  new reporting requirement the base instrument does not contain; an **Elaboration** clarifies how an
+  existing base item applies to an AI intervention. Both are assessed, but only Extensions are
+  additional obligations — reporting an Elaboration as though CONSORT 2010 or SPIRIT 2013 had been
+  silent overstates what the extension added. Elaborations are now marked **(E)**.
+
+### Changed
+
+- **MOOSE verified against the published table — clean, 35/35 — and the backlog shrinks to 31.**
+  Read through institutional access (Stroup et al., *JAMA* 2000;283(15):2008-2012). The item set,
+  the six groups and their counts (Background 6, Search strategy 10, Methods 8, Results 4,
+  Discussion 3, Conclusions 4), and the order all match. Nothing missing, nothing added.
+
+  The file now declares its DOI, its licence position (*JAMA*, no open licence — the descriptions
+  are an in-house summary, not the published wording) and what it was verified against, so it
+  leaves the provenance gate's backlog. **This is the ratchet doing the job it exists for:** the
+  backlog can only shrink, and `--audit-backlog` fails if an entry becomes compliant and is not
+  removed.
+
+  MOOSE also sharpens a claim this audit has been making. It is **paywalled and correct**, so
+  "paywalled" is not a rule — the honest statement is that **every structural defect found so far
+  occurred in a paywalled file, while not every paywalled file is defective**. A risk factor, not a
+  law. The audit has now over-generalised twice (first "extensions are the dangerous class", then
+  "paywalled sources are"), and both times the correction came from widening the sample rather than
+  from reasoning about it.
+
+### Changed
+
+- **Every one of the 48 vendored checklists now declares what it is, where it came from, and whether
+  it has been checked. The provenance backlog is zero.**
+
+  31 files were carrying gaps — no DOI, no licence, or silence about verification. Each now states
+  all four. The facts were not guessed: **every DOI was resolved through Crossref and confirmed by
+  the title it returned**, and every licence is the Crossref `license` URL or the PMC `<license>`
+  element. Two candidate DOIs were rejected by that check — one for TARGET returned 404, and one for
+  the RoB NMA tool resolved to a paper on Kenward-Roger corrections. Both were replaced with the real
+  articles rather than shipped.
+
+  **Three files carried bare "Verified" stamps** — `GATHER.md`, `QUADAS_C.md`, `REMARK.md` — found by
+  the gate, not by hand. They now say what was and was not compared.
+
+  **What most of these files now say is "NOT VERIFIED".** 32 of 48 have not been compared against
+  their published table, and they say so in the header rather than leaving a reader to assume
+  otherwise. That is the point: the gate cannot make a checklist correct, but it can stop one from
+  implying it has been checked when it has not.
+
+  Two licence corrections fell out of the sweep:
+
+  - **ROBIS is CC BY 4.0.** `LICENSES.md` recorded "no open licence found" for it in #472; that was
+    wrong, and the Crossref record is unambiguous.
+  - **PROBAST+AI and ROBINS-E are CC BY-NC 4.0** — non-commercial, and so in the same position as
+    ROBINS-I: not redistributable verbatim under this repository's MIT licence. Both are now labelled.
+
+  The gate gains one exception it was always meant to have: **an instrument with no DOI may say so**.
+  The Newcastle-Ottawa Scale is distributed from an institute web page and has never been issued one.
+  Demanding a DOI unconditionally is how a checker pressures someone into inventing a fact.
+
+### Fixed
+
+- **`PRISMA_ScR.md` had renumbered the instrument, and 10 of its 22 items carried the wrong number.**
+  Checked against the statement's table (Tricco et al., *Ann Intern Med* 2018;169(7):467-473).
+
+  PRISMA-ScR keeps PRISMA's **1–27 numbering**. Five rows are marked *"Not applicable for scoping
+  reviews"* — **13** (summary measures), **15** and **22** (risk of bias across studies and its
+  results counterpart), **16** and **23** (additional analyses and its counterpart) — and two are
+  optional, phrased *"If done"*: **12** and **19**, the critical-appraisal pair. That is how
+  27 rows come to be described as "20 essential items + 2 optional".
+
+  The file had deleted the five N/A rows and closed the gaps, renumbering everything from 13 onward:
+
+  | Official | This file said |
+  |---|---|
+  | 14 Synthesis of results (Methods) | 13 |
+  | 17 Selection of sources of evidence | 14 |
+  | 18 Characteristics of sources | 15 |
+  | **19 Critical appraisal within sources** | **16** |
+  | 20 Results of individual sources | 17 |
+  | 21 Synthesis of results (Results) | 18 |
+  | 24 Summary of evidence | 19 |
+  | 25 Limitations | 20 |
+  | 26 Conclusions | 21 |
+  | 27 Funding | 22 |
+
+  Item numbers are how authors, reviewers and editors refer to a checklist. A reviewer asking about
+  "PRISMA-ScR item 25" means Limitations; this file had no item 25 and put Limitations at 20. A
+  compliance report citing "item 19" from it meant Summary of evidence, where the guideline's item 19
+  is the critical-appraisal results.
+
+  Compounding it, the header and the assessor notes named the optional pair as **"12 and 16"**. Item
+  16 is *Additional analyses* and is **N/A** — a different item with a different status. An assessor
+  following the file would have looked for optional appraisal data under 16 and never scored item 19
+  at all.
+
+  Restored to 1–27 with the five N/A rows present and labelled, and the optional pair at 12 and 19 —
+  asserted programmatically (`ids == 1..27`, N/A set `[13, 15, 16, 22, 23]`, optional set `[12, 19]`,
+  20 essential). The item descriptions, which were sound, are unchanged apart from the numbering and
+  the cross-references in the notes. The statement's terminology footnote is now carried: *critical
+  appraisal* rather than risk of bias, *sources of evidence* rather than studies, *charting* rather
+  than extraction — and why.
+
+  The previous revision carried a "Verified" stamp, as `STROBE_MR.md` did. Neither had been compared
+  against the published table.
+
+- **`STROBE_MR.md` cited a non-existent author, cited the wrong paper, dropped all 30 sub-items,
+  shifted the last four items by one, invented an item that does not exist — and carried a
+  "Verified" stamp.** Checked against the statement (Skrivankova et al., *JAMA*
+  2021;326(16):1614-1621).
+
+  - **Citation.** The file credited "Skidmore ME / Davey Smith G, Davies NM, et al. *BMJ*
+    2021;375:n2233". There is no such first author, and n2233 is the **Explanation and Elaboration**
+    paper, not the statement. The statement is in *JAMA*.
+  - **All 30 sub-items were absent.** The file listed items 1–20 only — which is close to a
+    re-lettered STROBE. Everything that makes a report a Mendelian-randomization report lives in the
+    sub-items: variant measurement, quality control and selection (**4c**), the MR estimator
+    (**6c**), preregistration (**9b**), 2-sample similarity and **participant overlap** (**10d**),
+    assumption-validity results (**12a/b**), direction of causation (**13c**), and gene-environment
+    equivalence (**16b**). None were scoreable.
+  - **Items 17–20 were shifted by one**: Funding sat at 17, where the statement has Generalizability;
+    Data sharing at 18; conflicts at 19 — and the file **invented an item 20, "Other"**, where the
+    statement has Conflicts of interest.
+  - **Licence claim wrong**: the statement was described as CC BY. It is *JAMA*, under no open
+    licence. (The E&E is a separate BMJ paper.)
+  - The assessor notes cited item numbers that do not exist in the instrument ("9c / 12e", "16" for
+    ancestry generalisability, which is 17).
+
+  The "Verified" stamp is the part worth dwelling on. A file can assert it was checked and be wrong
+  in six ways at once; the stamp is only as good as what was compared, and nothing here had been
+  compared against the published table.
+
+  Rebuilt: 20 items and 30 sub-items, asserted programmatically against the official structure,
+  section grouping restored, wording in our own words under the JAMA licence position, and the
+  relationship to STROBE stated correctly — a stand-alone extension in which every item and sub-item
+  was modified **except 6d**. The statement's own instruction that the checklist is **not** an
+  instrument for evaluating research quality is now carried.
+
+  **Fifth extension file audited, fifth with a structural defect.** PRISMA-DTA, PROBAST, PRISMA-ScR,
+  STROBE-MR — all four of the worst showed the same signature: the base instrument's skeleton with
+  the extension's substance dropped, renumbered, or invented.
+
+- **QUADAS-2 verified against the published article, and three things it got wrong are corrected.**
+  Read through institutional access (Whiting et al., *Ann Intern Med* 2011;155(8):529-536). The good
+  news first: the four domains, the **3 / 2 / 2 / 3 split of the ten signalling questions**, what each
+  asks, the answer options, the judgement levels, and the restriction of applicability to the first
+  three domains all match. Unlike PROBAST and PRISMA-DTA, nothing here was invented.
+
+  What was wrong:
+
+  - **"No to any signalling question → High risk of bias."** The statement says a No establishes that
+    *potential for bias exists*, and the reviewer then applies the review-specific guidance to reach
+    the judgement. The file had replaced a judgement with an automatic rule, which over-rates bias and
+    removes the step the tool exists to structure.
+  - **The four phases were missing entirely** — state the review question, **tailor the tool to the
+    review**, draw the study's flow diagram, then judge. Tailoring is not optional in QUADAS-2; the
+    tool is meant to be adapted per review with written guidance, piloted by two people. A file that
+    presents ten fixed questions has quietly dropped the phase that makes the rest defensible.
+  - **The prohibition on summary quality scores was absent.** The statement is explicit that QUADAS-2
+    must not be used to produce one.
+
+  Also added: that Yes is phrased to mean low risk of bias, that Unclear is for insufficient
+  reporting rather than difficult judgement, how to report the assessment across studies, and that
+  QUADAS-2 does not cover comparisons of multiple index tests — the development group considered it
+  and found the evidence base insufficient.
+
+  **Licence.** Still *Annals of Internal Medicine*, still no open licence. The signalling questions
+  are now stated as what each asks in our own words, with numbering and structure — which are fact —
+  reproduced exactly. Same treatment as `PROBAST.md`.
+
+  The header's fidelity note is upgraded from "has not been compared against the published tool" to
+  what was actually checked, and a duplicate `Reference:` line left behind by the previous revision is
+  removed.
+
+- **`PRISMA_DTA.md` was not PRISMA-DTA. It was PRISMA 2009, renumbered.** Verified against the
+  statement itself (McInnes et al., *JAMA* 2018;319(4):388-396, read through institutional access,
+  including its 2020 correction). PRISMA-DTA keeps the count of 27 by **deleting items 15 and 22** and
+  **adding items D1 and D2**. The file had:
+
+  - **items 15 and 22 present** — both deleted by the guideline;
+  - **D1 and D2 absent** — the two DTA-specific items the extension exists to add. **D1** asks for the
+    index test's intended use and clinical role, and the rationale for a minimally acceptable accuracy;
+    **D2** asks for the statistical methods used in the meta-analysis. A generic PRISMA checklist
+    cannot surface either, which is the whole reason the extension was written;
+  - **23 of the 25 shared items worded differently from the published item**, including item 4 asking
+    for "PIRD elements" where the statement asks for participants, index test and target conditions,
+    and item 2 asking a diagnostic-accuracy review to summarise "interventions".
+
+  Anyone who scored a DTA systematic review with this file scored two items the guideline had removed
+  and never scored the two it had introduced.
+
+  Rebuilt. The structure — which items exist, their numbering, section placement and topic labels —
+  now matches the statement exactly and is asserted by comparison against the parsed original. The
+  **abstract checklist** the statement carries (and to which its item 2 defers) is captured too, with
+  its own DTA-specific item A1, and scored with its own denominator like `PRISMA_2020_Abstracts.md`.
+  Item 20 reflects the published correction: "receiver operating characteristic **plot**", not "curve".
+
+  **Licence.** *JAMA* publishes this under no open licence — free to read is not free to reuse. The
+  descriptions are an in-house summary of what each item asks, in our own words; the longest run of
+  the published wording that survives anywhere in the file is eleven words of unavoidable terminology.
+  Structure is fact and is reproduced exactly; expression is ours.
+
+  Assessor notes name the two failure modes this file used to cause: scoring items 15 and 22, and
+  missing the unit-of-assessment requirement in item 13 (per patient vs per lesion), which changes
+  what every downstream accuracy estimate means.
+
+- **Five checklist licence claims were wrong, and one of them conflicts with this repository's own
+  licence.** `LICENSES.md` presented itself as the attribution record for the bundled checklists and
+  asserted **CC BY** for ROBINS-I, RoB 2, QUADAS-2, PROBAST and PRISMA-DTA. Every entry was resolved
+  against the article DOI through the Crossref `license` field and, where Crossref carried only a
+  text-and-data-mining policy, the PubMed Central `<license>` element:
+
+  | Instrument | Claimed | Actually |
+  |---|---|---|
+  | **ROBINS-I** (BMJ 2016) | CC BY | **CC BY-NC 3.0** — non-commercial |
+  | RoB 2 (BMJ 2019) | CC BY | no CC licence found (BMJ TDM policy only) |
+  | QUADAS-2 (Ann Intern Med 2011) | CC BY | © ACP, no open licence |
+  | PROBAST (Ann Intern Med 2019) | CC BY | © ACP, no open licence |
+  | PRISMA-DTA (JAMA 2018) | CC BY | © AMA, no licence field |
+
+  The ROBINS-I row is the one that bites: **NC is incompatible with redistributing a verbatim
+  reproduction under this repository's MIT licence**, and the toolkit ships through npm, GitHub and a
+  classroom ZIP without restriction. The claim had been inherited rather than checked.
+
+  Eight rows were confirmed correct on the same evidence — STROBE, STARD, TRIPOD+AI, PRISMA 2020 and
+  its abstract checklist, CONSORT 2025, SPIRIT 2025 (all CC BY 4.0) and ARRIVE 2.0 (CC0 1.0) — so the
+  table is now split by verified status rather than presented as uniform, and it states the method
+  so the next person can re-run it. Files whose licence has not been resolved are named as
+  unresolved: an absent licence statement is not evidence of permissive licensing.
+
+- **`RoB2.md`, `ROBINS_I.md` and `QUADAS2.md` now say what they are.** All three carried a bare
+  `Reference:` line — no version, no licence, no statement of fidelity — while reading as though they
+  reproduced the instruments. Each now carries the full citation with DOI, the verified licence
+  status, and an explicit statement that it is an in-house summary of the tool's **structure**
+  (domains, answer options, judgement levels) which has not been compared against the official
+  document, with a direction to complete the official form for anything reported.
+
+  Their content is deliberately left alone. Rewriting signalling questions without the official
+  source in hand is precisely how the wrong text arrived in these files, and the sources are
+  subscription-access. What could be checked was checked: ROBINS-I's seven domains, their order and
+  the Low / Moderate / Serious / Critical scale match the article.
+
+  `ROBINS_I.md` also records that **ROBINS-I V2 exists and is still in draft** (revised November
+  2025), adding algorithms from signalling questions to domain judgements and covering immortal-time
+  bias, which the 2016 version omits. A reader appraising against the 2016 tool should know a
+  successor is in progress.
+
+- **`PROBAST.md` presented four invented bullets as the AI extension, and dropped three assessment
+  criteria from the official signalling questions.** Audited against the published statement
+  (Wolff et al., *Ann Intern Med* 2019;170:51-58). The domain structure and the count are right —
+  20 signalling questions, 2 / 3 / 6 / 9 across the four domains — but:
+
+  - A section headed **"PROBAST+AI Extensions (2024)"** listed four bullets ("Data: training/
+    validation/test split…", "Model: architecture transparency…") that appear nowhere in any
+    version of the tool. PROBAST+AI is a real instrument with 16 development and 18 evaluation
+    signalling questions, it is dated **2025** not 2024, and this repository already vendors it
+    correctly as `PROBAST_AI.md`. An assessor following that section was appraising against
+    something a maintainer made up.
+  - **4.8 dropped "underfitting"** — the official question asks about overfitting, underfitting
+    *and* optimism.
+  - **4.6 dropped its examples** — censoring, competing risks, and sampling of control participants
+    are what make that question assessable.
+  - 3.6 dropped "determination" (the interval runs to when the outcome was *determined*), and 4.9
+    dropped "results from the".
+
+  All restored, and the AI section replaced by a pointer to `PROBAST_AI.md` with the correct
+  citation. The file also now records that **PROBAST 2019 is superseded by PROBAST+AI 2025** for new
+  assessments, which the tool's own authors state and this file did not.
+
+  **Licence.** PROBAST is published in *Annals of Internal Medicine* (© American College of
+  Physicians) under **no open licence**, and this file had been reproducing its signalling questions
+  near-verbatim with no licence statement. The questions are now an **in-house summary of what each
+  asks**, labelled as such, with the numbering and structure (which are facts, not expression)
+  verified against the statement, and a direction to complete the official tool for anything
+  reported. This is the first file where the audit's two risks pointed in opposite directions:
+  diverging from the original makes the instrument wrong, and matching it too closely makes it a
+  reproduction we have no licence for.
+
+- **`TRIPOD_AI.md` verified clean — 52/52 against the official supplements.** Compared
+  character-for-character against ST1 (expanded checklist) and ST2 (fillable checklist); every
+  sub-item matches and the D/E designations match the statement exactly. Five orthographic
+  differences were normalised to the published wording (an added "the" in items 2 and 5a, hyphenation
+  in 12c and 22, and British spellings of "generalizability" in 26 and 27c). Two official footnotes
+  that qualify how items are scored were not being carried and now are: item 12c is assessed
+  **separately for each model-building approach**, and 18f (analysis code) is a different question
+  from 22 (code to implement the model for a new individual). The header records what it was verified
+  against, so the next person does not have to redo it to find out.
+
+  This file was already the best of the ones audited so far — it carried a citation, a DOI, a
+  licence line, a correct 27-item/52-sub-item count, and an explicit "NOT official items" fence
+  around the toolkit's own supplemental checks. That is the shape the rest should be brought to.
 
 - **Four items in the vendored PRISMA 2020 checklist did not match the published checklist, and two
   of them would have changed a score.** The file carried a bare `Source:` URL, no DOI, no licence
@@ -292,8 +2267,6 @@
 
   The lock is rebuilt and the loop now covers **all five demos**. Verified in both directions:
   every demo verifies clean, and perturbing one byte of a locked file makes the gate fail.
-
-## [Unreleased]
 
 ### Added
 
@@ -1276,13 +3249,15 @@ four days early to be citable.
   of its observed fires on a real manuscript was false.** The arithmetic was never wrong; the
   inputs were. Three captures, three ways of latching onto the wrong digit:
 
-  - `"882 KSAR S4-1 events occurred"` bound the **1 of the label "S4-1"** as the event count
-    and declared 2.48 per 100 person-years irreconcilable with one event. A hyphen or slash
-    before the digit now means it belongs to a label, and when the numerator cannot be bound
-    the check says **nothing** — an unbindable count is not evidence of an arithmetic error.
-  - `"over 35,581.3 person-years"` — the integer part could not reach the noun past the decimal
-    point, so the **fractional digit** matched instead: a cohort of "3 person-years". Person-time
-    is now read with its decimal, and the same lookbehind stops a fractional tail standing alone.
+  - An event count followed by a hyphenated guideline label (`"<count> <label> X-1 events
+    occurred"`) bound the **last digit of the label** as the event count and declared the
+    reported rate irreconcilable with one event. A hyphen or slash before the digit now means it
+    belongs to a label, and when the numerator cannot be bound the check says **nothing** — an
+    unbindable count is not evidence of an arithmetic error.
+  - Person-time reported to one decimal — the integer part could not reach the noun past the
+    decimal point, so the **fractional digit** matched instead: a cohort of single-digit
+    person-years. Person-time is now read with its decimal, and the same lookbehind stops a
+    fractional tail standing alone.
   - A one-letter column hint matched a longer word: `"n"` found **`"Normal"`** in the header of
     an exposure-stratified Table 1, so characteristic rows were summed as if they were strata.
     Hints under three characters are now matched exactly, longer ones on a word boundary. The
@@ -1931,10 +3906,10 @@ four days early to be citable.
 
 - **`/self-review` `check_cohort_arithmetic` — `NESTED_MODEL_NO_BASELINE`: nested discrimination
   models with no base-model row.** A table reported C-indices for several nested models that all
-  embedded age + sex (CMB+age+sex = 0.667, MetS+age+sex = 0.671, …) but had **no age+sex-only baseline
-  row** — the section was even titled "(age + sex baseline)". "CMB comparable to MetS" was
-  uninterpretable because the shared age + sex could account for the discrimination; re-analysis put
-  C(age+sex) = 0.648 and the incremental ΔC at only 0.019/0.023. The gate now flags a table with a
+  embedded age + sex, two of them differing by less than 0.01, but had **no age+sex-only baseline
+  row**. "Model A comparable to model B" was uninterpretable because the shared age + sex could
+  account for most of the discrimination; re-analysis showed each model added little over age + sex
+  alone. The gate now flags a table with a
   discrimination column (C-index / AUC) where two or more additive ("X + Y") models share a common
   covariate set but no row reports those common covariates alone and no incremental ΔC is stated
   (Minor). Deterministic and header-gated: it only considers tables with a discrimination column and
@@ -1944,11 +3919,9 @@ four days early to be citable.
   count unchanged.
 
 - **`/self-review` `check_scope_coherence` — `GRADIENT_WITHOUT_INTERACTION`: a "gradient across
-  strata" claim with no interaction test.** An age×CMB "gradient" was claimed via joint
-  stratification (primary table + heatmap + Central Illustration) with no interaction term or LRT
-  anywhere; re-analysis showed the interaction was non-significant (LRT P=0.67) — the narrative was
-  difference-in-significance across strata, not a tested interaction. Because the manuscript used
-  "gradient" rather than "synergy/interaction", the existing token trigger never fired. The gate now
+  strata" claim with no interaction test.** A directional claim across strata can be mistaken for a tested interaction.
+  Wording such as "gradient" needs the same interaction-test check as "synergy"
+  or "interaction". The gate now
   flags a cross-strata directional claim ("shortest in the high-risk tertile", "monotonically across
   the age strata", "more pronounced in") that carries a stratification context but reports no
   interaction test (interaction term / LRT / p-interaction / effect modification) anywhere (Minor).
@@ -1960,8 +3933,8 @@ four days early to be citable.
 
 - **`/self-review` `check_cohort_arithmetic` — `SUBGROUP_DUPLICATE_CI`: the same subgroup
   rendered twice in one table with two different confidence intervals.** A results table listed
-  "MetS ≥3 criteria" (OR 4.95, 4.32–5.94) and "MetS-positive (binary)" (OR 4.95, 4.26–5.83) — the
-  identical subgroup (same n, same events) relabeled, each with its own independently-resampled
+  one subgroup under two labels (a criteria-count definition and a binary one) with the same odds
+  ratio — the identical subgroup (same n, same events) relabeled, each with its own independently-resampled
   bootstrap interval; a biostatistics reviewer asks why one group has two CIs. The gate now flags,
   within a single GFM table, two rows sharing the **same effect estimate and identical count columns
   (n / events) but printing different CIs** (Minor). High precision by construction: it requires the
@@ -2060,18 +4033,14 @@ four days early to be citable.
   enumerates the real gates and excludes setup steps. Not a detector (catalog unchanged).
 
 - **`/self-review` — `check_incorporation_bias` (detector 68 → 69): the reference standard and the
-  predictor are the same construct.** A nodule study classified nodules benign by "complete resolution
-  / decrease in diameter / size stability" — every tier a form of *not growing* — and then reported
-  **growth** as associated with malignancy (OR 50.9). A resolved nodule cannot be malignant under that
-  standard, so the growth–malignancy association is partly definitional. Two panel reviewers reached it
-  independently and called it fatal; nothing fired. The detector reads trajectory tokens **only from the
+  predictor are the same construct.** A reference standard defined by lesion trajectory can overlap with a trajectory
+  predictor, making the reported association partly definitional. The detector reads trajectory tokens **only from the
   reference-standard/outcome-defining sentences** and emits `INCORPORATION_BIAS` (Major) when a
   trajectory-named predictor (growth, interval change, increase/decrease in size) is reported as
   associated with the outcome in the same sentence — unless the manuscript already discloses the overlap
   ("incorporation bias", "partly definitional", "not independent of the reference standard"). Covers the
   deterministic size/trajectory sub-class only. Ships a challenge card (trajectory-standard + growth-OR
-  positive vs a pathology + follow-up standard negative) run in CI. Grounding: real-failure,
-  panel-confirmed against the data (72/81 benign labels were trajectory labels).
+  positive vs a pathology + follow-up standard negative) run in CI. The challenge fixtures are synthetic and preserve that overlap.
 
 - **Four more field-backlog verdicts on detectors that already run (no new counted detector).**
   - **`check_cohort_arithmetic` — `FOLLOWUP_VS_CRITERION` (Minor).** A reported "median follow-up was
@@ -2110,17 +4079,15 @@ four days early to be citable.
     (never also comma-grouped) does not false-fire.
 
 - **`/self-review` — `check_effect_stability` (detector 67 → 68): a wide interval is a direction, not a
-  magnitude.** A manuscript's Conclusions reported **OR 50.9 (95% CI 5.8–443.6)** as a magnitude — a
-  76-fold interval — fit on **19 events for 2 covariates** (EPV 9.5). Two independent reviewers and the
-  editor flagged exactly those numbers and the paper was rejected. The detector recomputes both from
+  magnitude.** A wide confidence interval and sparse events can make a headline effect estimate
+  unstable even when its direction is supported. The detector recomputes both from
   the printed cells: `UNSTABLE_EFFECT_ESTIMATE` when a headline OR/HR/RR/IRR has a 95% CI upper/lower
   ratio above 10 (`--ratio-threshold`) with no co-located imprecision caveat (exploratory /
   hypothesis-generating / underpowered / imprecise / wide-CI / interpret-with-caution — the same
   suppression discipline as `check_null_calibration`), and `EPV_LOW` when events/covariates < 10. Pure
   arithmetic, no judgment; reads only the headline regions for the ratio so a labelled-exploratory
-  subgroup deep in the Results does not fire. Ships a challenge card (the 76-fold + low-EPV positive
-  vs a tight CI + a caveat-labelled wide CI negative) run in CI. Grounding: external-review (a held
-  journal decision letter, two independent reviewers).
+  subgroup deep in the Results does not fire. Ships a challenge card (a synthetic wide-interval + low-EPV positive
+  vs a tight CI + a caveat-labelled wide CI negative) run in CI. The fixture numbers are synthetic.
 
 - **Two more field-backlog gates, again as verdicts on detectors that already run (no new counted
   detector).**
@@ -2203,10 +4170,10 @@ below; the release does not wait the usual 14 days because a wrong result is alr
 ### Added
 
 - **`check_density_complaint` (detector 66 -> 67, `/revise`): "too dense" is the one comment you
-  cannot address by adding text.** A DTA meta-analysis was told by four reviewers it was too dense;
-  the point-by-point revision answered each comment by adding a sentence and came back **613 words
-  longer**, every named term higher than before. It took three rounds to land 733 words below where
-  it started. The detector is arithmetic: if the decision letter carries a density/length complaint
+  cannot address by adding text.** A point-by-point revision answers each density comment by adding
+  a sentence and comes back **longer** than the version that drew the complaint, every named term
+  higher than before, and the shrink the letter asked for slips another round away. The detector is
+  arithmetic: if the decision letter carries a density/length complaint
   AND the revised body (Introduction through Discussion, citation markers excluded) did not shrink,
   it fires `DENSITY_COMPLAINT_UNADDRESSED`. With no complaint it stays silent — it is not a
   "shorter is always better" nag. Ships a challenge card reproducing the v_prev -> longer -> shorter
@@ -2315,13 +4282,10 @@ below; the release does not wait the usual 14 days because a wrong result is alr
      structure — and the windowed search fired on it. It flagged a clean manuscript for exactly the reason
      it flagged a rejected one. The declaration is now sought across the **whole Methods section**.
 
-  **This makes the check sound but deliberately narrower**, and the honest consequence must be stated: it
-  no longer fires on the rejected manuscript that motivated it. That paper declares three outcomes and
-  never says which one a given Cox model used — a real defect, and one a reader can see and a regex cannot.
-  The original detector appeared to catch it, but only because the outcome paragraph happened to sit more
-  than 400 characters from the model sentence, which is true of every well-structured paper. **One
-  manuscript, three findings matching three reviewer comments, and I called it validated. That was luck,
-  and the second manuscript exposed it.**
+  **This makes the check sound but deliberately narrower.** A model whose outcome is
+  never identified still needs semantic review. Distance between paragraphs is
+  insufficient evidence that the outcome is missing, so the detector no longer
+  treats that proxy as validation.
 
   `REFERENCE_STANDARD_UNDEFINED` likewise now honours a declared outcome: *reference standard* is
   diagnostic-accuracy vocabulary, and a prognostic model scores its predictions against the outcome it has
@@ -4101,9 +6065,7 @@ reporting-guideline counts are unchanged (51 / 42 / 44).
   tolerates plural lists ("Tables S4, S5"), ranges, and non-float sensitivity-spec
   labels ("S1–S6"). `CITATION_ORDER` (Major) is a pre-peer-review desk/technical-check
   item editorial offices "unsubmit" for; `CITATION_GAP` (Minor) flags non-contiguous
-  numbering. Motivated by a journal technical-check unsubmit where main Table 3 was
-  cited before Tables 1–2 and the supplementary tables were cited wildly out of order
-  (S4, S9, S16, S12, …). Wired into `/self-review`'s technical-check pass; synthetic
+  numbering. Nonascending first citations can trigger a journal technical-check return. Wired into `/self-review`'s technical-check pass; synthetic
   positive/negative fixtures + regression test. Analysis-integrity detectors
   **33 → 34** (Reporting compliance family 8 → 9); skills 45 and reporting guidelines
   36 unchanged. Additive and backward-compatible.
@@ -4118,7 +6080,7 @@ reporting-guideline counts are unchanged (51 / 42 / 44).
   Author-Contributions on the Title Page only, reporting checklist cited as "Supplementary
   Material 1", IRB number in Methods even when blinded, and ICMJE forms only after
   acceptance. No detector-count change (existing detector extended; profiles updated, not
-  added). Motivated by a 2026-06 KJR technical-check unsubmit.
+  added). Check the current journal instructions when applying these conventions.
 
 - **Audit-dump leak gate** — new `check_checklist_dump_leak.py` (`/sync-submission`)
   scans every `.md`/`.docx`/`.pdf` in a submission directory for the residue of a
@@ -4811,7 +6773,7 @@ Lessons from senior meta-analysis mentor circulation feedback promoted into glob
 - **Global rules (5 files)** under `~/.claude/rules/`:
   - `manuscript-style-classical.md` (new) — 11-item style policy: `## **METHODS**` heading, abstract sub-headers `**Objectives:**`, eligibility numbered list, no `§` symbol, no AI Disclosure paragraph in body, em-dash <25, Vancouver 6+ et al., ORCID one-per-line, table header punctuation, British/American per journal.
   - `senior-mentor-circulation.md` (new) — mandatory `8_Review_Comments/` folder layout, 1차 source preservation, 1:1 verification, mentor README (per-mentor preference accumulation).
-  - `ai-drafted-document-policy.md` (new) — verbatim absorption forbidden when senior mentors attach AI-drafted documents; `_DO_NOT_USE_VERBATIM` filename suffix mandatory; trust hierarchy SSOT > mentor direct text > AI-draft. Motivation: 2026-04-12 Ishikawa 2017 denominator hallucination (5/70 vs 12/33 → real 35/68).
+  - `ai-drafted-document-policy.md` (new) — verbatim absorption forbidden when senior mentors attach AI-drafted documents; `_DO_NOT_USE_VERBATIM` filename suffix mandatory; trust hierarchy SSOT > mentor direct text > AI-draft. Motivation: an AI-drafted directive presented a single-arm study as a two-arm comparison, with a denominator that did not exist in the source.
   - `data-integrity.md` — one-line augmentation cross-linking the AI-drafted policy.
   - `agent-skill-routing.md` — new "Cross-cutting 룰 (Manuscript / 회람)" table referencing the six rule files.
 
@@ -4825,7 +6787,7 @@ Lessons from senior meta-analysis mentor circulation feedback promoted into glob
 
 - **`/meta-analysis` Phase 4.0 — AI-drafted starting document gate**:
   - `skills/meta-analysis/SKILL.md` — new sub-step at the top of Phase 4 (Data Extraction) requiring `_DO_NOT_USE_VERBATIM` filename suffix and source-PDF re-verification of every per-study N, denominator, event count, and effect estimate carried over from a senior mentor's AI-drafted directive. Trust hierarchy: SSOT > mentor direct text > AI-draft (never promote tier 3 to tier 2).
-  - Cross-links `~/.claude/rules/ai-drafted-document-policy.md` (motivation: 2026-04-12 Ishikawa 2017 denominator hallucination caught at SSOT re-verification).
+  - Cross-links `~/.claude/rules/ai-drafted-document-policy.md` (motivation: a denominator hallucination in an AI-drafted directive, caught at SSOT re-verification).
 
 - **`/check-reporting prisma` Step 4d — PRISMA Figure 1 arithmetic & cross-reference audit**:
   - `skills/check-reporting/scripts/check_prisma_figure.py` (new) — extracts PRISMA numbers from manuscript body and Figure 1 source, runs 4 arithmetic equations (`screened = identified - duplicates`, etc.) and a body↔figure 1:1 cross-reference, emits `qc/prisma_figure_audit.json` + table. Exits 1 on any MISMATCH.
@@ -4838,7 +6800,7 @@ Resolves the meta-analysis project → medsci-skills handoff P1+P2.
 
 New 3-way audit catches the failure mode where in-text Table/Figure citations resolve to a different rendered caption because the build script carries its own legacy SSOT. Internal consistency (Phase 2.5) cannot detect it — both the prose and the build artifact echo their own divergent truths cleanly.
 
-**Precedent:** in a STROBE cohort manuscript, the body cited "Supp Table S4 (sensitivity analysis)" but the rendered DOCX S4 was a different table; S1, S6, S7 mismatched and S8, S9 were cited but absent from the DOCX entirely. Caught only on co-author circulation review.
+**The failure pattern:** the body cites a supplementary table as a sensitivity analysis while the rendered DOCX carries a different table under that number, further supplement numbers mismatch the same way, and some are cited but absent from the DOCX entirely. Caught only on co-author circulation review.
 
 - `skills/write-paper/scripts/check_xref.py` — extracts (a) `(Supplementary )?(Table|Figure)\s+(S?\d+[A-Z]?)` in-text citations, (b) caption definitions from `## Tables` / `## Figures` / `## Supplementary {Tables,Figures}` body sections, (c) rendered DOCX caption paragraphs via python-docx. Emits `qc/xref_audit.json` with status codes `OK | MISSING_DOCX | MISSING_BODY | MISMATCH | UNCITED | NOT_CITED_NO_BODY`. Caption agreement via Jaccard ≥0.40. Panel-letter fallback (`Figure 2A` cite resolves to `Figure 2` caption). `--strict` exits 1 on any P0 finding.
 - `/write-paper` Step 7.6a (new) — runs after Step 7.6 DOCX build, before Step 7.7 final gate. Submission gate; HALT pipeline on non-OK. Routing table for fixes by symptom (body update vs build-script update) — body caption is the SSOT, never the reverse.
@@ -5101,8 +7063,8 @@ triggers even in non-skill workflows.
 A real incident during a revision run exposed that the citation-safety pipeline did not have
 a symmetric counterpart for numerical claims. Citations were verified end-to-end against
 PubMed (0 fabricated refs), while a hand-typed `matrix()` in a revision-era R script silently
-reversed a Fisher exact 2x2 ("3/45 vs 0/56, p=0.085" where the source said "0/45 vs 1/56,
-p=0.37"). Every internal consistency check passed because every artifact echoed the same
+reversed a Fisher exact 2x2, flipping the arm-level events and therefore the p-value relative
+to what the source Table recorded. Every internal consistency check passed because every artifact echoed the same
 wrong number. Detection required an explicitly requested second-pass audit with random
 sampling against the primary paper.
 

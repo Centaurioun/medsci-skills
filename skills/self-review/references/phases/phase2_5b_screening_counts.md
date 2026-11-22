@@ -14,15 +14,14 @@ separate failure mode: a prior-draft prose total ("30 → 32 after FLAG consensu
 every downstream pass because Abstract, Methods, Results, Discussion, Figure 1 caption, and
 even the supplementary consensus file all cite the same wrong number back to each other.
 
-**Precedent failure pattern (a PRISMA-DTA meta-analysis revision):**
-> A late-revision manuscript reported study counts of k_qualitative = 32, k_narrative-only = 10,
-> k_FT-excluded = 46. An ID-level recount against the screening TSV and consensus sheet (with
-> FLAG additions reconciled) yielded k_qualitative = 24 with only 2 narrative-only studies
-> (k_FT-excluded = 54). The original 32/10/46 figures came from an early-draft assumption that
-> was never reconciled against the ID-level artifacts; downstream files (consensus markdown,
-> supplementary tables, edit plans) propagated the same wrong total. Caught only by an explicit
-> ID-set recount against the screening TSV and consensus spreadsheet, verified independently
-> by an adversarial audit.
+**The failure pattern:**
+> A late-revision manuscript reports a set of study counts — qualitative synthesis,
+> narrative-only, full-text-excluded — that no longer match the screening artifacts. An ID-level
+> recount against the screening TSV and consensus sheet (with FLAG additions reconciled) moves
+> every one of them. The reported figures came from an early-draft assumption that was never
+> reconciled against the ID-level artifacts; downstream files (consensus markdown, supplementary
+> tables, edit plans) then propagated the same wrong total. Nothing but an explicit ID-set
+> recount finds it, because every document agrees with every other document.
 
 **When to run:** any SR/MA manuscript revision, regardless of stage. Run before Phase 3.
 
@@ -123,5 +122,7 @@ parentheses, dataframe `df$` qualifiers and commutative `&`-operands are normali
 emits `DERIVED_DEF_DRIFT` (Major) when one variable carries ≥2 distinct atom sets across scripts.
 Precedent: `mets_bp <- as.integer(bl_he_sbp>=130 | bl_he_dbp>=85 | bl_tx_hypertension_med==1 |
 bl_hypertension==1)` in the benchmark script vs the same name without the final
-`| bl_hypertension==1` in a re-analysis script — the metabolic-syndrome C-index then read 0.6704
-in one table and 0.6712 in another.
+`| bl_hypertension==1` in a re-analysis script. The two definitions classify different
+participants, so the metabolic-syndrome C-index computed from each disagreed in the fourth
+decimal — enough to put two different values for one quantity into a main table and its
+supplement, and small enough that nobody reading either artifact alone would notice.

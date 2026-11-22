@@ -16,13 +16,13 @@ value, deterministic instances; figure/flow-count reconciliation, Methods-promis
 analysis completeness, and imputation-input integrity are separate subchecks (run
 `/make-figures` legend reconciliation and `/write-paper`'s Methods-promised gate).
 
-**Precedent failure pattern:**
+**The failure pattern:**
 > A manuscript reported a null primary association from a multiple-imputation model
 > and described it as "pre-specified," while the registered primary had been the
 > complete-case model that was significant — the primary had been re-designated after
-> the results were known. In the same paper an E-value of 2.79 was attached to the
-> primary HR of 1.34, but 2.79 does not recompute from 1.34 (it came from a different,
-> non-primary estimate), and a second E-value bounded an exploratory cancer-specific
+> the results were known. In the same paper an E-value was attached to the primary
+> HR but does not recompute from it (it came from a different,
+> non-primary estimate), and a second E-value bounded an exploratory cause-specific
 > hazard, not the headline contrast. None of these tripped the internal-consistency
 > checks; all three are deterministic against the registration and the arithmetic.
 
@@ -53,7 +53,9 @@ analysis completeness, and imputation-input integrity are separate subchecks (ru
 3. **E-value.** `EVALUE_ARITHMETIC` means the reported E-value does not recompute from
    its adjacent effect estimate (the value was likely produced for a different estimate);
    `EVALUE_NON_PRIMARY` means the E-value is attached to a secondary/exploratory estimate
-   but presented as if it bounded the headline claim. Both warrant a Major/Minor comment —
+   but presented as if it bounded the headline claim. The gate fails `--strict` on
+   `EVALUE_ARITHMETIC` only; `EVALUE_NON_PRIMARY` is an advisory flag to confirm by eye. Either
+   warrants a comment when confirmed —
    recompute the E-value for the **declared primary** estimate and its near-null confidence
    limit, and quote it there.
 
@@ -133,7 +135,7 @@ analysis completeness, and imputation-input integrity are separate subchecks (ru
    ```
 
    `CITATION_ORDER` (Major) — a series cited out of numerical order (e.g. Table 3 before
-   Tables 1–2, or Supplementary Tables cited S4, S9, S16, S12, …); fix by renumbering the
+   Tables 1–2, or Supplementary Tables cited S3, S1, S2, …); fix by renumbering the
    series by first-citation order (and reordering the float/supplement document + remapping
    every cross-reference, expanding ranges like `S12–S15` by hand and leaving non-float
    sensitivity-spec labels such as `S1–S6` untouched) or by rephrasing away the early
@@ -174,7 +176,7 @@ analysis completeness, and imputation-input integrity are separate subchecks (ru
     collapses opposite (call × confidence) cells and silently mis-estimates the AUC; a
     prose review cannot see an estimator bug. Run the encoding through the reusable
     monotonicity probe and ship its 10-combination unit test:
-    `python3 "${MEDSCI_SKILLS_ROOT}/skills/analyze-stats/scripts/rating_monotonicity.py" --encoding score_def.json`.
+    `python3 "${CLAUDE_SKILL_DIR}/../analyze-stats/scripts/rating_monotonicity.py" --encoding score_def.json`.
 
 11. **Figure-embedded numbers are text-grep blind.** PRISMA/flow/forest/statistic figures
     are rasterised, so every numeric audit above is blind to the numbers *inside* them.

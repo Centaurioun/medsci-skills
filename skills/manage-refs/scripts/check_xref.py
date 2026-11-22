@@ -7,11 +7,11 @@ Supplementary Tables / Supplementary Figures point to labels that either
 the manuscript body, or (c) carry a caption text in the rendered DOCX
 that disagrees with the body's caption definition.
 
-Precedent: an STROBE cohort manuscript revision — body cited
-"Supp Table S4 (a sensitivity-analysis)" but the rendered DOCX S4 was
-a diagnostics table; S1, S6, S7 mismatched; S8, S9 cited but absent
-from DOCX. Internal consistency checks did not catch this because the
-build script carried its own legacy SSOT.
+The failure it catches: the body cites a supplementary table as a
+sensitivity analysis while the rendered DOCX carries a diagnostics table
+under that number, further numbers mismatch the same way, and some are
+cited but absent from the DOCX. Internal consistency checks do not catch
+this because the build script carries its own legacy SSOT.
 
 Inputs
 ------
@@ -52,8 +52,10 @@ Exit codes
 
 Dependencies
 ------------
-  python-docx (only if --docx is passed). Falls back to body-only audit
-  with a warning if python-docx is unavailable.
+  python-docx (only if --docx is passed). If --docx is passed and
+  python-docx is unavailable, the script exits 2 without writing a verdict:
+  the DOCX audit that was asked for could not run. Omit --docx for a
+  body-only audit.
 """
 from __future__ import annotations
 
@@ -61,7 +63,7 @@ import argparse
 import json
 import re
 import sys
-from dataclasses import dataclass, field, asdict
+from dataclasses import dataclass, asdict
 from pathlib import Path
 from typing import Optional
 
@@ -118,6 +120,66 @@ CAPTION_RE = re.compile(
     r"(.+?)\s*$",
     re.IGNORECASE | re.MULTILINE,
 )
+
+# An embedded figure carries its own caption. /write-paper Phase 2 embeds every figure in Results as
+# `![Figure N. Caption](path)`, and pandoc renders that alt text as the figure's caption paragraph
+# ("Image Caption" style) in the DOCX. Recognising captions only under legend headings meant a
+# manuscript that followed those instructions literally was halted with MISSING_BODY for every
+# figure, and with a DOCX supplied it stayed a blocker under every attachment policy, although
+# the markdown defined the very caption the DOCX carried.
+IMAGE_CAPTION_RE = re.compile(
+    r"^\s*!\[\s*(?:\*\*)?\s*"
+    r"(Supplementary\s+|Supp\s+|Supp\.\s+)?"
+    r"(Figure|Fig\.|Fig)\s+"
+    r"(S?\d+[A-Za-z]?)"
+    r"\s*[.:]\s*(?:\*\*)?\s*"
+    r"(.*?)\s*\]\(",
+    re.IGNORECASE | re.MULTILINE,
+)
+
+# A table placed in the body carries its own caption too. Journals that want each table after the
+# paragraph that first cites it get a caption line directly above (or below) the table:
+#
+#     **Table 1.** Baseline characteristics.
+#
+#     | Characteristic | Value |
+#
+# A caption line counts as a definition only when it is the nearest non-blank line above or
+# below an actual table block, and one table block defines at most one caption. A paragraph that
+# merely begins "Table 1. ..." with prose around it is not a definition, a line that happens to
+# start with "|" is not a table, and a single table cannot define the caption above it and a
+# different one below it, so a cited table that is defined nowhere still blocks.
+#
+# A table block is a pipe table (a header row followed by a delimiter row with the same number
+# of cells; the outer pipes are optional), a grid table (a "+---+" border, cell rows, a closing
+# border), or an HTML <table>...</table> element. Fenced code blocks and HTML comments are not
+# tables, and one standing between a caption and a table separates them.
+PIPE_DELIM_CELL_RE = re.compile(r"^\s*:?-+:?\s*$")
+GRID_BORDER_RE = re.compile(r"^\s*\+(?:[-=:]{2,}\+)+\s*$")
+# A real tag opens its line (its attributes may run on to later lines); the word inside another
+# element's attribute value does not.
+HTML_TABLE_OPEN_RE = re.compile(r"^\s*<table\b", re.IGNORECASE)
+ATX_HEADING_RE = re.compile(r"^ {0,3}#{1,6}(?:\s|$)")
+HTML_TABLE_CLOSE_RE = re.compile(r"</table\s*>", re.IGNORECASE)
+
+
+def _pipe_cells(line: str) -> list[str]:
+    """Cells of a pipe-table row, outer pipes optional, escaped pipes kept inside their cell."""
+    s = line.strip()
+    if s.startswith("|"):
+        s = s[1:]
+    if s.endswith("|") and not s.endswith("\\|"):
+        s = s[:-1]
+    return re.split(r"(?<!\\)\|", s)
+
+
+def _is_pipe_table_head(header: str, delim: str) -> bool:
+    """A header row followed by a delimiter row with the same number of cells."""
+    if "|" not in header or "|" not in delim:
+        return False
+    d = _pipe_cells(delim)
+    return all(PIPE_DELIM_CELL_RE.match(c) for c in d) and len(_pipe_cells(header)) == len(d)
+
 
 # Section header patterns for the manuscript body's caption sections.
 # Longer alternatives MUST come first so that "FIGURE LEGENDS" is not
@@ -244,8 +306,87 @@ def find_caption_section_ranges(md_text: str) -> list[tuple[int, int]]:
     return ranges
 
 
+def find_table_blocks(lines: list[str]) -> list[tuple[int, int]]:
+    """(first, last) line indexes of each table block in already-masked lines."""
+    blocks: list[tuple[int, int]] = []
+    i, n = 0, len(lines)
+    while i < n:
+        ln = lines[i]
+        if HTML_TABLE_OPEN_RE.match(ln):
+            j = i
+            while j < n and not HTML_TABLE_CLOSE_RE.search(lines[j]):
+                j += 1
+            if j < n:                      # an unclosed <table> is not a table block
+                blocks.append((i, j))
+                i = j + 1
+                continue
+        elif GRID_BORDER_RE.match(ln):
+            # border, at least one "|" cell row, and a closing border: "+---+" over a list item
+            # that starts with "+" is not a table.
+            def cell_row(s: str) -> bool:
+                s = s.strip()
+                return len(s) >= 2 and s.startswith("|") and s.endswith("|")
+
+            width = len(ln.strip())
+            j = i
+            while j + 1 < n and (cell_row(lines[j + 1]) or GRID_BORDER_RE.match(lines[j + 1])):
+                j += 1
+            if j > i + 1 and GRID_BORDER_RE.match(lines[j]) and len(lines[j].strip()) == width \
+                    and any(cell_row(lines[k]) for k in range(i + 1, j)):
+                blocks.append((i, j))
+                i = j + 1
+                continue
+        elif i + 1 < n and _is_pipe_table_head(ln, lines[i + 1]):
+            j = i + 1
+            while j + 1 < n and lines[j + 1].strip() and "|" in lines[j + 1] \
+                    and not ATX_HEADING_RE.match(lines[j + 1]):
+                j += 1
+            blocks.append((i, j))
+            i = j + 1
+            continue
+        i += 1
+    return blocks
+
+
+def find_inline_table_captions(md_text: str) -> list[tuple[int, int, "re.Match[str]"]]:
+    """(start, end, match) for each table caption line that sits directly beside its table."""
+    raw = md_text.splitlines(keepends=True)
+    starts, pos = [], 0
+    for ln in raw:
+        starts.append(pos)
+        pos += len(ln)
+    lines = [ln.rstrip("\r\n") for ln in mask_inert(md_text).splitlines(keepends=True)]
+    # A line that mask_inert blanked (fenced code, an HTML comment) is not a table and not a
+    # caption, but the reader sees it: it stands between a caption and a table, so it is a
+    # boundary, not a blank line to step over.
+    inert = [bool(r.strip()) and not m.strip() for r, m in zip(raw, lines)]
+
+    def caption_at(i: int):
+        m = CAPTION_RE.match(lines[i]) if 0 <= i < len(lines) else None
+        return m if m and m.group(2).lower().startswith("table") else None
+
+    def neighbour(i: int, step: int) -> int:
+        j = i + step
+        while 0 <= j < len(lines) and not lines[j].strip() and not inert[j]:
+            j += step
+        return j
+
+    claimed: set[int] = set()
+    found = []
+    for first, last in find_table_blocks(lines):
+        for idx in (neighbour(first, -1), neighbour(last, 1)):   # the caption above wins
+            m = caption_at(idx)
+            if m and idx not in claimed:
+                claimed.add(idx)
+                found.append((starts[idx], starts[idx] + len(raw[idx]), m))
+                break
+    return sorted(found, key=lambda t: t[0])
+
+
 def extract_body_captions(md_text: str) -> dict[str, Caption]:
-    """Extract caption definitions from the manuscript body's caption sections."""
+    """Extract caption definitions from the manuscript body's caption sections, then from
+    embedded figures (`![Figure N. Caption](path)`) and from table caption lines that sit beside
+    their table, for any float those sections do not define."""
     ranges = find_caption_section_ranges(md_text)
     captions: dict[str, Caption] = {}
     for start, end in ranges:
@@ -256,20 +397,51 @@ def extract_body_captions(md_text: str) -> dict[str, Caption]:
             # Keep first definition per label (later ones likely continuation lines)
             if label.key not in captions:
                 captions[label.key] = Caption(label=label, text=text, source="body")
+    # A legend section, where there is one, stays the definition compared with the DOCX.
+    for m in IMAGE_CAPTION_RE.finditer(md_text):
+        label = _normalize(m.group(2), m.group(1), m.group(3))
+        if label.key not in captions:
+            text = m.group(4).strip().rstrip("*").strip()
+            captions[label.key] = Caption(label=label, text=text, source="body")
+    # Likewise for a table whose caption line sits beside it in the body.
+    for _, _, m in find_inline_table_captions(md_text):
+        label = _normalize(m.group(2), m.group(1), m.group(3))
+        if label.key not in captions:
+            text = m.group(4).strip().rstrip("*").strip()
+            captions[label.key] = Caption(label=label, text=text, source="body")
     return captions
 
 
+_INERT_RE = re.compile(r"<!--.*?-->|^[ \t]*(```|~~~).*?^[ \t]*\1", re.DOTALL | re.MULTILINE)
+
+
+def mask_inert(md_text: str) -> str:
+    """Blank HTML comments and fenced code blocks, keeping every offset and newline.
+
+    Pandoc renders neither into the DOCX, so a legend inside them is not a float the submission
+    defines. Only the uncited-but-defined MISSING_DOCX verdict reads this masked view (see main);
+    every other verdict reads the markdown exactly as before.
+    """
+    return _INERT_RE.sub(lambda m: re.sub(r"[^\n]", " ", m.group(0)), md_text)
+
+
+class DocxUnreadable(Exception):
+    """The --docx file was supplied but could not be read."""
+
+
 def extract_docx_captions(docx_path: Path) -> dict[str, Caption]:
-    """Extract caption paragraphs from a rendered DOCX using python-docx."""
+    """Extract caption paragraphs from a rendered DOCX using python-docx.
+
+    Raises DocxUnreadable when python-docx is missing. It used to return {} — an EMPTY caption set,
+    which reads as "the DOCX was read and contains no floats": every cited float became MISSING_DOCX
+    "proven absent", MISMATCH was never evaluated, and --allow-separate-attachments then cleared it.
+    """
     try:
         from docx import Document  # type: ignore
-    except ImportError:
-        print(
-            "[check_xref] WARNING: python-docx not installed; "
-            "skipping rendered-DOCX audit. Install with: pip install python-docx",
-            file=sys.stderr,
-        )
-        return {}
+    except ImportError as exc:
+        raise DocxUnreadable(
+            "python-docx is not installed, so the rendered DOCX cannot be read "
+            "(install with: pip install python-docx)") from exc
 
     doc = Document(str(docx_path))
     captions: dict[str, Caption] = {}
@@ -313,7 +485,12 @@ def reconcile(
     citations: list[Label],
     body: dict[str, Caption],
     docx: Optional[dict[str, Caption]],
+    live_body_keys: Optional[set[str]] = None,
 ) -> list[Finding]:
+    """``live_body_keys``: body caption keys defined OUTSIDE comments and fenced code. Defaults to
+    every body key. Only those can turn an uncited float into MISSING_DOCX."""
+    if live_body_keys is None:
+        live_body_keys = set(body.keys())
     cited_keys = {lbl.key for lbl in citations}
     body_keys = set(body.keys())
     docx_keys = set(docx.keys()) if docx is not None else set()
@@ -344,7 +521,8 @@ def reconcile(
                 panel_note = (panel_note + "; " if panel_note else "") + \
                     f"panel reference resolved to {base.replace(':', ' ')} in DOCX"
 
-        status, note = _classify(is_cited, in_body, in_docx, body_text, docx_text)
+        status, note = _classify(is_cited, in_body, in_docx, body_text, docx_text,
+                                 in_live_body=key in live_body_keys)
         if panel_note and status == "OK":
             note = panel_note
 
@@ -376,8 +554,22 @@ def _classify(
     in_docx: Optional[bool],
     body_text: Optional[str],
     docx_text: Optional[str],
+    in_live_body: Optional[bool] = None,
 ) -> tuple[str, str]:
+    if in_live_body is None:
+        in_live_body = in_body
     if not cited:
+        # A float the markdown DEFINES but the rendered DOCX does not carry is a float missing from
+        # the submission, whether or not the in-text mention was recognised. Reporting it as UNCITED
+        # (non-blocking) let "Table 1 and 2" clear --strict with Table 2 absent from the DOCX: the
+        # singular kind word with a number list is not read as a citation of Table 2. The verdict now
+        # rests on the two structured sources — body caption vs DOCX caption — not on the phrasing.
+        # A legend inside an HTML comment or fenced code is not rendered (pandoc drops both), so a
+        # commented-out legend of a dropped float is not a float missing from the DOCX: it stays
+        # UNCITED, as before this rule existed.
+        if in_live_body and in_docx is False:
+            return "MISSING_DOCX", ("defined in the markdown body but absent from rendered DOCX "
+                                    "(no in-text citation recognised)")
         if in_body or in_docx:
             return "UNCITED", "defined or rendered but never cited in main text"
         return "NOT_CITED_NO_BODY", ""
@@ -443,16 +635,40 @@ def _md5_of(path: Path) -> str:
     return h.hexdigest()
 
 
+# Text-bearing tokens of WordprocessingML, in document order: a text node, a tab or
+# line break (whitespace on the page), or the end of a paragraph.
+_DOCX_TEXT_TOKEN_RE = re.compile(
+    r"<w:t(?:\s[^>]*)?>(.*?)</w:t>|<w:(?:tab|br|cr)\b[^>]*/>|</w:p>|<w:p\b[^>]*/>",
+    re.DOTALL,
+)
+
+
 def _docx_body_text(docx_path: Path) -> str:
-    """Concatenate all w:t text content from a docx for substring search."""
+    """The visible text of a docx body, for verbatim substring search.
+
+    Word splits one word across several runs whenever formatting, proofing or
+    revision marks change mid-word ("wo" + "rd"). Text nodes are therefore joined
+    with NO separator inside a paragraph; a paragraph ends with a newline, and a
+    tab or line break becomes a space. Replacing every tag with a space (the old
+    approach) turned such a word into "wo rd", so a line that is verbatim in the
+    docx was reported missing.
+    """
+    import html
     import zipfile
     try:
         with zipfile.ZipFile(docx_path, "r") as z:
             xml = z.read("word/document.xml").decode("utf-8", errors="replace")
     except (zipfile.BadZipFile, KeyError, OSError):
         return ""
-    # Strip XML tags — we only need text content for verbatim grep.
-    return re.sub(r"<[^>]+>", " ", xml)
+    parts: list[str] = []
+    for m in _DOCX_TEXT_TOKEN_RE.finditer(xml):
+        if m.group(1) is not None:
+            parts.append(html.unescape(m.group(1)))
+        elif m.group(0).startswith(("</w:p", "<w:p")):
+            parts.append("\n")
+        else:
+            parts.append(" ")
+    return "".join(parts)
 
 
 def _markdown_diff_lines(vN_md: Path, new_md: Path) -> list[str]:
@@ -568,7 +784,9 @@ def main() -> int:
 
     md_text = args.md.read_text(encoding="utf-8")
     section_ranges = find_caption_section_ranges(md_text)
-    citations = extract_citations(md_text, section_ranges)
+    # An inline table caption is a definition, not a citation of its own table.
+    inline_caption_ranges = [(s, e) for s, e, _ in find_inline_table_captions(md_text)]
+    citations = extract_citations(md_text, section_ranges + inline_caption_ranges)
     body_captions = extract_body_captions(md_text)
 
     docx_captions: Optional[dict[str, Caption]] = None
@@ -576,9 +794,17 @@ def main() -> int:
         if not args.docx.exists():
             print(f"ERROR: docx not found: {args.docx}", file=sys.stderr)
             return 2
-        docx_captions = extract_docx_captions(args.docx)
+        try:
+            docx_captions = extract_docx_captions(args.docx)
+        except DocxUnreadable as exc:
+            # The DOCX audit was asked for and could not run. Never report it as run.
+            print(f"ERROR: --docx {args.docx}: {exc}. The DOCX audit did not run; no verdict "
+                  f"was written. Install python-docx, or omit --docx for a body-only audit.",
+                  file=sys.stderr)
+            return 2
 
-    findings = reconcile(citations, body_captions, docx_captions)
+    live_body_keys = set(extract_body_captions(mask_inert(md_text)).keys())
+    findings = reconcile(citations, body_captions, docx_captions, live_body_keys)
 
     # Submission safety: any cited label whose status is not OK or UNCITED is a blocker.
     #
@@ -682,23 +908,23 @@ def main() -> int:
             print(
                 f"[check_xref] WARN: {len(proven_absent)} MISSING_DOCX row(s) downgraded under "
                 f"--allow-separate-attachments: " + ", ".join(f.label for f in proven_absent) + "\n"
-                f"           The DOCX was read and does not contain them, which is what a "
-                f"separate attachment looks like."
+                "           The DOCX was read and does not contain them, which is what a "
+                "separate attachment looks like."
             )
         if unchecked:
             print(
                 f"[check_xref] WARN: {len(unchecked)} MISSING_BODY row(s) EXCUSED WITHOUT "
                 f"EVIDENCE under --allow-separate-attachments:\n"
                 f"           " + ", ".join(f.label for f in unchecked) + "\n"
-                f"           No --docx was supplied, so nothing here was actually checked. Each "
-                f"of these is either a float in a\n"
-                f"           separate supplement file — which is what you declared — or a caption "
-                f"nobody wrote. This run cannot\n"
-                f"           tell them apart, and passed them on your word.\n"
-                f"           Run again with --docx <rendered.docx> before submitting: a float "
-                f"genuinely absent from the rendered\n"
-                f"           output becomes MISSING_DOCX (still downgraded, but now proven), and "
-                f"a caption you forgot becomes visible."
+                "           No --docx was supplied, so nothing here was actually checked. Each "
+                "of these is either a float in a\n"
+                "           separate supplement file — which is what you declared — or a caption "
+                "nobody wrote. This run cannot\n"
+                "           tell them apart, and passed them on your word.\n"
+                "           Run again with --docx <rendered.docx> before submitting: a float "
+                "genuinely absent from the rendered\n"
+                "           output becomes MISSING_DOCX (still downgraded, but now proven), and "
+                "a caption you forgot becomes visible."
             )
         if not submission_safe:
             print(f"[check_xref] SUBMISSION BLOCKED: {len(blockers)} cross-reference defect(s).")

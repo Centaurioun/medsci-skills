@@ -50,7 +50,8 @@ design-level finding, **Fixable** for a reporting-level finding.
 > manuscript (and any supplement) first.
 >
 > TONE: rigorous and skeptical, but fair and constructive. Hunt for the issues that
-> threaten the manuscript's conclusions. Keep strengths to 2–3 genuine items. Every
+> threaten the manuscript's conclusions. Keep strengths to 2–3 genuine items; a sentence
+> that pre-empts a reviewer objection is not a strength. Every
 > major comment must threaten an actual conclusion or a reporting requirement; quote
 > the manuscript when you criticize a specific claim, and cite the location.
 >
@@ -236,3 +237,33 @@ Concern families the classifier recognizes: `search_screening`, `design_leakage`
 type is unknown, the axis-coverage check is skipped (the monoculture and lens-collapse
 checks still run). The gate never penalizes genuine consensus — only full reviewer
 redundancy (`LENS_COLLAPSE`) or panel-level concentration (`FAMILY_MONOCULTURE`).
+
+### What a same-substrate panel cannot check: claims about other papers
+
+`SUBSTRATE_MONOCULTURE` says the panel is not independent. It does not say **where** the
+dependence bites, and that turns out to be specific rather than diffuse.
+
+Findings grounded in the manuscript's **own numbers** are checkable by any lens — the table is
+right there, and a reviewer sharing the drafter's substrate can still add the column up.
+Findings about **what another paper says** are not. There the reviewer inherits the drafter's
+reading of a source it never reopens, and every lens inherits the same one.
+
+A four-reviewer panel plus an editor lens, all sharing the drafter's substrate, cleared **two
+false characterisations of cited papers**. Its own roster had `SUBSTRATE_MONOCULTURE` recorded as
+an open finding, so the *risk* was known; what was not known is that the failures concentrate
+exactly there. A different-substrate pass caught one in a single run by opening the sources'
+enrolment criteria, and a senior co-author caught the other by reading the anchor paper's stated
+conclusion.
+
+**Roster rule.** Route these claim types by construction to a **non-drafter substrate or a
+human**:
+
+- Introduction premises about the state of the literature
+- Descriptions of comparator or prior studies — design, population, what they concluded
+- "No prior study has…" / "this is the first…" statements
+- Any sentence whose truth depends on a document the panel did not open
+
+**When the whole panel shares the drafter's substrate, the editor synthesis reports this class as
+`UNCHECKED`, not as reviewed.** That is the entire change, and it is deliberately cheap: it adds
+no reviewer and finds no new defect. It stops the panel claiming coverage it did not have — which
+is what let two false characterisations through with a clean panel report attached to them.

@@ -2,9 +2,9 @@
 
 # search-lit
 
-> Literature search and citation management for medical research. Searches PubMed, Semantic Scholar, and bioRxiv/medRxiv with verified citations. Anti-hallucination — every reference verified via API before inclusion. Generates BibTeX entries.
+> Use when finding papers or building a reference list. Searches PubMed, Semantic Scholar and bioRxiv/medRxiv, includes only references verified through an API, and generates BibTeX. Auditing an existing reference list is /verify-refs.
 
-**Invoke:** `/search-lit` · **Tools:** Read, Write, Edit, Bash, Grep, Glob · **Model:** inherit
+**Invoke:** `/search-lit`
 
 ## When to use
 
@@ -23,10 +23,13 @@
 
 - Depends on PubMed/Semantic Scholar availability; rate limits/outages reduce recall.
 - Verification confirms existence/metadata, not topical relevance.
+- A DOI whose resolved title matches its row is consistent with that row; it is not proof the record was extracted correctly. The check rules out one recurring way of being wrong, not all of them.
 
 **Validation**
 
 - `bash references/pubmed_eutils.sh <query>`
+- `python3 scripts/check_doi_record_match.py --table <screening.tsv> --strict`
+- `bash scripts/check_doi_record_match_challenge/verify.sh  # deterministic, network-free`
 - `bash references/snowball_challenge/verify.sh  # deterministic, network-free`
 - `/verify-refs --strict`
 
@@ -36,10 +39,16 @@
 
 **References** (`skills/search-lit/references/`):
 
+- `embase_browser.md`
 - `parse_pubmed.py`
 - `pubmed_eutils.sh`
 - `snowball.py`
-- `snowball_challenge/` (7 files)
+- `snowball_challenge/` (9 files)
+
+**Scripts** (`skills/search-lit/scripts/`):
+
+- `check_doi_record_match.py`
+- `check_doi_record_match_challenge/` (10 files)
 
 ## Source
 

@@ -1,11 +1,8 @@
 #!/usr/bin/env bash
 # Deterministic verifier for the claim-fidelity challenge card.
 #
-# The failure this gate exists to catch was found by a human co-author, not by the toolkit. A
-# manuscript sentence read "the field has begun to offer the chair [41]". The cited work uses
-# "chair" zero times and "advocate" four times, twice in the sense the sentence was reaching
-# for. Every existing gate passed: the DOI resolved, the authors matched, the reference list
-# rendered. Nothing checked whether the source says what the sentence says it says.
+# A real citation can carry an unsupported attribution even when its DOI and authors match.
+# These synthetic controls separate source-word checks from bibliographic identity checks.
 #
 # So the positive fixtures reproduce that shape across all three probes:
 #   an attributed concept the source never uses          -> ATTRIBUTION_UNSUPPORTED
@@ -16,10 +13,8 @@
 # the cases where firing would be WRONG:
 #   a real paraphrase, worded nothing like the source, that keeps one of its terms
 #   a correct quote read through a DIRTY EXTRACTION (line numbers and a bled reference wedged
-#     mid-sentence). A contiguous substring test calls that absent; that assumption produced
-#     thirteen false absences in one day and came one step from having two accurate quotes
-#     deleted. This gate inherits _quote_match.py precisely so it cannot repeat that, and the
-#     test below is what proves the inheritance is live rather than nominal.
+#     mid-sentence). A contiguous substring test can call that absent. The test exercises the
+#     inherited _quote_match.py behavior with extraction damage.
 #   a source whose extracted text is an abstract — absence proves nothing against it
 #   a citation with no full text at all — counted as unchecked, never guessed at
 set -uo pipefail
@@ -33,8 +28,8 @@ trap 'rm -rf "$TMP"' EXIT
 pass=0; fail=0
 ck() { if [ "$2" = "$3" ]; then printf '  PASS  %-56s exit=%s\n' "$1" "$3"; pass=$((pass+1));
        else printf '  FAIL  %-56s want=%s got=%s\n' "$1" "$2" "$3"; fail=$((fail+1)); fi; }
-has() { if echo "$2" | grep -q "$3"; then ck "$1" 0 0; else ck "$1" 0 1; fi; }
-hasnt() { if echo "$2" | grep -q "$3"; then ck "$1" 0 1; else ck "$1" 0 0; fi; }
+has() { if grep -q "$3" <<<"$2"; then ck "$1" 0 0; else ck "$1" 0 1; fi; }
+hasnt() { if grep -q "$3" <<<"$2"; then ck "$1" 0 1; else ck "$1" 0 0; fi; }
 
 run() { python3 "$DET" "$@" 2>&1; }
 

@@ -74,6 +74,16 @@ RPT="$DIRTY/qc/preflight_gate_report.json"
 python3 "$SCRIPT" --project-root "$CLEAN" --quiet
 [ $? -eq 0 ] && ok "clean package passes (exit 0)" || bad "clean package should pass"
 [ "$(J "$CLEAN/qc/preflight_gate_report.json" submission_safe)" = "True" ] && ok "clean report submission_safe=true" || bad "clean should be submission_safe"
+python3 - "$CLEAN/qc/preflight_gate_report.json" <<'PY'
+import json, sys
+r = json.load(open(sys.argv[1]))
+assert r['readiness'] == 'not_assessed'
+assert r['submission_safe_scope'] == 'configured_checks_only'
+assert r['coverage']['status'] == 'incomplete'
+assert r['coverage']['skipped']
+assert r['coverage']['visual_review'] == 'not_assessed'
+PY
+[ $? -eq 0 ] && ok "no blockers does not hide skipped/visual checks" || bad "coverage must remain explicit"
 
 # 5. inverted cover-letter exit code normalized to warn (default), blocker under --require
 cat > "$CLEAN/submission/chest/cover_letter.md" <<'EOF'
@@ -102,10 +112,51 @@ python3 "$SCRIPT" --project-root "$CLEAN" --journal chest --strict --skip cover_
 # 8. --require on a check that cannot run -> gate error (exit 2)
 python3 "$SCRIPT" --project-root "$DIRTY" --require sync_drift --quiet
 [ $? -eq 2 ] && ok "--require sync_drift (no journal) -> gate error exit 2" || bad "required-but-unrunnable should exit 2"
+[ "$(J "$DIRTY/qc/preflight_gate_report.json" submission_safe)" = "False" ] && ok "required check error cannot be safe" || bad "gate error marked safe"
+
+# Canonical exists, but the submission is missing: child exit 2 is still an
+# error under --require, rather than silently becoming a skipped clean pass.
+python3 "$SCRIPT" --project-root "$CLEAN" --journal chest --require sync_drift --quiet
+[ $? -eq 2 ] && ok "required child exit 2 cannot pass" || bad "required child skip should be an error"
 
 # 9. unknown check id -> exit 2
 python3 "$SCRIPT" --project-root "$CLEAN" --require nonsense --quiet 2>/dev/null
 [ $? -eq 2 ] && ok "unknown --require id -> exit 2" || bad "unknown id should exit 2"
+
+# 10. (F1) a sub-check that RAN and failed is an error, never "skipped".
+# NEGATIVE control first: canonical present, submission copy absent is a genuine skip.
+python3 "$SCRIPT" --project-root "$CLEAN" --journal chest --skip cover_letter_drift --quiet
+[ "$(STATUS "$CLEAN/qc/preflight_gate_report.json" sync_drift)" = "skipped" ] \
+  && ok "sync_drift with no submission copy stays skipped" || bad "missing submission should skip"
+
+SYNC="$WORK/sync"
+mkdir -p "$SYNC/manuscript" "$SYNC/submission/chest/manuscript"
+printf 'canonical text N = 120 patients\n' > "$SYNC/manuscript/manuscript.md"
+printf 'STALE text N = 118 patients\n'    > "$SYNC/submission/chest/manuscript/manuscript.md"
+python3 "$SCRIPT" --project-root "$SYNC" --journal chest --skip references --quiet
+[ $? -eq 1 ] && ok "drifted submission copy halts (sync_drift blocker)" || bad "drifted copy should halt"
+# Same drifted copy plus malformed metadata: sync_submission.py exits 2 with an error.
+echo '[]' > "$SYNC/submission/chest/.journal_meta.json"
+python3 "$SCRIPT" --project-root "$SYNC" --journal chest --skip references --quiet
+[ $? -eq 2 ] && ok "sync_drift error -> gate exit 2" || bad "sync_drift error must not pass"
+[ "$(STATUS "$SYNC/qc/preflight_gate_report.json" sync_drift)" = "error" ] \
+  && ok "sync_drift error recorded as error (not skipped)" || bad "sync_drift error recorded as skipped"
+[ "$(J "$SYNC/qc/preflight_gate_report.json" submission_safe)" = "False" ] \
+  && ok "sync_drift error is not submission_safe" || bad "sync_drift error marked safe"
+
+# A cover letter the drift check cannot decode (cp1252) is an error under --strict, not a skip.
+printf 'Dear Editor, the caf\xe9 manuscript is approximately 8000 words. Sincerely,\n' \
+  > "$CLEAN/submission/chest/cover_letter.md"
+python3 "$SCRIPT" --project-root "$CLEAN" --journal chest --strict --quiet
+[ $? -eq 2 ] && ok "undecodable cover letter -> --strict exit 2" || bad "undecodable cover letter passed --strict"
+[ "$(STATUS "$CLEAN/qc/preflight_gate_report.json" cover_letter_drift)" = "error" ] \
+  && ok "cover_letter_drift decode failure recorded as error" || bad "cover_letter_drift decode failure skipped"
+# NEGATIVE control: an absent cover letter remains a genuine skip.
+rm -f "$CLEAN/submission/chest/cover_letter.md"
+python3 "$SCRIPT" --project-root "$CLEAN" --journal chest --strict --quiet
+[ $? -eq 0 ] && ok "absent cover letter still a clean skip under --strict" || bad "absent cover letter should skip"
+[ "$(STATUS "$CLEAN/qc/preflight_gate_report.json" cover_letter_drift)" = "skipped" ] \
+  && ok "absent cover letter recorded as skipped" || bad "absent cover letter not skipped"
 
 echo ""
 echo "test_preflight_gate: $PASS passed, $FAIL failed"

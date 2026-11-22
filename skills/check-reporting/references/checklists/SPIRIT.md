@@ -7,6 +7,15 @@ Reference: Chan AW, Hopewell S, Moher D, et al. SPIRIT 2025 statement: updated g
 
 > Note: SPIRIT 2025 supersedes SPIRIT 2013. It is a 34-item checklist (two new items, five revised, five deleted/merged) restructured with a new Open Science section. Use for clinical trial *protocols* (CONSORT is for the completed trial report).
 
+Source: Chan AW, Boutron I, Hopewell S, Moher D, Schulz KF, Collins GS, et al. SPIRIT 2025 statement: updated guideline for protocols of randomised trials. *BMJ* 2025;389:e081477 (DOI 10.1136/bmj-2024-081477).
+Licence: CC BY 4.0 — confirmed via Crossref.
+Verification: every item's text is compared word for word against Table 1 of the published statement
+(Europe PMC full text, PMC12035670), extracted without a model by
+`tests/checklist_sources/refresh_from_europepmc.py`; `verify_checklist_fidelity.py` runs the
+comparison in CI. On 2026-09-30 that comparison found items 18 and 21b shortened in transcription
+and they were restored. Two labels carried over from SPIRIT 2013 had been corrected to their 2025
+names earlier.
+
 ## Checklist Items (34 items)
 
 ### Administrative Information
@@ -51,7 +60,7 @@ Reference: Chan AW, Hopewell S, Moher D, et al. SPIRIT 2025 statement: updated g
 
 | # | Item | Description |
 |---|------|-------------|
-| 13 | Study setting | Settings (e.g., community, hospital) and locations (e.g., countries, sites) where the trial will be conducted. |
+| 13 | Trial setting | Settings (e.g., community, hospital) and locations (e.g., countries, sites) where the trial will be conducted. |
 | 14a | Eligibility — participants | Eligibility criteria for participants. |
 | 14b | Eligibility — sites/deliverers | If applicable, eligibility criteria for sites and for individuals who will deliver the interventions (e.g., surgeons, physiotherapists). |
 | 15a | Interventions — description | Intervention and comparator with sufficient details to allow replication including how, when, and by whom they will be administered. If relevant, where additional materials describing the intervention and comparator (e.g., intervention manual) can be accessed. |
@@ -60,7 +69,7 @@ Reference: Chan AW, Hopewell S, Moher D, et al. SPIRIT 2025 statement: updated g
 | 15d | Interventions — concomitant care | Concomitant care that is permitted or prohibited during the trial. |
 | 16 | Outcomes | Primary and secondary outcomes, including the specific measurement variable (e.g., systolic blood pressure), analysis metric (e.g., change from baseline, final value, time to event), method of aggregation (e.g., median, proportion), and time point for each outcome. |
 | 17 | Harms | How harms are defined and will be assessed (e.g., systematically, non-systematically). |
-| 18 | Participant timeline | Time schedule of enrolment, interventions (including any run-ins and washouts), assessments, and visits for participants. A schematic diagram is highly recommended. |
+| 18 | Participant timeline | Time schedule of enrolment, interventions (including any run-ins and washouts), assessments, and visits for participants. A schematic diagram is highly recommended (see fig 1). |
 | 19 | Sample size | How sample size was determined, including all assumptions supporting the sample size calculation. |
 | 20 | Recruitment | Strategies for achieving adequate participant enrolment to reach target sample size. |
 
@@ -69,7 +78,7 @@ Reference: Chan AW, Hopewell S, Moher D, et al. SPIRIT 2025 statement: updated g
 | # | Item | Description |
 |---|------|-------------|
 | 21a | Allocation — sequence | Who will generate the random allocation sequence and the method used. |
-| 21b | Allocation — restriction | Type of randomisation (simple or restricted) and details of any factors for stratification. To reduce predictability, other details of any planned restriction (e.g., blocking) should be provided in a separate document unavailable to those who enrol participants or assign interventions. |
+| 21b | Allocation — restriction | Type of randomisation (simple or restricted) and details of any factors for stratification. To reduce predictability of a random sequence, other details of any planned restriction (e.g., blocking) should be provided in a separate document that is unavailable to those who enrol participants or assign interventions. |
 | 22 | Allocation concealment | Mechanism used to implement the random allocation sequence (e.g., central computer/telephone; sequentially numbered, opaque, sealed containers), describing any steps to conceal the sequence until interventions are assigned. |
 | 23 | Implementation | Whether the personnel who will enrol and those who will assign participants to the interventions will have access to the random allocation sequence. |
 | 24a | Blinding — who | Who will be blinded after assignment to interventions (e.g., participants, care providers, outcome assessors, data analysts). |
@@ -96,7 +105,7 @@ Reference: Chan AW, Hopewell S, Moher D, et al. SPIRIT 2025 statement: updated g
 | 28b | Interim analyses | Explanation of any interim analyses and stopping guidelines, including who will have access to these interim results and make the final decision to terminate the trial. |
 | 29 | Trial monitoring | Frequency and procedures for monitoring trial conduct. If there is no monitoring, give explanation. |
 
-### Ethics and Dissemination
+### Ethics
 
 | # | Item | Description |
 |---|------|-------------|

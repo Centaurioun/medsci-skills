@@ -36,7 +36,7 @@ KEYWORDS = {
 Apply to body text and Figure source independently → produce two dictionaries
 `body_numbers` and `figure_numbers`.
 
-## Arithmetic checks (4)
+## Arithmetic checks (5)
 
 ```python
 def check_arithmetic(n: dict) -> list[dict]:
@@ -55,6 +55,11 @@ def check_arithmetic(n: dict) -> list[dict]:
         ok = n["sought"] - n["not_retrieved"] == n["retrieved"]
         results.append({"eq": "retrieved = sought - not_retrieved",
                         "lhs": n["retrieved"], "rhs": n["sought"] - n["not_retrieved"],
+                        "status": "PRESENT" if ok else "MISMATCH"})
+    if all(k in n for k in ["sought", "not_retrieved", "assessed"]):
+        ok = n["sought"] - n["not_retrieved"] == n["assessed"]
+        results.append({"eq": "assessed = sought - not_retrieved",
+                        "lhs": n["assessed"], "rhs": n["sought"] - n["not_retrieved"],
                         "status": "PRESENT" if ok else "MISMATCH"})
     if all(k in n for k in ["assessed", "excluded_eligibility", "included"]):
         ok = n["assessed"] - n["excluded_eligibility"] == n["included"]
@@ -89,6 +94,7 @@ For each key in `KEYWORDS`:
   "cross_reference": [
     {"key": "screened", "body": 186, "figure": 186, "status": "PRESENT"}
   ],
+  "status": "assessed",
   "audit_safe": false,
   "action_items": [
     "[PRISMA-FIGURE] body arithmetic 'screened = identified - duplicates' fails: 186 vs 315-122=193"
@@ -99,11 +105,18 @@ For each key in `KEYWORDS`:
 `audit_safe: true` ⟺ all arithmetic_body, arithmetic_figure, cross_reference rows are
 `PRESENT`. Anything else → `false` and Step 5 must surface action_items.
 
+`status` is `assessed` when PRISMA counts were read from both the body and the figure source.
+When none could be read from one of them it is `not_assessed`, `audit_safe` is `false`, the
+action item names `UNPARSEABLE_FIGURE_SOURCE` or `UNPARSEABLE_BODY`, and the script exits `2`.
+A `not_assessed` file records that the comparison did not happen; do not cite it as a check.
+
 ## Edge cases
 
 - **Multi-database identification**: PRISMA 2020 supports separate boxes for database vs
-  register vs other methods. Sum across boxes for `identified` total — extraction regex must
-  handle `321 records (213 from databases, 108 from citation searching)`.
+  register vs other methods. Sum across boxes for `identified` total. The script does **not**
+  do this: `identified` is the first match only, and per-source counts such as
+  `321 records (213 from databases, 108 from citation searching)` are not parsed or summed —
+  check that sum by hand.
 - **Citation searching strand**: separate flow on right side of PRISMA 2020 diagram. If
   present, run arithmetic checks on each strand independently + a combined `total identified`
   check.
@@ -120,12 +133,10 @@ For each key in `KEYWORDS`:
 
 ## Cross-cutting rules
 
-- `~/.claude/rules/numerical-safety.md`: PRISMA 5-way consistency (text ↔ Figure ↔
-  extraction CSV ↔ analysis script ↔ supplementary). Step 4d covers text ↔ Figure;
-  extraction CSV ↔ script ↔ supplementary belong to `/meta-analysis` Phase 6 and
-  `/write-paper` Step 7.3a.
-- `~/.claude/rules/manuscript-style-classical.md`: number formatting (Arabic numerals,
-  thousands separator consistent with journal style).
+- PRISMA 5-way consistency (text ↔ Figure ↔ extraction CSV ↔ analysis script ↔
+  supplementary). Step 4d covers text ↔ Figure; extraction CSV ↔ script ↔ supplementary
+  belong to `/meta-analysis` Phase 6 and `/write-paper` Step 7.3a.
+- Number formatting: Arabic numerals, thousands separator consistent with journal style.
 
 ## Related
 
@@ -134,4 +145,3 @@ For each key in `KEYWORDS`:
   not flow diagram)
 - `/make-figures` (PRISMA flow diagram generation — produces `Figure1_PRISMA.md` manifest
   this step consumes)
-- Sample primary source (motivation): an active meta-analysis project v3 Figure 1 PRISMA verification, 2026-04-26

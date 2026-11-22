@@ -1,7 +1,7 @@
 # Reporting Guideline → Figure Requirements Map
 
 > **Bridge**: this file connects `/make-figures` to `/check-reporting`
-> (48 reporting guidelines). Each row tells you which figures the guideline
+> (49 reporting guidelines). Each row tells you which figures the guideline
 > **mandates** and how this skill currently supports them. Use during
 > Step 1 (Specify) once the study type is known.
 
@@ -23,7 +23,7 @@ Legend for **Status** column:
 | Guideline (year) | Study type | Mandatory figure(s) | Status | Source / where the official asset lives |
 |---|---|---|---|---|
 | **PRISMA 2020** | Systematic review | Flow diagram (4-phase: identification → screening → eligibility → included) | ✅ | `templates/official/prisma2020/`; R `PRISMA2020` package |
-| **PRISMA-DTA** | DTA systematic review | Modified PRISMA flow + DTA-specific exclusion reasons | ⚠️ | Salameh et al., *BMJ* 2020 (PMID 32312813); use generic flow + extra columns |
+| **PRISMA-DTA** | DTA systematic review | Modified PRISMA flow + DTA-specific exclusion reasons | ⚠️ | Salameh et al., *BMJ* 2020 (PMID 32816740); use generic flow + extra columns |
 | **PRISMA-NMA** | Network MA | PRISMA flow + network plot | ❌ | Hutton et al., *Ann Intern Med* 2015; network plot via R `netmeta::netgraph()` |
 | **PRISMA-ScR** | Scoping review | PRISMA-ScR flow diagram (sources of evidence: identification → screening → eligibility → included; item 14) | ⚠️ | Tricco et al., *Ann Intern Med* 2018 (DOI 10.7326/M18-0850); use the generic PRISMA flow with "sources of evidence" wording |
 | **PRISMA-P** | Protocol of SR | (none mandated; PRISMA-S search strategy figure recommended) | ❌ | Rethlefsen et al., *Syst Rev* 2021 |
@@ -33,7 +33,7 @@ Legend for **Status** column:
 | **STARD-AI 2025** | AI diagnostic accuracy | STARD flow + dataset-flow (training / tuning / test) + subgroup-overlaid ROC/PR | ❌ | Sounderajah et al., *Nat Med* 2025 (PMID 40954311); produce manually, see `flow_diagram_lessons.md` |
 | **STROBE** | Observational cohort/case-control | (Flow diagram **recommended** but not strictly mandated) | ⚠️ | von Elm et al., *Ann Intern Med* 2007; use generic flow generator |
 | **TRIPOD 2015** | Prediction model | Calibration plot (mandatory) + discrimination (ROC, c-stat with CI) | ✅ (data plots) | Collins et al., *Ann Intern Med* 2015 |
-| **TRIPOD+AI 2024** | AI prediction model | TRIPOD figures + **fairness/subgroup panels** + **dataset-flow** + **decision-curve analysis** | ❌ (subgroup, DCA) | Collins et al., *BMJ* 2024 (PMID 38636956); produce manually |
+| **TRIPOD+AI 2024** | AI prediction model | TRIPOD figures + **fairness/subgroup panels** + **dataset-flow** + **decision-curve analysis** | ❌ (subgroup, DCA) | Collins et al., *BMJ* 2024 (PMID 38626948); produce manually |
 | **CLAIM 2024** | Medical imaging AI | Architecture diagram (model card style) + dataset-flow + calibration + per-subgroup performance + saliency/attention | ❌ | Tejani et al., *Radiology: AI* 2024 (PMID 38809149); 44 items total |
 | **DECIDE-AI 2022** | AI clinical eval (Stage 1–2) | Human-AI interaction diagram + safety-signal plot + override-rate over time | ❌ (uncertain — verify in full text) | Vasey et al., *Nat Med* 2022 (PMID 35585198) |
 | **CHEERS 2022** | Economic evaluation | Cost-effectiveness plane + cost-effectiveness acceptability curve | ❌ | Husereau et al., *BMJ* 2022 |
@@ -96,7 +96,7 @@ flags them:
 
 ## Cross-references
 
-- `/check-reporting` skill — supports all 48 guidelines, item-level audit
+- `/check-reporting` skill — supports all 49 guidelines, item-level audit
 - `flow_diagram_lessons.md` — production lessons that apply across all flows
 - `pipeline_concepts_medical_ai.md` — DICOM / annotation / federated /
   architecture diagram conventions

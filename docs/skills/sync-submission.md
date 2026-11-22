@@ -2,9 +2,9 @@
 
 # sync-submission
 
-> Audit SSOT-to-submission drift and create journal submission manifests from canonical manuscript artifacts.
+> Use when building, auditing or freezing a journal submission package from the canonical manuscript. Detects drift between the source and the per-journal submission copy, builds byte-preserving packages with manifests, and records current, stale or frozen status.
 
-**Invoke:** `/sync-submission` · **Tools:** Read, Write, Edit, Bash, Grep, Glob · **Model:** inherit
+**Invoke:** `/sync-submission`
 
 ## When to use
 
@@ -21,6 +21,8 @@
 
 **Known limitations**
 
+- Build copies declared final files byte for byte; rendering remains with existing renderers. Hashes do not establish visual or semantic fidelity or reuse permission.
+- Preflight bundle binding covers declared sources/dependencies and package bytes, not every external check input. Skipped checks and unassessed readiness remain explicit.
 - Detects drift it is configured to scan (counts, cover-letter fields, scope); portal free-text fields still need a human check.
 - A clean audit is necessary, not sufficient, for acceptance.
 - Building a marked (tracked-changes) manuscript drives Microsoft Word and therefore needs macOS + Word; the round-trip verification of a marked file is portable and runs anywhere.
@@ -41,7 +43,10 @@
 
 **References** (`skills/sync-submission/references/`):
 
+- `bundle_workflow.md`
 - `journal_availability_policy.json`
+- `marked_manuscript.md`
+- `springer_em_packaging.md`
 
 **Scripts** (`skills/sync-submission/scripts/`):
 
@@ -71,6 +76,7 @@
 - `preflight_gate.py`
 - `scope_drift_check.py`
 - `sync_submission.py`
+- `verify_package_integrity.py`
 
 ## Source
 

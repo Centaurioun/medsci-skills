@@ -15,6 +15,14 @@ Reference: Gallifant J, ..., Bitterman DS. Nat Med 2025;31(1):60-69. doi:10.1038
 > 18 subitems are **task- or design-specific** (marked *task-specific*) and are N/A when that
 > component is absent — justify the N/A.
 
+Licence: The published *Nature Medicine* article returns no Creative Commons licence via Crossref (DOI 10.1038/s41591-024-03425-5); the author-accepted manuscript is CC BY 4.0 through institutional rights retention.
+Verification: all 49 sub-items were compared, by number and order, against Table 2 of the published
+guideline (PubMed Central record PMC12104976). 49/49 are now present. **This file previously
+collapsed item 16's four sub-items into a single row**, which is the shape that lets an assessor
+tick one box while three requirements go unchecked; they are expanded below. Wording stays
+paraphrased — Crossref returns only a Springer Nature text-and-data-mining licence for this
+article.
+
 ## Naming and scope (read first)
 
 - TRIPOD-LLM is an **extension** of the **TRIPOD** family (TRIPOD 2015 → TRIPOD+AI 2024 →
@@ -52,7 +60,7 @@ Status each PRESENT / PARTIAL / MISSING / N/A.
 |---|------|----------------------|
 | 5a | Data sources | Describe all data sources and input data types (clinical text, notes, structured fields, image-to-text). |
 | 5b | Data description / distribution | Describe the dataset and how data were partitioned (train / tune / validation / held-out test, internal vs external), and steps to prevent train–test contamination and leakage of evaluation data into pretraining/prompts. |
-| 5c | Study dates | Specify key dates (data accrual start/end, and the model knowledge-cutoff relative to the data). |
+| 5c | Study dates | State the dates of the oldest and newest text items used in development (training, fine-tuning, reward modelling) and in the evaluation datasets. |
 | 5d | Preprocessing | Describe text preprocessing, de-identification, and any filtering. |
 | 5e | Missing / inadequate / imbalanced data | Describe handling of missing, truncated, out-of-context, or class-imbalanced inputs. |
 
@@ -60,7 +68,7 @@ Status each PRESENT / PARTIAL / MISSING / N/A.
 
 | # | Item | Description (intent) |
 |---|------|----------------------|
-| 6a | LLM identity and version | Name the model, exact version/snapshot or weights, provider/access route (API vs local), and date of access — versions drift, so this is essential for reproducibility. |
+| 6a | LLM identity and version | Name the model and its exact version/snapshot or weights, and state its last date of training; the provider/access route (API vs local) also aids reproducibility, since versions drift. |
 | 6b | Development / adaptation | Describe how the LLM was developed or adapted (zero/few-shot prompting, retrieval augmentation, fine-tuning, instruction-tuning) in enough detail to reproduce. |
 | 6c | Text generation settings | Report decoding/generation parameters (temperature, top-p, max tokens, stop criteria, seed/determinism where available). |
 | 6d | Output | Define the expected output format and how free-text outputs were mapped to the study endpoint. |
@@ -72,7 +80,7 @@ Status each PRESENT / PARTIAL / MISSING / N/A.
 |---|------|----------------------|
 | 7a | Quality / performance metrics | Specify all performance/quality metrics, including task-specific measures. |
 | 7b | Downstream / clinical relevance | Describe how the metrics relate to downstream clinical relevance. |
-| 7c | Outcome definition | Define the outcome / reference standard and who set it. |
+| 7c | Outcome definition | Define the outcome, how the LLM predictions were computed (formula, code, object, or API), the inference date for closed-source LLMs, and the evaluation metrics. |
 | 7d | Subjective / human assessment | Describe any human rating: rubric, anchors, number and expertise of raters, blinding, and inter-rater agreement. |
 | 7e | Comparisons | Describe comparators (clinicians, prior models, guidelines) and ensure same-data, same-task comparison. |
 
@@ -121,7 +129,10 @@ Status each PRESENT / PARTIAL / MISSING / N/A.
 
 | # | Item | Description (intent) |
 |---|------|----------------------|
-| 16a–d | Participants / data flow *(task-specific)* | Describe the flow of cases/records through the study, characteristics, available clinical variables, and sample sizes, including comparison between development and external data. |
+| 16a | Participants — data flow *(patient/EHR data)* | Describe the flow of text/EHR/patient data through the study, including the number of documents/questions/participants with and without the outcome/label, and follow-up where applicable. |
+| 16b | Participants — characteristics *(patient/EHR data)* | Report characteristics overall and for each data source or setting, and for the development/evaluation splits, including key dates and key characteristics. |
+| 16c | Participants — distribution comparison *(evaluations with clinical outcomes)* | Show a comparison of the distribution of important clinical variables that may be associated with the outcome, between development and evaluation data. |
+| 16d | Participants — analysis sample sizes *(patient/EHR data)* | Specify the number of participants and outcome events in each analysis — LLM development, hyperparameter tuning, and LLM evaluation. |
 | 17 | Performance | Report performance/quality results with appropriate uncertainty, including human-evaluation results and, where relevant, subgroup/fairness performance. |
 | 18 | LLM updating | If the model or prompts were updated during the study, report results before and after. |
 

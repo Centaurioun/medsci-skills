@@ -1,32 +1,44 @@
 # Reviewer Profiles
 
-Canonical per-journal reviewer formatting profiles. Consumed by both the OSS `peer-review` skill (medsci-skills) and user-private peer-review skills (e.g., `~/.claude/skills/peer-review/`).
+Per-journal notes for `/peer-review`. Each profile carries only what the journal publishes, and
+links the public page every item comes from.
 
 ## Contents
 
-| File | Journal | System | Scorecard |
+| File | Journal | System | Review model |
 |---|---|---|---|
-| KJR.md | Korean Journal of Radiology | ScholarOne | 8 items, Excellent→Poor |
-| RYAI.md | Radiology: Artificial Intelligence | ScholarOne | 5 items, 1–9 |
-| INSI.md | Insights into Imaging | Editorial Manager | 4 items, H/M/L |
-| AJR.md | American Journal of Roentgenology | Editorial Manager | Section-by-section |
-| EURE.md | European Radiology | Editorial Manager | INSI-style base |
+| KJR.md | Korean Journal of Radiology | ScholarOne | Double-blind |
+| RYAI.md | Radiology: Artificial Intelligence | ScholarOne | Double-anonymized |
+| INSI.md | Insights into Imaging | Editorial Manager | Single-blind |
+| AJR.md | American Journal of Roentgenology | Editorial Manager | Double-blind |
+| EURE.md | European Radiology | Editorial Manager | Single-blind |
 
-## Design Principles
+## What a profile holds
 
-1. **Single source of truth** — each journal's reviewer-form fields live in exactly one file here.
-2. **Form fields, not opinions** — profiles describe what the editorial system expects (fields, scales, options); subjective calibration lives in the reviewer's own guideline.
-3. **OSS-safe** — no PII, no specific reviewer identity, no manuscript content, **no manuscript IDs**, **no specific editor names**, no topic-level hints that could identify a past review. Under COPE reviewer confidentiality obligations, publishing the set of manuscripts a reviewer has handled can itself identify the reviewer. Keep personal precedent logs in a private store (e.g., `~/.claude/skills/peer-review/`) — never commit them here.
-4. **Parallel to find-journal / write-paper profiles** — same directory-of-markdown pattern used elsewhere in medsci-skills.
+1. Journal name, submission system, and review model (single- or double-blind).
+2. The comment structure from the journal's public reviewer guide, if it publishes one.
+3. The journal's reviewer-AI policy: a short summary and the link.
 
-## Adding a New Journal
+## What a profile does not hold
 
-1. Copy the closest existing profile as a template.
-2. Record form fields from the first real review invitation (scorecard items, rating scales, required text boxes, recommendation options).
-3. Commit under `{JOURNAL_SHORTNAME}.md` using established abbreviations (KJR, RYAI, INSI, AJR, EURE; full name if no common abbreviation).
-4. Update this README table.
+Recommendation options and scorecard fields differ by journal and change without notice. Read
+them from the live review form, keep any notes in a private store, and do not commit form-level
+details to a public repository.
 
-## Consumed By
+Nothing here identifies a reviewer, a manuscript or a review: no names, no manuscript IDs, no
+manuscript content, no editor names.
 
-- `medsci-skills/skills/peer-review/SKILL.md` — OSS public skill.
-- `~/.claude/skills/peer-review/SKILL.md` — user's private overlay (reads same profiles, adds PII-specific guideline path).
+## Adding a journal
+
+1. Copy the closest existing profile.
+2. Fill it only from the journal's public pages (reviewer guide, author instructions, AI policy),
+   and link each one. If a page cannot be opened, link it without summarising it, or leave the item
+   out.
+3. Name the file `{JOURNAL_SHORTNAME}.md` with the established abbreviation (KJR, RYAI, INSI, AJR,
+   EURE), or the full name when there is none.
+4. Add a row to the table above and to the Journal-Specific Formatting table in
+   `skills/peer-review/SKILL.md`.
+
+## Consumed by
+
+- `skills/peer-review/SKILL.md` — Journal-Specific Formatting.

@@ -11,7 +11,7 @@
 - **Open Access**: Hybrid (standard copyright OR Creative Commons under OA fee; APC applies when OA chosen). >9 published pages = GBP 100/page (excess), unless fully OA.
 - **Acceptance rate**: [VERIFY at journal site]
 - **Peer review**: Single-blind; 2 independent reviewers plus Editors; early rejection without external review permitted; Peer Review Transparency pilot via Publons (opt-out during submission)
-- **Verification date**: 2026-05-21 (AGL PDF); submission mechanics verified 2026-06-24 (live Research Exchange submission)
+- **Verification date**: 2026-05-21 (author-guidelines PDF); submission mechanics verified in-portal 2026-06
 
 ## Manuscript Types and Word Limits
 
@@ -135,7 +135,7 @@ Cover letter is **required** with all submissions. Should include:
 - **Permitted scope:** Disclosure of all generative AI and AI-assisted technologies used in manuscript preparation. AI tools cannot be listed as authors. Basic grammar/spelling/reference tools are exempt.
 - **Disclosure location:** **Methods** (if AI was used in study/data-analysis pipeline) or **Acknowledgements** (if AI was used in drafting/editing). Specify software name, version, developer, and scope of use. (Wiley publisher-wide ICMJE policy applies; AGL itself silent on AI specifics.)
 - **AI-generated images:** Not specified in the journal's author guidelines; Wiley publisher policy applies (treat as restricted unless explicit permission obtained).
-- **Policy URL:** https://authors.wiley.com/author-resources/Journal-Authors/open-access/ethics/index.html (Wiley publisher-wide; redirected from authorservices.wiley.com per 2026-05-21 fetch)
+- **Policy URL:** https://authors.wiley.com/author-resources/Journal-Authors/open-access/ethics/index.html (Wiley publisher-wide; redirected from authorservices.wiley.com per 2026-05 fetch)
 
 ---
 
@@ -166,7 +166,7 @@ Editorial Office: LIVeditorialoffice@wiley.com
 
 ---
 
-## Submission Mechanics (Research Exchange / Free Format) — verified 2026-06-24
+## Submission Mechanics (Research Exchange / Free Format) — verified in-portal 2026-06
 
 Liver International submits via **Wiley Research Exchange** (https://authors.wiley.com/journal/LIV), **Free Format**:
 

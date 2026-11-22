@@ -2,9 +2,9 @@
 
 # verify-refs
 
-> Audit-only verification of manuscript references against PubMed and CrossRef. Detects fabricated or mismatched citations and writes qc/reference_audit.json. Does not modify references/ or refs.bib.
+> Use when checking whether a manuscript's references are real. Audits each citation against PubMed and CrossRef, flags fabricated or mismatched entries and writes qc/reference_audit.json. Audit-only; never edits references or refs.bib. Citation-key checks are /manage-refs.
 
-**Invoke:** `/verify-refs` · **Tools:** Read, Write, Edit, Bash, Grep, Glob · **Model:** inherit
+**Invoke:** `/verify-refs`
 
 ## When to use
 
@@ -23,6 +23,7 @@
 
 - Confirms DOI/PMID and author identity, not topical appropriateness of the citation.
 - CrossRef given-name errors are possible; PubMed efetch is treated as authoritative.
+- Evidence rows record assessor judgments bound to input hashes, not automatically verified source support. Source PDF pages, extraction provenance, and semantic comparisons require actual source inspection.
 - Claim fidelity checks only claims with a checkable anchor (a quotation, an attributed concept, a stated count) and only against full texts already on disk; a citation with no full text is reported unresolved, never guessed at. A small alteration inside a long quotation falls within the extraction tolerance of the quote matcher and is surfaced as a prompt rather than as a fabrication.
 - OpenAlex (tertiary index for conference proceedings / non-DOI works) gives an existence check plus a tolerant first-author membership check only; its display names carry no structured family field, so it never drives the strict positional or author-count cross-check. Use --no-openalex to restrict to PubMed + CrossRef.
 
@@ -33,6 +34,7 @@
 - `bash tests/test_openalex_tier.sh`
 - `bash tests/test_fabricated_author.sh`
 - `bash scripts/claim_fidelity_challenge/verify.sh`
+- `python3 tests/test_claim_evidence.py`
 
 **Evidence** — `bundled_script`
 
@@ -40,10 +42,12 @@
 
 **References** (`skills/verify-refs/references/`):
 
+- `claim_evidence_workflow.md`
 - `manual_checkpoint_guide.md`
 
 **Scripts** (`skills/verify-refs/scripts/`):
 
+- `_claim_evidence.py`
 - `_quote_match.py`
 - `check_claim_fidelity.py`
 - `claim_fidelity_challenge/` (8 files)

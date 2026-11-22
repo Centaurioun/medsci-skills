@@ -21,6 +21,7 @@ A 9-probe checklist for time-to-event outcomes and prognostic model development.
 **S2 — Censoring handling in training loss**:
 - Cox partial-likelihood loss or DeepSurv-style loss specified? How is censoring handled (right-censoring, interval-censoring, informative censoring by death)?
 - If Methods describe a Cox or partial-likelihood loss but do not specify censoring treatment, register as MAJOR (reproducibility).
+- **Visit-based detection (serial screening or surveillance).** Ask whether the endpoint is onset or detection, and for either, whether visit schedules differed by risk group or were brought forward by symptoms. For onset, ask how the interval between the last confirmed negative and the first positive assessment was handled and how events without a confirmed earlier negative (possibly present at entry) were treated. Hazard-shape and quantile claims should stay within the times the intervals and the number at risk support; an unsupported one in the headline → MAJOR. Interval-censored methods: `analyze-stats` `references/analysis_guides/survival.md` (Interval-censored events).
 - Covariate incompleteness in the model fit is part of the same disclosure: is a structural-zero covariate (a never-smoker's pack-years = 0 by definition, not missing) handled as a zero, or dropped under complete-case so the unexposed stratum and the events-per-variable silently collapse? An undisclosed complete-case collapse from a dose/duration covariate is a reproducibility + power issue — adjust on the categorical status and reserve the continuous dose for an exposed-only secondary analysis.
 
 **S3 — Competing risks**:
@@ -97,3 +98,13 @@ Co-apply these when the manuscript develops or validates a **multivariable predi
 
 **Output template (S5 example)**:
 > "The chosen baseline nomogram was originally designed and validated for prediction of long-horizon endpoints (5- and 10-year). In this study, median follow-up in [external cohort] is substantially shorter than that horizon, so the comparator's apparent underperformance may partly reflect a horizon mismatch rather than intrinsic inferiority. I'd suggest (a) stating explicitly the time horizon at which both models were evaluated, (b) reporting time-dependent C-indices at a clinically anchored horizon, and (c) clarifying whether the comparator was applied as published, recalibrated locally, or refit as a new Cox model with similar variables."
+
+## When this module does not apply
+
+These probes are out of scope for:
+
+- Pure diagnostic accuracy (sensitivity / specificity / AUC, binary classification with no time component)
+- Cross-sectional risk model without time-to-event endpoint
+- Replication of a documented prior methodology
+
+Moved here from the consuming skill so the scope travels with the probes.

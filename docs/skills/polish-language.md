@@ -2,9 +2,9 @@
 
 # polish-language
 
-> Academic English consistency linting and non-native (ESL) language polish for medical manuscripts. Deterministically flags abbreviation define-once violations, US/UK spelling drift, hyphen-vs-en-dash numeric ranges, P/p case, hyphenation variants, small-number style, and value/unit spacing, then guides a style-only clarity pass that never alters numbers, citations, or scientific meaning. Distinct from humanize (AI-tell removal) and check-reporting (guideline items).
+> Use when a manuscript needs a copy-edit for consistency and non-native English clarity. Flags abbreviation, US/UK spelling, en-dash range, P/p, hyphenation, number-style and unit-spacing issues, then polishes style only. AI-tell removal is /humanize.
 
-**Invoke:** `/polish-language` · **Tools:** Read, Write, Edit, Grep, Glob, Bash · **Model:** inherit
+**Invoke:** `/polish-language`
 
 ## When to use
 
@@ -17,7 +17,7 @@
 **Safety boundaries**
 
 - Edits style only; never alters numeric values, p-values, units, citations, or scientific meaning.
-- Deterministic linter is the authority for mechanical issues; no edit without user approval.
+- Linter findings remain advisory and need contextual review; no edit without user approval.
 
 **Known limitations**
 
@@ -28,6 +28,7 @@
 
 - `python3 scripts/lint_consistency.py <manuscript.md>`
 - `bash scripts/lint_challenge/verify.sh  # deterministic, network-free`
+- `python3 tests/test_consistency_controls.py`
 - `python3 scripts/lint_figure_locale.py --manuscript <manuscript.md> --figures-dir <figures/>`
 - `bash scripts/lint_figure_locale_challenge/verify.sh  # deterministic, network-free`
 
@@ -37,7 +38,7 @@
 
 **Scripts** (`skills/polish-language/scripts/`):
 
-- `lint_challenge/` (4 files)
+- `lint_challenge/` (6 files)
 - `lint_consistency.py`
 - `lint_figure_locale.py`
 - `lint_figure_locale_challenge/` (2 files)

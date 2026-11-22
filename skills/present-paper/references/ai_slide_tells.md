@@ -55,6 +55,18 @@ going to do, delete it and let the next sentence do it.
 **Test:** delete the sentence. If nothing is lost, it was scaffolding. (Every pattern in the
 detector's bank passes this test — that is the admission criterion for the bank.)
 
+### Two habits to listen for in the notes
+
+Read the notes aloud; these two are easier to hear than to see. Cut one only if no claim goes
+with it:
+
+- **The correction pair** — "This is not a failure of the algorithm. It is a reminder that the
+  data matter." The first sentence denies something nobody said so that the second can arrive as a
+  turn. Say the second.
+- **The closing maxim** — a note that ends on a line built to be quoted ("Accuracy is where the
+  conversation begins"). Once in a talk it is a choice; at the end of every third slide it is a
+  rhythm the room hears. End on the fact, the number or the next step.
+
 ---
 
 ## 2. The furniture along the edges
@@ -62,7 +74,7 @@ detector's bank passes this test — that is the admission criterion for the ban
 The little words at the top and bottom of every slide: the all-caps eyebrow label, the
 `2026 · NEUROGENETICS` brand footer, the section tag, the running theme.
 
-**This project used to mandate them.** `academic-lecture-style.md` required an eyebrow on *every*
+**This project used to mandate them.** An earlier house style required an eyebrow on *every*
 slide and a brand footer on *every* slide, and `nature_lancet.md` gave them fixed coordinates. We
 were manufacturing the single most-cited visual tell and calling it house style.
 
@@ -83,6 +95,33 @@ rounded rectangle — and repeats it until the slide is full.
 If five things are genuinely parallel, say so **once**, in a table or a list. If they are not
 parallel, the shapes should differ, because the ideas differ. A row of identical boxes with
 different words in them is a list wearing a costume.
+
+### The same headline, five times, is the same tell in words
+
+Assertion headlines can be stamped from one mould as easily as boxes. An invented example: "Bus
+route A runs late", "Bus route B runs late", "Bus route C runs late". By the third, the audience
+knows the predicate of the next before the slide appears. Read the titles alone, in order, as one
+list. Where consecutive titles share a predicate, keep them if the parallel is the comparison you
+are making; otherwise give each the more specific thing it has to say, or make them one slide.
+
+### The drop shadow under the box is part of the same tell
+
+A card with a soft shadow under it is the default look of generated UI, and on an academic slide it
+reads as one. It is also harder to remove than it looks:
+
+```python
+shape.shadow.inherit = False        # documented, honoured by PowerPoint — and not enough
+```
+
+That writes an empty `<a:effectLst/>` in `spPr`, which PowerPoint respects. **LibreOffice does not**:
+it keeps rendering the theme's shape default through the `<a:effectRef idx="2">` in the `<p:style>`
+block that `add_shape()` attaches. To actually turn the shadow off, **delete the `<p:style>`
+element**, not just override the effect list. "I turned it off" and "it is off in the render" are
+different claims, and only the second one is checkable — look at the render.
+
+And fix the class, not the instance. Removing shadows from the shapes you added leaves the ones the
+base deck already had: one sweep found 57 title hairlines and every panel and bar of the original
+deck still carrying theirs.
 
 ---
 
@@ -118,6 +157,36 @@ So:
 
 Drawing a diagram out of `python-pptx` autoshapes is how you get §3 and §4 at the same time. Do not
 do it.
+
+### Three mechanical rules for the render, because the code is not the picture
+
+A diagram drawn as code is right in the coordinate system it was drawn in and wrong on the slide,
+in three ways that keep recurring. None of them is a matter of taste.
+
+**Keep the drawing off the canvas edge.** A box whose border sits *on* the figure boundary has its
+stroke half-clipped by the render, and on the slide it does not look clipped — it looks like a box
+missing a line. Leave an explicit inner margin and use `bbox_inches="tight"` with a pad. This is the
+one to be least confident about catching by eye: in one deck a reader found a clipped right edge on
+slide 33, and the guard written that afternoon immediately found a second one, on a different slide,
+that nobody had seen.
+
+**Put arrow labels inside the boxes when the gaps are tight.** A label dropped into the narrow space
+between two boxes overlaps both of them. If the layout is tight, the label belongs on a second line
+inside the box the arrow leaves.
+
+**Back-calculate the font size from the size the diagram is placed at.** A figure drawn 11.6 in wide
+and placed in an 11.7 in slot keeps its type size; the same figure drawn at 5.6 in and placed at
+5.3 in does not — it shrinks with the image, and 13.5 pt in the figure arrives as 12 pt on the
+slide, under the deck's own floor. `check_deck_budget`'s `TYPE_TOO_SMALL` reads text runs and cannot
+see letters inside a raster, so a diagram is exactly where small type hides from the one check that
+would object:
+
+```
+fig_fontsize >= floor_pt * (fig_width_in / display_width_in)
+```
+
+Compute it, do not eyeball it. Four diagrams in one deck were all below the floor while the deck
+around them held it.
 
 ---
 

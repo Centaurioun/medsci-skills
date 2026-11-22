@@ -85,9 +85,11 @@ SPELLING_US = {
 
 # Hyphenation/terminology variant families (all lowercase match, word-ish).
 HYPHEN_FAMILIES = [
-    ("follow-up", [r"\bfollow-up\b", r"\bfollowup\b", r"\bfollow up\b"]),
+    # The spaced verb "follow up" is grammatical beside the noun "follow-up".
+    # Likewise "in the long term" is not a misspelling of the adjective.
+    ("follow-up", [r"\bfollow-up\b", r"\bfollowup\b"]),
     ("health care", [r"\bhealthcare\b", r"\bhealth care\b", r"\bhealth-care\b"]),
-    ("long-term", [r"\blong-term\b", r"\blongterm\b", r"\blong term\b"]),
+    ("long-term", [r"\blong-term\b", r"\blongterm\b"]),
     ("well-being", [r"\bwell-being\b", r"\bwellbeing\b"]),
     ("decision-making", [r"\bdecision-making\b", r"\bdecision making\b"]),
     ("COVID-19", [r"\bCOVID-19\b", r"\bCOVID19\b", r"\bCovid-19\b"]),
@@ -101,8 +103,29 @@ UNIT_RE = re.compile(
     r"(?<![\w.])(\d+(?:\.\d+)?)(" + "|".join(sorted(UNIT_TOKENS, key=len, reverse=True)) + r")(?![\w])"
 )
 
-ABBR_DEF_RE = re.compile(r"\(([A-Z][A-Z0-9]{1,5})\)")            # (CT), (MRI), (DKA), (COVID)
-ABBR_USE_RE = re.compile(r"(?<![A-Za-z])([A-Z]{2,6})(?![A-Za-z])")  # standalone caps token
+# Keep numeric/hyphenated identifiers whole: a definition of (COVID-19) must
+# match uses of COVID-19, not manufacture an undefined abbreviation "COVID".
+#
+# A plural is the same abbreviation: "95% CIs" uses CI, and "confidence intervals (CIs)"
+# defines it. Without the optional tail, a manuscript that only ever writes the plural was told
+# its abbreviation was "defined but never used" — advice to delete an entry the text needs. The
+# tail is outside the capture group, and the lookahead still has to hold after it, so a longer
+# lowercase word that merely starts with capitals is not a use.
+#
+# ABBR_USE_RE finds candidate abbreviations nobody defined. It is deliberately narrower than the
+# definition pattern (it does not read "T2" or "H2AX" as an abbreviation), so the uses of an
+# abbreviation that IS defined are counted by its own exact token instead: see _uses_of().
+ABBR_TAIL = r"(?:s|['\u2019]s)?"
+ABBR_DEF_RE = re.compile(r"\(([A-Z][A-Z0-9]{1,5}[0-9]*(?:-[A-Z0-9]{1,6})*)(s?)\)")
+ABBR_USE_RE = re.compile(
+    r"(?<![A-Za-z0-9-])([A-Z]{2,6}[0-9]*(?:-[A-Z0-9]{1,6})*)" + ABBR_TAIL + r"(?![A-Za-z0-9-])")
+
+
+def _uses_of(abbr: str):
+    """Pattern for a use of this exact defined abbreviation, plural or possessive included."""
+    return re.compile(r"(?<![A-Za-z0-9-])" + re.escape(abbr) + ABBR_TAIL + r"(?![A-Za-z0-9-])")
+
+
 NUM_RANGE_RE = re.compile(r"(?<![\w/.\-])(\d+(?:\.\d+)?)-(\d+(?:\.\d+)?)(?![\w/.\-])")
 PVAL_RE = re.compile(r"(?<![A-Za-z])([Pp])\s*([=<>])\s*(0?\.\d+|\d+\.\d+|\.\d+)")
 SMALL_NUM_RE = re.compile(r"(?<![\w.=<>+\-/])([1-9])\s+([a-z]{3,})")
@@ -139,17 +162,32 @@ def check_abbreviations(lines):
     defs = {}          # abbr -> first definition line
     uses = {}          # abbr -> list of (line) excluding the def-parenthesis line
     def_lines = {}     # abbr -> set of lines where defined
+    # A plural in parentheses defines the abbreviation only when nothing defined it earlier:
+    # after "confidence interval (CI)", a later "estimates (CIs)" is a use, not a second definition.
+    first_def = {}     # abbr -> (line, column) of the definition that counts
     for i, line in enumerate(lines, 1):
         for m in ABBR_DEF_RE.finditer(line):
             ab = m.group(1)
+            if m.group(2) and ab in first_def:
+                continue
+            first_def.setdefault(ab, (i, m.start()))
             defs.setdefault(ab, i)
             def_lines.setdefault(ab, set()).add(i)
     for i, line in enumerate(lines, 1):
         # mask the "(ABBR)" definition spans so they don't count as bare uses
-        masked = ABBR_DEF_RE.sub(lambda m: " " * len(m.group(0)), line)
+        masked = ABBR_DEF_RE.sub(
+            lambda m: " " * len(m.group(0))
+            if (not m.group(2) or first_def.get(m.group(1)) == (i, m.start())) else m.group(0), line)
         for m in ABBR_USE_RE.finditer(masked):
             ab = m.group(1)
-            uses.setdefault(ab, []).append(i)
+            if ab not in defs:
+                uses.setdefault(ab, []).append(i)
+        # A defined abbreviation is counted by its own token, whatever shape it has, so the
+        # definition and its uses can never be read by two different grammars.
+        for ab in defs:
+            n = len(_uses_of(ab).findall(masked))
+            if n:
+                uses.setdefault(ab, []).extend([i] * n)
 
     all_abbr = set(defs) | {a for a in uses}
     for ab in sorted(all_abbr):
@@ -236,10 +274,13 @@ def check_pvalues(lines):
 def check_hyphenation(lines):
     out = []
     for canon, variants in HYPHEN_FAMILIES:
+        # These variants intentionally differ in case. Ignoring case makes a
+        # single COVID-19 occurrence match both patterns and report a false mix.
+        flags = 0 if canon == "COVID-19" else re.I
         present = []
         per_variant = {}
         for vre in variants:
-            vlines = [i for i, line in enumerate(lines, 1) if re.search(vre, line, re.I)]
+            vlines = [i for i, line in enumerate(lines, 1) if re.search(vre, line, flags)]
             if vlines:
                 present.append(vre)
                 per_variant[vre] = vlines

@@ -14,7 +14,9 @@ the shared library.
 
 ## The verification bar (public library)
 
-Every public profile must meet **all** of the following. No exceptions, no defaults.
+Every public profile must meet **all** of the following. No exceptions. A default appears
+only where the journal states nothing, and only under a `[TODO: verify at journal site]`
+marker (item 3 below).
 
 ### Source discipline
 
@@ -23,7 +25,10 @@ Every public profile must meet **all** of the following. No exceptions, no defau
    sections were pasted into the session by the maintainer.
 3. Every line of the profile cites or is traceable to content on (1) or (2). Plausible
    inference from adjacent journals is not acceptable, even when the journals are in the
-   same publisher family.
+   same publisher family. The one exception is a value (1) and (2) do not state: it is
+   either left out or marked `[TODO: verify at journal site]`, including the
+   statistical-reporting defaults `/add-journal` supplies, so it is never read as a
+   journal requirement.
 
 ### Field-level checks
 
@@ -49,12 +54,27 @@ Every public profile must meet **all** of the following. No exceptions, no defau
   (`$HOME/.claude/private-journal-profiles/find-journal/`). Selectivity is expressed as a
   qualitative band, never a fabricated acceptance percentage.
 
+### Claims of absence
+
+Writing "the journal does not state X", or asking for a value to be removed because the
+cited page lacks it, needs more evidence than confirming a value that is there. An empty
+search means no match in the searchable text.
+
+1. For a numeric value, search the digits (`40`) and the number words (`forty`).
+2. For any value, search the noun (`references`, `figures`, `AI`) and read the body, tables,
+   footnotes and linked instructions for that article type.
+
+Record the result as "not found in <the documents and sections checked>", never "not
+stated"; tables that are images, collapsed sections and unopened attachments are recorded
+as not checked. Compare a sentence a contributor quotes against the page yourself.
+
 ### Proof of verification
 
 Profile authors or maintainers should keep a brief evidence note — either a 1-line
 comment at the bottom of the profile, a PR description, or a commit message — stating
 which pages were opened and on what date. This lets future audits check whether a profile
-has drifted.
+has drifted. Inside the profile text, give that date at month precision (`YYYY-MM`); the
+exact date, URL and section checked go in the PR description.
 
 ## Single entry point for profile creation
 
@@ -81,7 +101,11 @@ repo) into `skills/*/references/journal_profiles/`, confirm each item:
 - [ ] "Choose X over Y" decision rule defensible from each journal's own scope text.
 - [ ] Any `Acceptance Signals` lines are generic and traceable to the journal's own public
       guidance — no confidential editor-corpus content, no fabricated acceptance %.
-- [ ] No `[TODO: verify at journal site]` markers remaining.
+- [ ] Every remaining `[TODO: verify at journal site]` marks a value the journal's public
+      pages do not state (for example an Impact Factor, or a statistical-reporting rule).
+      A value the pages do state is transcribed, not left as a TODO. Defaults that
+      `/add-journal` supplies where the journal is silent stay marked, so they are never
+      read as journal requirements.
 - [ ] Commit message records which pages were opened and on what date.
 
 Only after all items pass does `git mv` from private to public become appropriate.
