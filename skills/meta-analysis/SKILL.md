@@ -49,6 +49,7 @@ with specialized support for diagnostic test accuracy (DTA) meta-analyses.
 
 ### Built-in Scripts (`${CLAUDE_SKILL_DIR}/scripts/`)
 
+- **`import_screening_records.py`** -- optional stdlib RIS / PubMed NBIB / Web of Science text / CSV / TSV intake into a **proposal-only**, provenance-bearing record manifest; does not decide eligibility or conflate records, reports and studies. Do not import third-party code or create Zotero records here.
 - **`screening_reconcile.py`** -- Phase 3f ID-set screening reconciliation.
 - **`check_pool_consistency.py`** -- pool-composition / PRISMA count consistency.
 - **`cohort_overlap_check.py`** -- shared-database cohort-overlap detection.
@@ -146,6 +147,16 @@ Auto-detect type from the research question or accept user specification.
    Deduplicate by DOI first, then PMID. Save raw counts for PRISMA flow.
 
 ### Phase 3: Screening & Selection
+
+**Optional raw export intake (before 3a):** For local bibliographic exports, run
+
+```bash
+python3 "${CLAUDE_SKILL_DIR}/scripts/import_screening_records.py" \
+  searches/pubmed.nbib searches/embase.ris --format json
+```
+
+The importer prints a proposed normalized manifest to stdout (no files written): keep each source filename/hash and source-record index; resolve `identifier_conflicts` and `possible_duplicates` with the human reviewer before screening. Every row starts `NOT_SCREENED`; record IDs are **per-import identifiers**, not stable study identifiers. Do not overwrite previous decisions when adding a new search; instead reconcile imported record IDs/DOIs with the existing decision ledger. Under composed Academic Research, accepted persistence flows through Academic Write Coordinator → Manuscript Forge, never a redirected ungoverned canonical file write. Export count ≠ included study count, and missing report ≠ excluded record.
+
 
 **Goal**: Systematic title/abstract and full-text screening with two independent reviewers.
 
