@@ -6,7 +6,7 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/Aperivue/medsci-skills/blob/v6.4.0/LICENSE)
 [![Release](https://img.shields.io/github/v/release/Aperivue/medsci-skills?style=flat-square&color=blue)](https://github.com/Aperivue/medsci-skills/releases/latest)
-![Skills](https://img.shields.io/badge/Skills-54-brightgreen?style=flat-square)
+![Skills](https://img.shields.io/badge/Skills-56-brightgreen?style=flat-square)
 [![npm](https://img.shields.io/npm/v/medsci-skills?style=flat-square&label=npm&color=cb3837)](https://www.npmjs.com/package/medsci-skills)
 [![DOI](https://img.shields.io/badge/DOI-10.5281%2Fzenodo.20155321-blue?style=flat-square)](https://doi.org/10.5281/zenodo.20155321)
 
@@ -53,7 +53,7 @@ agent를 다시 시작하고 `/orchestrate`를 입력한 뒤 하려는 일을 �
 
 ## 스킬 목록
 
-54개 스킬 전체를 연구 단계별로 묶은 표는 영문 README의 [Skills 절](https://github.com/Aperivue/medsci-skills/blob/v6.4.0/README.md#skills)에 있습니다. 스킬 이름마다 설명 페이지가 연결되어 있습니다. 터미널에서는 `npx medsci-skills list`로 같은 분류를 볼 수 있습니다. 어떤 스킬을 써야 할지 모르겠다면 `/orchestrate`부터 시작하세요.
+56개 스킬 전체를 연구 단계별로 묶은 표는 영문 README의 [Skills 절](https://github.com/Aperivue/medsci-skills/blob/v6.4.0/README.md#skills)에 있습니다. 스킬 이름마다 설명 페이지가 연결되어 있습니다. 터미널에서는 `npx medsci-skills list`로 같은 분류를 볼 수 있습니다. 어떤 스킬을 써야 할지 모르겠다면 `/orchestrate`부터 시작하세요.
 
 v6에서 이름이 바뀐 스킬(옛 이름은 v7 전까지 계속 동작): `imaging-data` ← `preprocess-imaging`, `profile-imaging`; `model-assessment` ← `explainability`, `model-evaluation`, `model-validation`, `uncertainty-imaging`; `model-selection` ← `architecture-zoo`, `model-sourcing`. v5에서 업그레이드한다면 [MIGRATION-v6.md](https://github.com/Aperivue/medsci-skills/blob/v6.4.0/MIGRATION-v6.md)(영문)를 보세요.
 

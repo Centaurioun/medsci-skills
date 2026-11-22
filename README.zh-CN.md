@@ -6,7 +6,7 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/Aperivue/medsci-skills/blob/v6.4.0/LICENSE)
 [![Release](https://img.shields.io/github/v/release/Aperivue/medsci-skills?style=flat-square&color=blue)](https://github.com/Aperivue/medsci-skills/releases/latest)
-![Skills](https://img.shields.io/badge/Skills-54-brightgreen?style=flat-square)
+![Skills](https://img.shields.io/badge/Skills-56-brightgreen?style=flat-square)
 [![npm](https://img.shields.io/npm/v/medsci-skills?style=flat-square&label=npm&color=cb3837)](https://www.npmjs.com/package/medsci-skills)
 [![DOI](https://img.shields.io/badge/DOI-10.5281%2Fzenodo.20155321-blue?style=flat-square)](https://doi.org/10.5281/zenodo.20155321)
 
@@ -53,7 +53,7 @@ npx medsci-skills install
 
 ## 技能列表
 
-全部 54 个技能按研究阶段分组的表格（每个技能名都链接到其说明页）见英文 README 的 [Skills 一节](https://github.com/Aperivue/medsci-skills/blob/v6.4.0/README.md#skills)。在终端中，`npx medsci-skills list` 会列出相同的分组。不确定该用哪个时，从 `/orchestrate` 开始。
+全部 56 个技能按研究阶段分组的表格（每个技能名都链接到其说明页）见英文 README 的 [Skills 一节](https://github.com/Aperivue/medsci-skills/blob/v6.4.0/README.md#skills)。在终端中，`npx medsci-skills list` 会列出相同的分组。不确定该用哪个时，从 `/orchestrate` 开始。
 
 v6 中改名的技能（旧名称在 v7 之前仍可使用）：`imaging-data` ← `preprocess-imaging`、`profile-imaging`；`model-assessment` ← `explainability`、`model-evaluation`、`model-validation`、`uncertainty-imaging`；`model-selection` ← `architecture-zoo`、`model-sourcing`。从 v5 升级请看 [MIGRATION-v6.md](https://github.com/Aperivue/medsci-skills/blob/v6.4.0/MIGRATION-v6.md)（英文）。
 

@@ -838,8 +838,8 @@
     },
     {
       "path": "skills/check-reporting/references/checklists/STARD.md",
-      "size": 6517,
-      "sha256": "b4f14c03f20d1155a6b912a26bf851f6c371f3d1c125a95527e17456c721f20d"
+      "size": 6516,
+      "sha256": "9b44fcb3ae5c3e863d328ec60f1dec9555cf3758b15bb6ffd13fcba5a088a043"
     },
     {
       "path": "skills/check-reporting/references/checklists/STARD_AI.md",
@@ -2158,8 +2158,8 @@
     },
     {
       "path": "skills/lit-sync/SKILL.md",
-      "size": 18551,
-      "sha256": "45ba031478d6b5dd41c85c61eea8b99e3611514a6b04afbfd9b8a2f7edef764b"
+      "size": 19547,
+      "sha256": "7ccf0f0ae45e5694b29358d0ac17775d09b319d062b2143be3817d977a740203"
     },
     {
       "path": "skills/lit-sync/references/bbt_lookup.md",
@@ -2170,6 +2170,11 @@
       "path": "skills/lit-sync/references/concept_note_template.md",
       "size": 1052,
       "sha256": "58ab3eb06d20c5ade0072053b421d5c68f6bd6c015a82603327f0177bc905740"
+    },
+    {
+      "path": "skills/lit-sync/references/deep_reading_note_profile.md",
+      "size": 6215,
+      "sha256": "6c5ed9afc512bc5a0778b9d1d6547176a05f899b4ff3e7516e02f89042a149c1"
     },
     {
       "path": "skills/lit-sync/references/fulltext_report.md",
@@ -2187,9 +2192,14 @@
       "sha256": "e2d661d08e7419ae31b81a3516526b28384f9710e5cb8043d381558fb6de01ee"
     },
     {
+      "path": "skills/lit-sync/scripts/render_deep_reading_note.py",
+      "size": 7612,
+      "sha256": "1613fef214da94c2e57dfd4b9cf5423fbc9aebc26c2cc75f7b5c4ae1ea89624e"
+    },
+    {
       "path": "skills/lit-sync/skill.yml",
-      "size": 2949,
-      "sha256": "648560c259451cfaf060efd40ed667038745868b18718470787e6c21f0cd20b6"
+      "size": 3047,
+      "sha256": "db739ea29e2d54702c17bfa0a673fdcff0a0a6af2a2762bea299b4f977f4593e"
     },
     {
       "path": "skills/ma-scout/SKILL.md",
@@ -3053,8 +3063,8 @@
     },
     {
       "path": "skills/meta-analysis/SKILL.md",
-      "size": 37689,
-      "sha256": "e7307e4ce6222692f9c1419adc01b3f1d503e7e23181803e5399711d539bdc0c"
+      "size": 38590,
+      "sha256": "e0cfac79bac08a055af31fde7d70a6687e7beedc4ed10fe9b401c0cb027a9c4b"
     },
     {
       "path": "skills/meta-analysis/references/LICENSES.md",
@@ -3297,9 +3307,19 @@
       "sha256": "1738c965b6a51ed9e7ed680f1f90036d88acabd1b0d55f3f05d5599d1032f0d5"
     },
     {
+      "path": "skills/meta-analysis/scripts/import_screening_records.py",
+      "size": 13871,
+      "sha256": "7094b3acfe87ac5b95425a90d63c2c067fad2fcaba7bfef314ea4b052909618f"
+    },
+    {
       "path": "skills/meta-analysis/scripts/prisma_5way_consistency.py",
       "size": 29247,
       "sha256": "4ecbc94fd957f5cae8358bc871a5e3fc35fb0517ed39367bd4eaa9e18cef6204"
+    },
+    {
+      "path": "skills/meta-analysis/scripts/screening_batch_ledger.py",
+      "size": 22423,
+      "sha256": "07fb85127fcd05eac6a0565af47eefe5d88ddc8f29d2ba830d5d9428a0fefcdd"
     },
     {
       "path": "skills/meta-analysis/scripts/screening_reconcile.py",
@@ -3313,8 +3333,8 @@
     },
     {
       "path": "skills/meta-analysis/skill.yml",
-      "size": 2892,
-      "sha256": "7d8bd23ca5fd52d734b186237db73abb453ab48b8cd9009595e7ad95973ca0f0"
+      "size": 3105,
+      "sha256": "6b64f6e67070a1b52b66d1ef148ce169c5d3cbb13669b6fdd05bb8b500697c70"
     },
     {
       "path": "skills/meta-analysis/templates/FINAL_POOL_LOCK.yaml.template",
@@ -3913,8 +3933,8 @@
     },
     {
       "path": "skills/orchestrate/SKILL.md",
-      "size": 33601,
-      "sha256": "0dbfa8b0365ccf02f61430022d0063020799ccc81d65575e148296f19c4a7484"
+      "size": 34058,
+      "sha256": "21656b0f340459999f6d0b0bd2c7b544b9cf99633fd7712d3c8cbbaf8fedbfef"
     },
     {
       "path": "skills/orchestrate/references/data_flow_contract.md",
@@ -4462,6 +4482,21 @@
       "sha256": "2c33570d221416e7c2519f722e55f069d19c7c47b893d8f9277796f2cc7837aa"
     },
     {
+      "path": "skills/periodontology-research/SKILL.md",
+      "size": 11193,
+      "sha256": "ad56ee2779ce46190749fd75e384f8277efb06dd8712765e00db19bde03d5fd6"
+    },
+    {
+      "path": "skills/periodontology-research/references/periodontology-domain-profile.md",
+      "size": 13171,
+      "sha256": "201232e0cd436ca151152530f94742c78bf93a21c9d71f79efbcad8d36a32e2f"
+    },
+    {
+      "path": "skills/periodontology-research/skill.yml",
+      "size": 2236,
+      "sha256": "21d527b8f46ccad3fc202568d1100ddd5930368fb6bfdc5325c34fec12c01f6a"
+    },
+    {
       "path": "skills/polish-language/SKILL.md",
       "size": 6162,
       "sha256": "61be206a91269ca1735f4ebcfa04a7fa7a96c344b8061445828915c5fdd1ac54"
@@ -4528,8 +4563,8 @@
     },
     {
       "path": "skills/present-paper/SKILL.md",
-      "size": 40011,
-      "sha256": "2cb2085924a431c51bbc5ce2843956b23c2690fe3f61c88b0eb80926f2b50fd6"
+      "size": 40845,
+      "sha256": "b831908c3af97585a3fad5780758d748650a9b7b923be7df91d2787e4644682d"
     },
     {
       "path": "skills/present-paper/references/ai_slide_tells.md",
@@ -4570,6 +4605,11 @@
       "path": "skills/present-paper/references/slide_design_principles.md",
       "size": 10581,
       "sha256": "3cf84bf08f80835d4f3aa26b3c86d6e0f287ba83d8a21c248bde28df5d1664e7"
+    },
+    {
+      "path": "skills/present-paper/references/slide_evidence_manifest.md",
+      "size": 5899,
+      "sha256": "edcd696aecdf6ab657aed50db1750aca4934f7da176792d33ea284bce7508eaa"
     },
     {
       "path": "skills/present-paper/references/slide_template_layouts.md",
@@ -4615,6 +4655,11 @@
       "path": "skills/present-paper/references/workflow-checklist.md",
       "size": 3769,
       "sha256": "1aa6ecadcf3e8d83c24b6e1c5d31b11024940348ea584eb2879e3209fd13097e"
+    },
+    {
+      "path": "skills/present-paper/scripts/audit_slide_evidence.py",
+      "size": 8543,
+      "sha256": "108491adbc9f3eebb493fdad9fc062beda120de2ee188ac9c87ab9d56e1c3fc5"
     },
     {
       "path": "skills/present-paper/scripts/check_deck_budget.py",
@@ -4723,8 +4768,8 @@
     },
     {
       "path": "skills/present-paper/skill.yml",
-      "size": 3482,
-      "sha256": "28d8a5a32fc4a0c5ab63c7a506911e3c022a1b8c77ecccef350298b1755d0e37"
+      "size": 3576,
+      "sha256": "6f3b08e028abd0b6867b5f22e307ffc13be2836f8eb88416733eae795e4baf86"
     },
     {
       "path": "skills/present-paper/templates/build_pptx_nature_lancet.py",
@@ -4765,6 +4810,21 @@
       "path": "skills/profile-imaging/SKILL.md",
       "size": 401,
       "sha256": "58502b5d35265401908a9c4d4c2f3590c0b39325d186f9e5b02ea3e102f38b92"
+    },
+    {
+      "path": "skills/psychometrics-pro/SKILL.md",
+      "size": 12448,
+      "sha256": "c62934bcc6f5390e5393a87d33044efacb33ab374051bef1c4c599475ddfdb16"
+    },
+    {
+      "path": "skills/psychometrics-pro/references/psychometrics-pro-domain-profile.md",
+      "size": 15084,
+      "sha256": "43e40ac2d94d56729b2d6b939dbf995cd50b32c3a2e77e8b2855c87a775da81e"
+    },
+    {
+      "path": "skills/psychometrics-pro/skill.yml",
+      "size": 3119,
+      "sha256": "06c47a08e3c87a9eb496f091cdbaebe3ce1b4d3e978e4232197ea01f3b529d34"
     },
     {
       "path": "skills/publish-skill/SKILL.md",
@@ -4978,8 +5038,8 @@
     },
     {
       "path": "skills/revise/SKILL.md",
-      "size": 28268,
-      "sha256": "9aa9cd47f199b006e5efefc52084a2d7ec20498e79e57abfe9f165fb92f9c4b0"
+      "size": 29093,
+      "sha256": "1a8d33495febf5567157a1d0afc649bdca7727826798a7f0a6b6ac53cffaacf0"
     },
     {
       "path": "skills/revise/references/r2r_voice.md",
@@ -5032,9 +5092,19 @@
       "sha256": "93a529356705d7613ee885e1577c46e128d7c37dc3b57cbd182cf21969a4fdad"
     },
     {
+      "path": "skills/revise/scripts/revision_anchor_map.py",
+      "size": 5485,
+      "sha256": "c4a899d321cf5b684b76d19160864f17a1b438a529f2a0a7b90d761753716aea"
+    },
+    {
+      "path": "skills/revise/scripts/revision_ledger.py",
+      "size": 9989,
+      "sha256": "b74ca3b4f26c9fe524c1f251993055e15bb0668c140182d3ad4ab73a24fe7769"
+    },
+    {
       "path": "skills/revise/skill.yml",
-      "size": 2697,
-      "sha256": "d19ec2420fd4b54479792ce14ac3e0811fccd2bc2c5f005ae4e37643f9218fca"
+      "size": 2885,
+      "sha256": "789094126f5d724c48e43c9f3248432d35ea9535b5052925203db0cb73cebf63"
     },
     {
       "path": "skills/revise/templates/revision_values.json",
@@ -5043,8 +5113,8 @@
     },
     {
       "path": "skills/search-lit/SKILL.md",
-      "size": 19438,
-      "sha256": "2b4b7d32a9b0d2b239a09cf6cdf3d9e6ccd06e0886f496fb828102c64a9452a0"
+      "size": 20051,
+      "sha256": "3ee2bf4c624989faea847c9a26b880dca1c9a9d1233e34cc4f1d289f3c13a1b2"
     },
     {
       "path": "skills/search-lit/references/embase_browser.md",
@@ -5173,8 +5243,8 @@
     },
     {
       "path": "skills/self-review/SKILL.md",
-      "size": 49488,
-      "sha256": "2a6a200a5e2350ed7203d5efbe3c00ca73975932207a62087ad41377c8296b84"
+      "size": 50154,
+      "sha256": "dedaed72d051c8e6fc04be3a3b5430b50a6ee9ae6aaa0e1bc189c5a1ed895095"
     },
     {
       "path": "skills/self-review/references/domain-probes/ai_overclaiming.md",
@@ -6372,9 +6442,14 @@
       "sha256": "e93ca8dd5f98b7ad558faeefd7564bd9cb191d6fe77741ce273be1967fde7ab3"
     },
     {
+      "path": "skills/self-review/scripts/report_code_lineage.py",
+      "size": 5562,
+      "sha256": "08d8bd64ced077de7e15b69e34e620841f08429afcc734d69dbb2bfa5b3aee49"
+    },
+    {
       "path": "skills/self-review/skill.yml",
-      "size": 5564,
-      "sha256": "a3fcc1c0a6bd689a4dc7be82a220b49285c0e7e58eb5162463757605e672911b"
+      "size": 5661,
+      "sha256": "f94a2aa22d3fac08a00e341192d018c4f29db5279ebe025df4bb8468c7f69f4e"
     },
     {
       "path": "skills/self-review/templates/evalues.json",

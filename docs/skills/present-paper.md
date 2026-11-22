@@ -60,6 +60,7 @@
 - `presentation_archetypes.md`
 - `presentation_design_guidelines.md`
 - `slide_design_principles.md`
+- `slide_evidence_manifest.md`
 - `slide_template_layouts.md`
 - `slide_visual_styles/` (6 files)
 - `spoken_notes_and_bilingual.md`
@@ -67,6 +68,7 @@
 
 **Scripts** (`skills/present-paper/scripts/`):
 
+- `audit_slide_evidence.py`
 - `check_deck_budget.py`
 - `check_deck_budget_challenge/` (2 files)
 - `check_diagram_edges.py`

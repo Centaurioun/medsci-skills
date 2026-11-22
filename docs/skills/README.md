@@ -42,8 +42,10 @@ One reference page per skill, generated from each skill's `SKILL.md` and `skill.
 - [obsidian-paper-vault](obsidian-paper-vault.md) — Use when turning a folder of research PDFs into Obsidian notes, even if Obsidian is not named. _(evidence: manual_workflow)_
 - [orchestrate](orchestrate.md) — Use when the user describes a research goal without naming a skill, or the task spans several skills. _(evidence: demo)_
 - [peer-review](peer-review.md) — Use when reviewing someone else's manuscript for a journal, such as after a review invitation or for a revised R1/R2 version. _(evidence: ci_validator)_
+- [periodontology-research](periodontology-research.md) — Use when periodontal or peri-implant terminology, case definitions, patient-tooth-site measurement hierarchy, treatment interpretation, or oral-systemic claims materially affect a research task. _(evidence: not_yet_demonstrated)_
 - [polish-language](polish-language.md) — Use when a manuscript needs a copy-edit for consistency and non-native English clarity. _(evidence: bundled_script)_
 - [present-paper](present-paper.md) — Use when preparing an academic talk such as a journal club, grand rounds, seminar, conference presentation, or lecture/teaching deck. _(evidence: bundled_script)_
+- [psychometrics-pro](psychometrics-pro.md) — Use when questionnaire or PROM validity, reliability, responsiveness, score interpretation, meaningful change, or cross-cultural adaptation materially affect a research task. _(evidence: not_yet_demonstrated)_
 - [publish-skill](publish-skill.md) — Use when turning a personal agent skill into an open-source, distributable one. _(evidence: bundled_script)_
 - [radiomics-ml](radiomics-ml.md) — Use when building or auditing a radiomics or tabular clinical-ML prediction model with a classical learner (LASSO, SVM, random forest, XGBoost and similar). _(evidence: ci_validator)_
 - [render-pdf-doc](render-pdf-doc.md) — Use when rendering a Markdown document (English or Korean) such as a proposal, IRB cover letter, handout or reference table to PDF via pandoc and xelatex, with auto-fitted table widths and CJK fonts. _(evidence: bundled_script)_

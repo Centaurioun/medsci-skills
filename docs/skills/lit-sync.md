@@ -39,12 +39,14 @@
 
 - `bbt_lookup.md`
 - `concept_note_template.md`
+- `deep_reading_note_profile.md`
 - `fulltext_report.md`
 - `locale/` (1 file)
 
 **Scripts** (`skills/lit-sync/scripts/`):
 
 - `check_citekey_provenance.py`
+- `render_deep_reading_note.py`
 
 ## Source
 

@@ -131,6 +131,7 @@
 - `refinement_regression_challenge/` (20 files)
 - `refinement_stop.py`
 - `refinement_stop_challenge/` (28 files)
+- `report_code_lineage.py`
 
 **Templates** (`skills/self-review/templates/`):
 

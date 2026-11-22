@@ -69,7 +69,9 @@
 - `extract_assist.py`
 - `extract_assist_challenge/` (6 files)
 - `extraction_consensus_log_init.py`
+- `import_screening_records.py`
 - `prisma_5way_consistency.py`
+- `screening_batch_ledger.py`
 - `screening_reconcile.py`
 - `tag_cleanup_gate.sh`
 
