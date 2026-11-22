@@ -169,6 +169,34 @@ write_release "1.1.0" "
 python3 scripts/check_release_cadence.py --min-days 14 2>&1 | grep -q "Pinned reference"
 ck "the blocked message offers the pin, not only the hotfix" 0 "$?"
 
+# 11) Staged prerelease source is NOT a published release event.
+#     Accept valid SemVer and retain -rc.0; do not require an invented release
+#     changelog section before the fork has authorized publication.
+printf 'cff-version: 1.2.0\nversion: "6.4.1-rc.0"\n' > CITATION.cff
+printf '# Changelog\n\n## [Unreleased]\n' > CHANGELOG.md
+OUT="$(python3 scripts/check_release_cadence.py --strict 2>&1)"
+ck "unreleased rc source without release event passes" 0 "$?"
+echo "$OUT" | grep -q 'staged unreleased source version 6.4.1-rc.0'
+ck "prerelease remains explicitly identified, not promoted" 0 "$?"
+
+# 12) Declaring a prerelease release event does NOT waive the ordinary
+#     substantive-content requirement or any explicit cadence limit.
+write_release "6.4.1-rc.0" "
+### Docs
+
+- Internal editorial note only.
+"
+python3 scripts/check_release_cadence.py --strict > /dev/null 2>&1
+ck "announced docs-only rc release still blocked" 1 "$?"
+
+write_release "6.4.1-rc.0" "
+### Added
+
+- A user-facing feature in the authorized candidate.
+"
+python3 scripts/check_release_cadence.py --strict > /dev/null 2>&1
+ck "announced substantive rc release is recognized as semver" 0 "$?"
+
 echo "----"
 echo "test_release_cadence: $pass passed, $fail failed"
 [ "$fail" -eq 0 ]
