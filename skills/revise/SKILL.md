@@ -491,6 +491,8 @@ python3 "${CLAUDE_SKILL_DIR}/scripts/revision_ledger.py" set --input ledger.json
 python3 "${CLAUDE_SKILL_DIR}/scripts/revision_ledger.py" report --input ledger.json
 ```
 
+The optional `--related-issue-id R1-1` on a new R2 issue preserves a stable link to an earlier concern; `--expected-ledger-sha256 <sha>` on edits refuses a stale source-ledger proposal. The ledger still does not carry out its own canonical compare-and-swap write; AWC → Forge must implement that write boundary.
+
 States follow `OPEN → TRIAGED → EVIDENCE_REQUIRED / AUTHOR_DECISION_REQUIRED / PATCH_PROPOSED → APPROVED → APPLIED_CONFIRMED → CLOSED` with reasoned withdrawal and permitted backward transitions. `APPROVED` requires an identified author decision; `APPLIED_CONFIRMED` requires a **canonical write receipt**; `CLOSED` requires a verified location in the revised manuscript. An issue without supporting evidence or authorization remains open. This **supplements**, not replaces, the usual R1/R2 point-by-point response and `check_response_claims.py` verification. Under Academic Research, the only allowed canonical persistence is Academic Write Coordinator → Manuscript Forge. Never use a shell redirect to bypass that authority.
 
 
