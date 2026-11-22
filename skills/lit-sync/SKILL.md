@@ -449,6 +449,25 @@ Create only after user confirmation. **Auto-draft but always confirm.**
 
 ---
 
+## Single-Paper Deep-Reading Mode (opt-in; evidence-first)
+
+When the user selects **one** article for critical, figure/table-aware deep reading rather
+than bibliography sync, load `references/deep_reading_note_profile.md` and follow its
+paper-type, evidence-depth, source-locator and TR/EN note contracts. It outputs a
+**source-grounded note proposal**, not a Zotero/Obsidian write action by default.
+
+- A title, DOI or abstract is not proof the full text was inspected. Label depth and
+  inaccessible source portions explicitly; do not invent figure content or quotes.
+- Preserve each material observation's page/section/table/figure locator and distinguish
+  author findings from the reader's critique and inference.
+- Follow the user's language (`tr` or `en`) without forcing the Chinese/Korean
+  templates used by other note workflows.
+- **Academic Research composed mode:** Zotero Local is read-only evidence authority.
+  Skip the normal Zotero Sync/Obsidian persistence phases and return the proposal;
+  only Academic Write Coordinator → Manuscript Forge may save an authorized note.
+- A deep note is not a systematic review, a study-level RoB score, or a verified
+  reference merely because the model wrote one.
+
 ## Standalone Modes
 
 This skill can run without a fresh .bib file.
