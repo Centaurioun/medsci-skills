@@ -516,7 +516,7 @@ that passed before the edit says nothing about the text after it. For time-to-ev
 when a gate above fired and you need the rationale and resolution path, or there is a
 pre-registration to reconcile.
 
-#### Optional manuscript-to-analysis code artifact lineage (read-only)
+### Optional manuscript-to-analysis code artifact lineage (read-only)
 
 When supplied a researcher-authored JSON manifest of manuscript claim IDs
 and script/input/output paths, optional scripts/report_code_lineage.py checks
