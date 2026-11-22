@@ -478,6 +478,8 @@ Keep the head to a short greeting, a one-paragraph "in brief," an optional compa
 
 ## Step 6: Change Log
 
+**Optional reviewer anchor relocation (read-only):** `scripts/revision_anchor_map.py --ledger revision_ledger.json --manuscript main_revised.md` returns candidate current plaintext line ranges when a stored quoted source anchor is unique. Ambiguous/missing anchors remain unresolved and never auto-close issues. A DOCX requires explicit clean text export; plain-text line ranges are not Word page/line locators. It prints only a proposal; the canonical writer and independent human verification remain required.
+
 **Optional cross-round issue ledger (proposal-only):** `scripts/revision_ledger.py` is a stdlib JSON state transformer for situations where R1/R2 comments need an explicit lifecycle beyond the normal change-log table. It reads a ledger from `--input` and prints a proposed updated JSON envelope to stdout; **it never writes a file, patches a manuscript, or approves its own changes**. It supports:
 
 ```bash
