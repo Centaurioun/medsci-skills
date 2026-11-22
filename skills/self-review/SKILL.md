@@ -586,6 +586,28 @@ once at the start. For time-to-event manuscripts, apply probe **S8 (estimand pro
 | File | Read it when | Cost if read blindly |
 |---|---|---|
 | `references/phases/phase2_5f_claim_artifact.md` | a gate above fired and you need the rationale + resolution path, or there is a pre-registration to reconcile | ~4,800 tokens; a manuscript with no registration and no firing gate needs none of it |
+#### Optional paper-to-code provenance manifest (static; proposal-only)
+
+When the researcher supplies a reproducibility map containing explicit claim IDs,
+analysis-script paths, input file paths and expected outputs, use
+`scripts/report_code_lineage.py` to inventory **path presence and SHA-256 only**:
+
+```bash
+python3 "${CLAUDE_SKILL_DIR}/scripts/report_code_lineage.py" \
+  --project-root . --manifest qc/paper_code_lineage_input.json
+```
+
+Input JSON contract (schema_version 1) includes a `claims` array of
+`{claim_id, manuscript_locator, claim_text, scripts:[], input_files:[], output_files:[]}`.
+The report writes JSON to stdout, **never executes analytical code or rewrites the
+manuscript**. It refuses to read files outside the selected project root. A
+`FILES_PRESENT_RESULT_NOT_VERIFIED` row only means files were found; it is not a
+reproduction, numerical match, source-fidelity assessment or validation of clinical
+conclusions. Label missing or unlinked files as such and refer the actual numerical
+content to the existing validated owner (`analyze-stats` / `check_claim_artifact.py`)
+when the user explicitly requests that work. Under Academic Research, persist any
+accepted report only by AWC → Forge; do not bypass the canonical writer.
+
 ### Phase 2.5g: Editorial-Impression / Defensiveness Scan (the ceiling pass)
 
 Run this **after** the floor gates (Phases 2.5–2.5f), because it reads the *accurate* manuscript
