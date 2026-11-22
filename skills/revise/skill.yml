@@ -21,6 +21,8 @@ outputs:
   - revision/change_log.md
   - qc/response_claims.json
 deterministic_scripts:
+  - scripts/revision_ledger.py  # optional reviewer state proposal, not an authorized manuscript patch
+  - scripts/revision_anchor_map.py  # optional read-only plaintext anchor candidates
   - scripts/check_response_claims.py
 side_effects:
   - may_edit_manuscript_with_user_approved_changes
