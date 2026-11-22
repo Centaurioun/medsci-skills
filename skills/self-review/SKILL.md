@@ -516,6 +516,17 @@ that passed before the edit says nothing about the text after it. For time-to-ev
 when a gate above fired and you need the rationale and resolution path, or there is a
 pre-registration to reconcile.
 
+#### Optional manuscript-to-analysis code artifact lineage (read-only)
+
+When supplied a researcher-authored JSON manifest of manuscript claim IDs
+and script/input/output paths, optional scripts/report_code_lineage.py checks
+local path existence and SHA-256 under one authorized project root. It emits
+only a JSON report to stdout and does NOT run scripts, inspect study results,
+compare numerical claims, prove reproducibility, or write artifacts.
+FILES_PRESENT_RESULT_NOT_VERIFIED means only that declared files exist.
+Use the existing clinical/analysis source-fidelity guards for any real
+scientific check, and AWC -> Forge for separately authorized persistence.
+
 ### Phase 2.5g: Editorial-Impression / Defensiveness Scan (the ceiling pass)
 
 Run this **after** the floor gates (Phases 2.5–2.5f): it reads the accurate manuscript and recommends
