@@ -476,6 +476,21 @@ Three rules that keep slides stable:
 | `T_metaphor_body` | Body + analogy footer | `title`, `body_lines[]`, `metaphor_lines[]` |
 | `T_table_two_col` | Take-aways + numeric table | `title`, `left_lines[]`, `headers[]`, `rows[][]` |
 
+### Source-to-slide evidence manifest (optional, evidence-dense decks)
+
+For slides presenting measured clinical outcomes, diagnostic metrics, subgroup contrasts,
+study flow counts, primary figures/tables or claims from multiple papers, read
+`references/slide_evidence_manifest.md` before creating the deck. Map each material
+slide assertion/visual to its exact source and figure/table/page locator; record units,
+denominators, uncertainty, figure rights/provenance, and whether the resulting slide
+element is **actually editable**. Missing exact values remain flagged rather than being
+invented. This is a small traceability addition to the current speaker-notes/PPTX
+pipeline, not a new renderer or illustration generator.
+
+Editable slide text and native tables do not imply that embedded matplotlib/R plots
+are editable charts; label rendered figures honestly. Preserve source fidelity over
+aesthetic image-generation shortcuts, especially for clinical figures and numbers.
+
 ### Figure source formats (when consuming `/make-figures` output)
 
 When the deck pulls figures from `analysis/figures/` produced by `/make-figures`:
