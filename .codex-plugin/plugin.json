@@ -1,0 +1,6 @@
+{
+  "name": "medsci-skills",
+  "version": "6.4.1-rc.0",
+  "description": "Medical and scientific research skill suite from the MedSci Skills project, exposed as a skill-only plugin for ChatGPT and Codex.",
+  "skills": "./skills/"
+}
