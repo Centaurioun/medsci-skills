@@ -380,6 +380,23 @@ Auto-draft, but create only after user confirmation.
 
 ---
 
+## Optional single-paper deep reading mode (TR/EN; no sync side effects)
+
+For a user-selected single paper, load references/deep_reading_note_profile.md.
+The optional stdlib formatter scripts/render_deep_reading_note.py accepts a
+researcher-curated JSON paper record with declared retrieval depth, source
+locators, figure/table evidence and claim relations. It produces Turkish
+or English Markdown plus missing-source warnings to stdout as a proposal.
+The formatter itself does not retrieve/read the PDF, verify citations,
+inspect original images, validate statistics or write a Zotero/Obsidian note.
+
+In composed Academic Research workflows, skip this skill's Zotero Sync and
+Obsidian write phases for the deep-read-only request; Zotero Local remains
+read-only exact evidence and any accepted canonical note requires an
+independently authorized AWC -> Forge write. The existing standalone lit-sync
+sync/write behavior remains available only for its explicitly authorized
+standalone operations.
+
 ## Standalone Modes
 
 This skill can run without a fresh .bib file.
