@@ -15,6 +15,7 @@ outputs:
   - "speaker notes"
   - "Q&A prep"
 deterministic_scripts:
+  - scripts/audit_slide_evidence.py  # optional PPTX native text inspection, not source truth
   - scripts/check_font_portability.py
   - scripts/check_diagram_edges.py
   - scripts/check_text_overflow.py
