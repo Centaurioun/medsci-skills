@@ -2,6 +2,16 @@
 
 # MedSci Skills
 
+> **Centaurioun fork, development only — 6.4.1-rc.0 (unreleased).**
+> This feature branch starts from the official Aperivue **v6.4.0** commit
+> `56273a0dcea1d2a62696bee9f49346defd4e9812` (21 November 2026)
+> and adds original, bounded scientific-review helpers to existing MedSci skills.
+> It does **not** replace upstream's already implemented QUADAS-3 tool.
+> The 6.4.0 official badge/citation below refer to the upstream published release;
+> this fork's modifications are untested, not published or deployed.
+> See [fork extension notes](docs/modernization/6.4.1-rc.0-v6.4.0-port.md).
+
+
 English | [简体中文](https://github.com/Aperivue/medsci-skills/blob/v6.4.0/README.zh-CN.md) | [한국어](https://github.com/Aperivue/medsci-skills/blob/v6.4.0/README.ko.md)
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/Aperivue/medsci-skills/blob/v6.4.0/LICENSE)
