@@ -103,6 +103,8 @@ def make_parser() -> argparse.ArgumentParser:
     sub.add_parser("init")
     add = sub.add_parser("add")
     add.add_argument("--input", required=True)
+    add.add_argument("--expected-ledger-sha256", default="")
+    add.add_argument("--related-issue-id", default="", help="Link a later-round comment to an earlier issue")
     add.add_argument("--id", required=True)
     add.add_argument("--round", required=True)
     add.add_argument("--reviewer", default="unspecified")
@@ -112,6 +114,7 @@ def make_parser() -> argparse.ArgumentParser:
     add.add_argument("--proposed-action", default="")
     update = sub.add_parser("set")
     update.add_argument("--input", required=True)
+    update.add_argument("--expected-ledger-sha256", default="")
     update.add_argument("--id", required=True)
     update.add_argument("--status", required=True, choices=sorted(STATES))
     update.add_argument("--reason", required=True)
@@ -132,6 +135,8 @@ def main() -> int:
             result = envelope({"schema_version": 1, "issues": []}, None, True)
         else:
             ledger, sha = load(args.input)
+            if getattr(args, "expected_ledger_sha256", "") and sha != args.expected_ledger_sha256.lower():
+                fail("SOURCE_LEDGER_SHA256_MISMATCH: stale revision proposal")
             if args.command == "report":
                 counts = {state: 0 for state in STATES}
                 for issue in ledger["issues"]:
@@ -140,6 +145,9 @@ def main() -> int:
                     "disposition": "READ_ONLY_SUMMARY",
                     "source_sha256": sha,
                     "counts": counts,
+                    "author_decision_required_ids": [i["id"] for i in ledger["issues"] if i["status"] == "AUTHOR_DECISION_REQUIRED"],
+                    "approved_not_applied_ids": [i["id"] for i in ledger["issues"] if i["status"] == "APPROVED"],
+                    "applied_not_closed_ids": [i["id"] for i in ledger["issues"] if i["status"] == "APPLIED_CONFIRMED"],
                     "unresolved_ids": [
                         issue["id"] for issue in ledger["issues"]
                         if issue["status"] not in {"CLOSED", "WITHDRAWN_REASONED"}
@@ -152,12 +160,15 @@ def main() -> int:
                     fail(f"Issue {args.id} already exists")
                 if len(ledger["issues"]) >= MAX_ISSUES:
                     fail("Issue limit exceeded")
+                if args.related_issue_id and not any(i["id"] == args.related_issue_id for i in ledger["issues"]):
+                    fail("related_issue_id must refer to an existing issue")
                 if not args.comment.strip():
                     fail("Reviewer comment is required")
                 ledger["issues"].append({
                     "id": args.id, "round": args.round, "reviewer": args.reviewer,
                     "severity": args.severity, "comment": args.comment,
                     "source_anchor": args.source_anchor,
+                    "related_issue_id": args.related_issue_id or None,
                     "proposed_action": args.proposed_action,
                     "status": "OPEN", "evidence": "",
                     "write_receipt": "", "verified_locator": "",
