@@ -66,7 +66,7 @@ ALIAS_TO_STEM = {
     "swim": "SWiM",
     "amstar": "AMSTAR2",
     "amstar2": "AMSTAR2",
-    "quadas": "QUADAS2",
+    "quadas": "QUADAS3",  # current generic route; request QUADAS-2 explicitly for legacy
     "quadas2": "QUADAS2",
     "quadas3": "QUADAS3",
     "quadasc": "QUADAS_C",
