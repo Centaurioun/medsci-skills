@@ -236,10 +236,31 @@ def import_records(paths: list[Path]) -> dict:
             }]
             seen.append(row)
 
+    # Index identity keys so large bibliography exports do not require O(N^2)
+    # pairwise comparison. Title/year matches with identifiers remain advisory.
     unique, conflicts, possible = [], [], []
+    by_doi, by_pmid, by_title_year = defaultdict(set), defaultdict(set), defaultdict(set)
+
+    def register(row: dict, index: int) -> None:
+        if row["doi"]:
+            by_doi[row["doi"]].add(index)
+        if row["pmid"]:
+            by_pmid[row["pmid"]].add(index)
+        if row["title"] and row["year"]:
+            by_title_year[(norm_title(row["title"]), row["year"])].add(index)
+
     for candidate in seen:
-        merged = False
-        for existing in unique:
+        indexes = set()
+        if candidate["doi"]:
+            indexes.update(by_doi.get(candidate["doi"], set()))
+        if candidate["pmid"]:
+            indexes.update(by_pmid.get(candidate["pmid"], set()))
+        if candidate["title"] and candidate["year"]:
+            indexes.update(by_title_year.get((norm_title(candidate["title"]), candidate["year"]), set()))
+
+        matches = []
+        for index in sorted(indexes):
+            existing = unique[index]
             matched, why = potential_match(existing, candidate)
             if not matched and not why:
                 continue
@@ -249,20 +270,34 @@ def import_records(paths: list[Path]) -> dict:
                     "left_origins": existing["origin"], "right_origins": candidate["origin"],
                 })
                 continue
-            if not matched:
+            if matched:
+                matches.append(index)
+            else:
                 possible.append({
                     "code": "TITLE_YEAR_POTENTIAL_DUPLICATE",
                     "left_origins": existing["origin"], "right_origins": candidate["origin"],
                 })
-                continue
+
+        # One record that bridges two previously distinct entries must not
+        # fuse them silently. Keep it separate and request human adjudication.
+        if len(matches) > 1:
+            possible.append({
+                "code": "MULTIPLE_IDENTITY_MATCHES_NOT_MERGED",
+                "left_origins": [unique[i]["origin"] for i in matches],
+                "right_origins": candidate["origin"],
+            })
+        if len(matches) == 1:
+            existing_index = matches[0]
+            existing = unique[existing_index]
             existing["origin"].extend(candidate["origin"])
             for key in ("title", "doi", "pmid", "year", "author", "journal", "record_type"):
                 if not existing[key] and candidate[key]:
                     existing[key] = candidate[key]
-            merged = True
-            break
-        if not merged:
+            register(existing, existing_index)
+        else:
+            new_index = len(unique)
             unique.append(candidate)
+            register(candidate, new_index)
     for n, record in enumerate(unique, 1):
         record["record_id"] = f"R{n:06d}"
         record["screening_decision"] = "NOT_SCREENED"
