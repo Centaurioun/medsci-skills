@@ -75,6 +75,17 @@ The script sleeps 350 ms between calls (NCBI allows 3 requests/s without an API 
 
 ---
 
+## Optional systematic-review export handoff
+
+For RIS, PubMed NBIB, Web of Science text and CSV/TSV files, use the
+meta-analysis/scripts/import_screening_records.py normalizer when requested;
+multiple imports may be linked through screening_batch_ledger.py with human
+identity adjudication. These optional helpers do NOT change the default
+verified search/DOI/BibTeX workflow, screen study eligibility or write Zotero
+records. A bibliographic record is not necessarily a report or independent
+study. Do not assert that the helper is callable until the correct MedSci
+source revision is installed in the runtime.
+
 ## Workflow
 
 ### Phase 1: Search Strategy
