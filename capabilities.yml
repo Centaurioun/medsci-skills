@@ -74,6 +74,15 @@ domains:
       - write-paper
     rule: Generates figure files and figure manifests; manuscript text consumes them.
 
+  periodontology_domain_expertise:
+    owner: periodontology-research
+    overlaps: [design-study, analyze-stats, check-reporting, self-review]
+    rule: Periodontal and peri-implant domain constraints; other methodological owners remain authoritative.
+  psychometrics_pro_measurement_science:
+    owner: psychometrics-pro
+    overlaps: [design-study, analyze-stats, calc-sample-size, check-reporting, self-review]
+    rule: PROM/PRO measurement meaning and psychometric evidence; statistical and source validation remains with existing owners.
+
 # umbrellas group related domains under a single routing name for /orchestrate.
 # An umbrella is a read-only view; edits and ownership still live in `domains:`.
 umbrellas:
