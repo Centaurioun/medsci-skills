@@ -99,6 +99,8 @@ The script auto-sleeps 350ms between calls. For batch operations, keep calls seq
 
 ---
 
+**Systematic-review export handoff (optional):** When requested to reconcile existing RIS, PubMed NBIB, Web of Science plain-text, CSV or TSV exports, hand off to `meta-analysis/scripts/import_screening_records.py` rather than treating each citation as a unique included study. Its original, stdlib-only parser emits a provenance-bearing **proposal** with manual-review duplicate candidates and undecided screening records. It does not modify Zotero or perform inclusion/exclusion; record IDs are scoped to one import run. In composed Academic Research workflows, canonical persistence remains exclusively with AWC → Manuscript Forge. The existing `search-lit` PubMed E-utilities and BibTeX paths remain the default.
+
 ## Workflow
 
 ### Phase 1: Search Strategy
