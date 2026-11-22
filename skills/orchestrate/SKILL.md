@@ -18,6 +18,8 @@ yourself — invoke the skill that owns it.
 | Skill | Domain | When to Route |
 |-------|--------|---------------|
 | **search-lit** | Literature | Find papers, verify citations, build reference lists, check if a topic has been studied |
+| **periodontology-research** | Periodontal domain | Apply periodontal/peri-implant terminology, nested patient-tooth-site measurement and clinical inference constraints; advisory only, not a second statistics/evidence/writing owner |
+| **psychometrics-pro** | Measurement science | Apply PRO/PROM validity, reliability, responsiveness, score meaning, adaptation and interpretation constraints; advisory only, not a second analysis/evidence/writing owner |
 | **design-study** | Methodology | Review study design, identify leakage/bias, pick reporting guideline, validate analysis plan |
 | **intake-project** | Project setup | New or messy project folder, "what is this project?", classify and scaffold |
 | **manage-project** | Project mgmt | Scaffold directories, track progress, generate checklists and timelines |
