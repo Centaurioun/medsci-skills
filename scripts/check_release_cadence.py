@@ -82,11 +82,17 @@ def git(*args: str) -> str:
 
 
 def declared_version() -> str:
-    m = re.search(r'^version:\s*"?([0-9]+\.[0-9]+\.[0-9]+)"?\s*$',
+    m = re.search(r'^version:\s*"?([^"\s]+)"?\s*$',
                   (ROOT / "CITATION.cff").read_text(encoding="utf-8"), re.MULTILINE)
-    if not m:
+    # Valid SemVer includes the optional prerelease (-rc.0) or build (+id).
+    # Keep its exact source identity; never silently strip a prerelease suffix.
+    if not m or not re.fullmatch(
+        r"[0-9]+\.[0-9]+\.[0-9]+(?:-[0-9A-Za-z][0-9A-Za-z.-]*)?(?:\+[0-9A-Za-z][0-9A-Za-z.-]*)?",
+        m.group(1) if m else "",
+    ):
         raise SystemExit("CITATION.cff: no semver version")
     return m.group(1)
+
 
 
 def latest_tag() -> tuple[str, date] | None:
@@ -127,6 +133,18 @@ def audit(min_days: int) -> tuple[list[str], dict]:
 
     if tag and tag[0].lstrip("v") == version:
         return [], {"release_pending": False, "version": version, "last_tag": tag[0]}
+
+    # A fork can stage an -rc.N source for testing without announcing a
+    # release. With no matching changelog release section, this remains a
+    # source-only candidate rather than a release event. Once a matching
+    # release section exists, enforce the ordinary substantive/cadence gates.
+    if "-" in version and not changelog_section(version).strip():
+        return [], {
+            "release_pending": False,
+            "version": version,
+            "last_tag": tag[0] if tag else None,
+            "staged_unpublished_prerelease": True,
+        }
 
     info = {
         "release_pending": True,
@@ -197,7 +215,11 @@ def main() -> int:
     problems, info = audit(a.min_days)
 
     if not info["release_pending"]:
-        print(f"OK: no release pending (CITATION.cff and {info['last_tag']} both say {info['version']}).")
+        if info.get("staged_unpublished_prerelease"):
+            print(f"OK: staged unreleased source version {info['version']}; "
+                  "no matching changelog release event was announced.")
+        else:
+            print(f"OK: no release pending (CITATION.cff and {info['last_tag']} both say {info['version']}).")
         return 0
 
     print(f"Release pending: {info['version']} (last: {info['last_tag']}, "
