@@ -2,6 +2,18 @@
 
 # MedSci Skills
 
+> **Centaurioun fork — UNRELEASED 6.4.1-rc.0 source branch.**
+> This development branch begins at the actual upstream `Aperivue/medsci-skills:main`
+> commit `424c9ac5e8b1bb3761461124aeff87fc8cb748f7` (2026-11-22),
+> which already includes the published v6.4.0 release plus subsequent commits.
+> It preserves the fork-specific `periodontology-research` and `psychometrics-pro`
+> specialists and adds bounded, source-grounded research support scripts.
+> **No tests, package publish, Git main synchronization or runtime deployment has
+> been performed.** Upstream badges, author records and the original paper citation
+> below describe the official Aperivue project; they do not certify the fork's
+> unpublished additions. See [fork modernization notes](docs/modernization/UPSTREAM-MAIN-PORT-2026-11-22.md).
+
+
 English | [简体中文](https://github.com/Aperivue/medsci-skills/blob/v6.4.0/README.zh-CN.md) | [한국어](https://github.com/Aperivue/medsci-skills/blob/v6.4.0/README.ko.md)
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/Aperivue/medsci-skills/blob/v6.4.0/LICENSE)
