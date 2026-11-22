@@ -390,6 +390,20 @@ frames. Three rules keep slides stable:
 3. **No Marp.** Marp renders to images; the deck becomes uneditable and reviewers cannot copy text or
    restyle.
 
+### Optional source-to-slide provenance and native-text visibility
+
+When scientific slides contain original numerical outcomes, diagnostic
+figures, tables or cited clinical claims, the optional
+references/slide_evidence_manifest.md stores source identity, locator, units,
+uncertainty, caption/permission and actual editable-vs-raster status.
+scripts/audit_slide_evidence.py may read a researcher-curated manifest plus a
+local PPTX to report whether expected native slide XML text is present.
+A positive text match is NOT source verification, numeric correctness,
+visual fidelity or proof of editable chart internals; raster content is
+uninspectable by this helper. No file, deck or manuscript is written by it.
+Retain the existing present-paper notes, chart generation and delivery
+checks rather than replacing them with new agents.
+
 ### Figure source formats (when consuming `/make-figures` output)
 
 - **Preferred**: PNG at ≥300 dpi via `add_picture()`. Set `img_pct` (`T_image_right`) so the figure
