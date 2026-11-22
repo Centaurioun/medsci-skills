@@ -104,6 +104,20 @@ submission, AI first-pass drafts included, cannot be made prospective afterwards
    count matched; a matching count does not show that the list holds the same records. Database contents change after the search date, so a
    mismatch is recorded as such, not used to overwrite the reported count.
 
+### Optional multi-format record intake and cross-batch screening ledger
+
+For user-supplied local systematic-review exports, the additive stdlib helpers
+scripts/import_screening_records.py (RIS/NBIB/Web of Science text/CSV/TSV) and
+scripts/screening_batch_ledger.py (stable SRnnnnnn record IDs, source origins,
+human decisions, ambiguous identifier flags, human record/report/study links)
+can run before the existing Phase 3. Both emit proposals to stdout only.
+They do NOT update Zotero, determine eligibility, merge uncertain studies,
+overwrite an accepted reviewer ledger, or persist canonical research artifacts.
+Retain existing dual screening, screening_reconcile.py, PRISMA ID integrity
+and independent reviewer decisions as the authoritative methods. In composed
+Academic Research only AWC -> Forge may save approved records. A source SHA
+or optimistic lock is not a canonical writer receipt.
+
 ### Phase 3: Screening & Selection
 
 **Goal**: Systematic title/abstract and full-text screening with two independent reviewers. Read
