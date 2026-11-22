@@ -47,6 +47,10 @@ Each material claim should have a source relation tag (`DIRECTLY_REPORTED`, `AUT
 
 Stages: `SOURCE_IDENTIFIED` → `SOURCE_DEPTH_ASSESSED` → `NOTE_DRAFT_READY` → `CLAIM_GROUNDING_PARTIAL|CLAIM_GROUNDING_COMPLETE` → `PROPOSAL_RETURNED` → `AUTHORIZED_WRITE_PENDING` (optional, external). Only the **actual AWC/Forge receipt** may establish persisted state. Naturalization may improve fluency but cannot change the source's meaning, missingness, or certainty.
 
+## Optional proposal formatter
+
+The local `scripts/render_deep_reading_note.py` formats researcher-curated schema_version=1 JSON into TR/EN Markdown in a stdout JSON proposal. Its digest binds the output to those input bytes, **not** to the authoritative PDF or a Zotero verification receipt. Source checks, scientific interpretation and figure/table evidence must be established separately before the formatter runs. No file, vault or Zotero write is made by this helper. It is useful even when only bounded passages are available, as long as the evidence-depth limitation remains explicit.
+
 ## External inspiration, not imported code
 
 This profile independently adapts the *requirements* identified in DeepPaperNote (source-manifest, figure-plan, note-proof) and DailyPaper paper-reader, not their Obsidian database, scripts, language limitation (`en`/`zh-CN`) or persistence route. It is a locally authored profile: `tr`/`en` are first-class outputs.
