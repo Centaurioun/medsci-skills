@@ -69,7 +69,7 @@ changes. Methods are a service, not a performance: they exist so the finding is 
 **Slides:** roughly one per minute. Every content slide is Assertion-Evidence. **One figure per
 slide, and say what the figure shows in the headline.**
 
-**Steal:** the Radiology/RSNA convention of a single "Advances in Knowledge" line — decide what it
+**Steal:** the Radiology/RSNA convention of a one-sentence "Summary Statement" — decide what it
 is *before* you build the deck.
 
 **Fails when:** you present the methods you are proud of instead of the ones needed to believe the
@@ -121,14 +121,16 @@ mode.
 **The job:** transfer a mental model, not a set of facts.
 
 **Structure:** in blocks of 10–15 minutes, each ending in a question they answer (aloud, or by
-hand). Glossary slide early if the audience is multidisciplinary
-(`multidisciplinary-presentation.md`).
+hand). Glossary slide early if the audience is multidisciplinary.
 
 **Slides:** fewer than one per minute — a slide should *survive* several minutes of talking. This is
 the one archetype where a dense slide is legitimate: they will photograph it, and they will study
 from it.
 
-**Fails when:** it is a conference talk stretched to fill the hour.
+**Fails when:** it is a conference talk stretched to fill the hour — or when an organising
+framework (a pathway, a pipeline, a list of stages) is given one slide per slot whether or not the
+slot has evidence. A slot with little to show becomes one line on a neighbouring slide, not a slide
+of its own, and each slot holds only what belongs under its name.
 
 ---
 

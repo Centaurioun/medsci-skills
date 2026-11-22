@@ -2,13 +2,13 @@
 
 # meta-analysis
 
-> Systematic review and meta-analysis pipeline for medical research. Covers protocol registration (PROSPERO), search strategy, screening, data extraction, risk of bias assessment (QUADAS-2/ROBINS-I), statistical synthesis (bivariate/HSROC for DTA, random-effects for intervention), and PRISMA-compliant reporting. Supports both DTA and intervention meta-analyses.
+> Use when running a systematic review and meta-analysis, DTA or intervention. Covers PROSPERO protocol, search, screening, extraction, risk of bias (QUADAS-3, RoB 2, ROBINS-I), bivariate/HSROC or random-effects pooling, forest plots, heterogeneity and PRISMA reporting. Topic scouting is /ma-scout.
 
-**Invoke:** `/meta-analysis` · **Tools:** Read, Write, Edit, Bash, Grep, Glob · **Model:** inherit
+**Invoke:** `/meta-analysis`
 
 ## When to use
 
-`meta-analysis` activates on requests such as: meta-analysis, systematic review, PROSPERO, forest plot, funnel plot, PRISMA, QUADAS, ROBINS, HSROC, bivariate model, pooled sensitivity, pooled specificity, search strategy, study selection, data extraction form.
+`meta-analysis` activates on requests such as: meta-analysis, systematic review, PROSPERO, QUADAS-3, forest plot, funnel plot, PRISMA, QUADAS, ROBINS, HSROC, bivariate model, pooled sensitivity, pooled specificity, search strategy, study selection, data extraction form.
 
 ## Quality Card
 
@@ -30,6 +30,7 @@
 - `python3 scripts/check_pool_consistency.py`
 - `bash scripts/extract_assist_challenge/verify.sh  # deterministic, network-free`
 - `bash scripts/check_exclusion_code_validity_challenge/verify.sh  # deterministic, network-free`
+- `bash scripts/check_ratio_ci_symmetry_challenge/verify.sh  # deterministic, network-free`
 
 **Evidence** — `demo`
 
@@ -40,7 +41,7 @@
 - `LICENSES.md`
 - `PROSPERO_template.md`
 - `ai_pre_screening_template.py`
-- `checklists/` (7 files)
+- `checklists/` (8 files)
 - `data_integrity_checklist.md`
 - `empirical_lessons.md`
 - `icmje_coi_guide.md`
@@ -61,11 +62,18 @@
 - `check_exclusion_code_validity.py`
 - `check_exclusion_code_validity_challenge/` (6 files)
 - `check_pool_consistency.py`
+- `check_ratio_ci_symmetry.py`
+- `check_ratio_ci_symmetry_challenge/` (4 files)
 - `cohort_overlap_check.py`
 - `dta_extraction_qc.py`
 - `extract_assist.py`
 - `extract_assist_challenge/` (6 files)
+- `extraction_consensus_log_init.py`
+- `import_screening_records.py`
+- `prisma_5way_consistency.py`
+- `screening_batch_ledger.py`
 - `screening_reconcile.py`
+- `tag_cleanup_gate.sh`
 
 **Templates** (`skills/meta-analysis/templates/`):
 

@@ -1,16 +1,13 @@
 ---
 name: periodontology-research
-description: >
-  Experimental Layer-D periodontology domain skill. Applies periodontal, peri-implant, dental,
-  and oral-systemic research constraints to terminology, measurement hierarchy, study interpretation,
-  and handoff decisions without replacing MedSci's existing design, statistics, evidence, figure,
-  writing, review, or reporting owners.
-triggers: periodontology research, periodontal study, periodontitis research, gingivitis research, peri-implant research, periodontal measurements, probing depth, clinical attachment, bleeding on probing, patient tooth site hierarchy, oral-systemic periodontal framing
-tools: Read, Write, Edit, Grep, Glob
-model: inherit
+description: Use when periodontal or peri-implant terminology, case definitions, patient-tooth-site measurement hierarchy, treatment interpretation, or oral-systemic claims materially affect a research task.
+metadata:
+  triggers: "periodontology research, periodontitis, gingivitis, peri-implant, clinical attachment level, probing depth, bleeding on probing, oral-systemic, periodontal measurements"
 ---
 
 # Periodontology Research Skill
+
+> **Academic Research composition boundary:** this specialist is advisory-only in the composed product. It may propose domain decision notes, but any canonical storage/write is through the separately authorized Academic Write Coordinator → Manuscript Forge Production path. This skill itself has no right to persist or mutate user manuscripts, Zotero, source evidence, or patient data.
 
 ## Purpose
 

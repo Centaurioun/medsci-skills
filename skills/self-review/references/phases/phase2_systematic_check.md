@@ -27,6 +27,7 @@ not at all for this manuscript type.
 | Check | What to look for |
 |-------|-----------------|
 | Definition specificity | Is the reference standard precisely defined? (e.g., "pathological T stage" vs vague "staging") |
+| Label vs code | When the manuscript states a reference-standard category, outcome or tier label (e.g., "stable", "progressed") without its operational rule or measurement time point, record that omission as a finding, and check the label against the source that assigns it in the analysis (code, configuration or adjudication record), recording a mismatch as a finding or, if that source is not accessible, the match as unverified. A format check confirms that a label is defined somewhere, not that the analysis applies it as defined. |
 | Timing | Interval between index test and reference standard reported? |
 | Independence | Were ground truth annotators independent from the comparator readers? |
 | Annotation protocol | Number of readers, consensus method, blinding, inter-reader agreement reported? |
@@ -93,7 +94,7 @@ python3 "${CLAUDE_SKILL_DIR}/scripts/check_scope_coherence.py" \
 | Ethics | All participating institutions' IRB approval documented? Patient consent described? |
 | Missing data | Handling of incomplete cases described? |
 | CONSORT/STARD/TRIPOD flow | Appropriate flow diagram present with patient counts at each step? |
-| Body word count vs journal cap | Is the body within the target journal's word limit? A revise loop monotonically adds words and silently breaches the cap. Run `/sync-submission` `scripts/check_wordcount_cap.py` (`--journal-profile` or `--limit`; the binding number is the rendered DOCX count). Over cap → Major; within 0.95× → Minor (a further pass will likely breach). |
+| Body word count vs journal cap | Is the body within the target journal's word limit? A revise loop monotonically adds words and silently breaches the cap. Run `python3 "${CLAUDE_SKILL_DIR}/../sync-submission/scripts/check_wordcount_cap.py"` (`--journal-profile` or `--limit`; the binding number is the rendered DOCX count). Over cap → Major; within 0.95× → Minor (a further pass will likely breach). |
 | Funding & COI | Funding sources and competing interests disclosed? |
 
 ## G. Reporting Guideline Compliance
@@ -196,6 +197,8 @@ REMOVE / MOVE / TIGHTEN, not "add a caveat."
 | Repeated caveat | The same caveat motif ("no deployable claim", "not generalizable", "hypothesis-generating") repeated across body + Abstract. Say it once, firmly. | TIGHTEN |
 | Audit minutiae in body | Provenance tokens (SHA / git commit / unit-test / post-lock timeline / manifest / seed=N / audit trail) in the Introduction / Results / Discussion narrative. Reproducibility detail belongs in a Methods statement or a supplement. | MOVE |
 | Limitations volume | A Limitations passage that enumerates a long list of discrete items reads as a rebuttal letter; consolidate related items. | TIGHTEN |
+| Pre-emptive defence | A sentence whose only job is to fend off a criticism no one has raised yet, or a "we do not claim X" declaration. State what was measured instead; anticipated objections go to the response-letter bank, and an in-body pre-emptive answer stays short — ideally one numeric sentence (e.g. a CI bound) where the question would arise, once. Methodological justification the design needs (sampling rationale, reflexivity, why a comparator was chosen) and a limitation that carries the conclusion ("cannot establish causality") stay. | TIGHTEN |
+| Revision history in body | A sentence about this manuscript's own unpublished revision process — "in this revision", "as we originally reported", "when we first analysed the data", "re-derived for this version", "as noted in our response". A reader of the published paper never saw the earlier version, so the sentence refers to nothing. Comparisons with cited or re-analysed prior studies ("the association originally reported by [cited study]"), response and cover letters, a Methods protocol-deviation or reproducibility statement, and the Supplement are out of scope. | REMOVE |
 | Abstract caveat load | The Abstract carries several caveat clauses, burying the headline result before a reader reaches it. Lead with the result; keep one or two essential qualifiers. | TIGHTEN |
 | Buried defense | A strong numeric robustness / sensitivity result sitting only in Limitations or the supplement, with no robustness mention in Results. Promote it into Results — it is *evidence for* the finding, not a caveat against it. (The inverse of the scope-coherence gate, which pushes a *weak* analysis out of Results.) | MOVE |
 

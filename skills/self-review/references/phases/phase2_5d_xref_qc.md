@@ -1,9 +1,9 @@
 # Phase 2.5d — Cross-Reference QC (Manuscript ↔ rendered DOCX)
 
 Load-on-demand companion to `/self-review` Phase 2.5d. SKILL.md keeps the two gates,
-the severity policy table, and the no-auto-fix rule; this file carries the precedent
-failure, the input-location procedure, the reconciliation-block template, and the
-comment-emission convention.
+a severity summary, and the no-auto-fix rule; this file carries the full severity policy
+table, the precedent failure, the input-location procedure, the reconciliation-block
+template, and the comment-emission convention.
 
 Read it when a rendered DOCX exists and the xref gate has fired.
 
@@ -27,10 +27,11 @@ build script carries its own legacy SSOT. Internal consistency (Phase 2.5)
 cannot detect it — both the prose and the build artifact echo their own
 divergent truths cleanly.
 
-**Precedent failure pattern (an STROBE cohort manuscript revision):**
-> Body prose cited Supp Table S4 as a sensitivity analysis; the rendered DOCX
-> S4 instead contained a diagnostics table. S1, S6, S7 also mismatched. S8 and S9
-> were cited in the manuscript but absent from the rendered DOCX entirely.
+**The failure pattern:**
+> Body prose cites a supplementary table as a sensitivity analysis; under that
+> number the rendered DOCX carries a diagnostics table instead. Several further
+> supplement numbers mismatch the same way, and two more are cited in the
+> manuscript but absent from the rendered DOCX entirely.
 > Caught only on co-author circulation review.
 
 **When to run:** every manuscript at self-review when a rendered DOCX exists
@@ -46,7 +47,7 @@ DOCX build has occurred yet (early drafts).
 2. **Invoke the shared script** (lives in `/manage-refs`):
 
    ```bash
-   python3 "${MEDSCI_SKILLS_ROOT:-$HOME/workspace/medsci-skills}/skills/manage-refs/scripts/check_xref.py" \
+   python3 "${CLAUDE_SKILL_DIR}/../manage-refs/scripts/check_xref.py" \
      --md manuscript/manuscript.md \
      --docx manuscript/manuscript_final.docx \
      --out qc/xref_audit.json \

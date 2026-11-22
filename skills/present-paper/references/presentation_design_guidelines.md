@@ -71,7 +71,9 @@ Phase 3.5 slide critic scores against them.
 
 ## 6. Animation & transitions — sparing
 
-- Use builds **only** to reveal layered data step-by-step (e.g. add one curve at a time).
+- Use builds **only** where one step is needed to follow the next: layered data (e.g. add one
+  curve at a time), or blocks the speaker walks through in that order. Items meant to be
+  compared stay on screen together.
 - **No decorative transitions** (cube, dissolve, fly-in). Excessive motion distracts the
   audience from the content and reads as amateur.
 
@@ -83,18 +85,17 @@ Phase 3.5 slide critic scores against them.
   SSOT). Run `/verify-refs` before delivery for any cited reference.
 - Re-use of a published figure in slides is generally acceptable for scholarly critique
   **with on-slide attribution**; do not carry a lifted figure into the manuscript
-  without permission (`~/.claude/rules/journal-ai-image-policies.md`).
+  without the publisher's permission.
 
 ## 8. Delivery-facing rules (carried by other skill assets)
 
 - **Body language = English; speaker notes = the presenter's language** for non-native
-  English presenters (`~/.claude/rules/academic-lecture-style.md`). Notes 150–300
+  English presenters. Notes 150–300
   characters/slide (30–60 s).
 - **Mac PowerPoint compatibility** is mandatory before delivery — TIFF→PNG, no `sp3d`,
   app.xml count sync, no raw `**markdown**` leaking into notes
-  (`~/.claude/rules/pptx-mac-compatibility.md`; checklist in each visual-style spec).
-- For a multidisciplinary audience, add a glossary slide
-  (`~/.claude/rules/multidisciplinary-presentation.md`).
+  (checklist: `references/slide_visual_styles/nature_lancet.md` §7).
+- For a multidisciplinary audience, add a glossary slide.
 
 ---
 

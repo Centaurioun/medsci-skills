@@ -41,16 +41,18 @@ as a SET), so only a genuinely missing or added clause counts. It fires
 DERIVED_DEF_DRIFT when one variable is defined with two or more distinct atom sets.
 Motivation: `mets_bp <- as.integer(bl_he_sbp>=130 | bl_he_dbp>=85 |
 bl_tx_hypertension_med==1 | bl_hypertension==1)` in the canonical script vs the
-same name without the final `| bl_hypertension==1` in a re-analysis script — the
-metabolic-syndrome C-index then read 0.6704 in one table and 0.6712 in another.
+same name without the final `| bl_hypertension==1` in a re-analysis script. The two
+definitions classify different participants, so the metabolic-syndrome C-index computed
+from each disagreed in the fourth decimal — enough to put two different values for one
+quantity into a main table and its supplement, and small enough that nobody reading
+either artifact alone would notice.
 
 Motivation: a screening cohort binned age with
 `cut(bl_age, breaks=c(-Inf,45,50,60,Inf), right=FALSE)` in the primary script and
 `cut(bl_age, breaks=c(-Inf,44,49,59,Inf), right=TRUE)` in the threshold sensitivity
 script. Fractional ages (e.g. 44.5 y) fell into different bands, shifting ~353
 participants and producing a spurious "reached" stratum in the sensitivity table
-that vanished once the binning was harmonized. See
-~/.claude/rules/cross-script-categorical-consistency.md.
+that vanished once the binning was harmonized.
 
 INPUTS
   --root PATH        directory to scan recursively for *.R/*.r/*.py (repeatable;

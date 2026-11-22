@@ -1,0 +1,57 @@
+<!-- AUTO-GENERATED from skills/obsidian-paper-vault/SKILL.md by scripts/gen_skill_docs.py. Do not edit by hand. -->
+
+# obsidian-paper-vault
+
+> Use when turning a folder of research PDFs into Obsidian notes, even if Obsidian is not named. Writes one templated literature note per paper and extracts cross-linked atomic concept notes, never overwriting existing ones. A .bib or Zotero library is /lit-sync.
+
+**Invoke:** `/obsidian-paper-vault`
+
+## When to use
+
+`obsidian-paper-vault` activates on requests such as: obsidian-paper-vault, paper vault, second brain, PDF를 Obsidian 노트로, 논문 요약 노트, 논문 노트 만들어줘, 이 폴더의 PDF 정리해줘, batch process papers, add papers to vault, extract concepts from papers, literature vault.
+
+## Quality Card
+
+**Purpose** — Convert a folder of research PDFs into templated Obsidian literature notes plus atomic concept notes synthesized across them.
+
+**Safety boundaries**
+
+- Every number, author, and date is transcribed from extracted PDF text; nothing is written from model knowledge.
+- Existing notes are never overwritten.
+
+**Known limitations**
+
+- Requires PyMuPDF; scanned PDFs with poor OCR yield thin notes.
+- Default extraction is the first 12 pages, so appendix-only content is missed unless max_pages is raised.
+- Effects land in the user's Obsidian vault, so there is no self-contained demo.
+
+**Validation**
+
+- `python3 scripts/extract_pdfs.py <pdf_folder> <cache_folder>`
+- `grep -c 'date_published' <vault>/<literature_folder>/*.md`
+- `python3 tests/test_extract_pdfs.py`
+
+**Evidence** — `manual_workflow`
+
+## Bundled resources
+
+**References** (`skills/obsidian-paper-vault/references/`):
+
+- `concept-extraction.md`
+- `locale/` (1 file)
+- `subagent-prompt.md`
+- `tag-vocabulary.md`
+- `templates.md`
+- `workflow.md`
+
+**Scripts** (`skills/obsidian-paper-vault/scripts/`):
+
+- `extract_pdfs.py`
+
+## Source
+
+Canonical definition: [`skills/obsidian-paper-vault/SKILL.md`](../../skills/obsidian-paper-vault/SKILL.md)
+
+---
+
+*Part of [MedSci Skills](../../README.md) — Claude Code skills for the medical research lifecycle. This page is generated from the skill's `SKILL.md`; edit that file and re-run `scripts/gen_skill_docs.py`.*

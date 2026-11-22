@@ -2,9 +2,9 @@
 
 # analyze-stats
 
-> Statistical analysis for medical research papers. Generates reproducible Python/R code with publication-ready tables and figures. Supports diagnostic accuracy, inter-rater agreement, meta-analysis, survival analysis, survey data, group comparisons, regression, propensity score, and repeated measures.
+> Use when data needs statistical analysis. Runs reproducible Python/R code for Table 1, diagnostic accuracy, agreement, regression, survival, propensity score, survey-weighted and repeated-measures models, with publication tables. Sample size is /calc-sample-size; pooling studies is /meta-analysis.
 
-**Invoke:** `/analyze-stats` · **Tools:** Read, Write, Edit, Bash, Grep, Glob · **Model:** inherit
+**Invoke:** `/analyze-stats`
 
 ## When to use
 
@@ -17,15 +17,18 @@
 **Safety boundaries**
 
 - All numbers come from executed code on the supplied data; never hand-typed (seed-fixed transforms).
-- Primary estimates report effect size with 95% CI and exact p-values.
+- Primary estimates report 95% CIs; planned hypothesis tests also report effect sizes and exact p-values.
 
 **Known limitations**
 
 - Correctness depends on a correct analysis plan and clean data (use design-study / clean-data first).
 - Does not adjudicate clinical validity of the chosen test.
+- The bound binary workflow requires declared independent units and fixed 0/1 predictions; hashes do not establish design validity or data rights.
 
 **Validation**
 
+- `python3 tests/test_analysis_run.py`
+- `python3 scripts/demo_analysis_run.py --out demo-project`
 - `re-run the emitted script and diff results`
 - `/self-review`
 
@@ -35,16 +38,20 @@
 
 **References** (`skills/analyze-stats/references/`):
 
-- `analysis_guides/` (18 files)
+- `analysis_guides/` (19 files)
+- `analysis_run_workflow.md`
 - `style/` (2 files)
 - `table-standards/` (17 files)
 - `templates/` (14 files)
 
 **Scripts** (`skills/analyze-stats/scripts/`):
 
+- `analysis_run_challenge/` (2 files)
 - `check_generated_code.py`
 - `check_separation.py`
+- `demo_analysis_run.py`
 - `rating_monotonicity.py`
+- `run_analysis.py`
 
 ## Source
 

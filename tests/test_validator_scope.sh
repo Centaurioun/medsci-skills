@@ -24,9 +24,13 @@ REPO_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 # trap delete the other's files mid-scan, and every assertion then failed for a
 # reason that had nothing to do with the validator.
 FIXTURE_DIR="$REPO_ROOT/skills/zz-scope-fixture-$$"
-# The literal the rule blocks. Assembled at runtime so this test file does not
-# itself contain the string the validator is looking for.
-LEAK="/Users/$(printf 'eug')ene/workspace/private/notes.md"
+# Use a synthetic username and a disposable digest set. A regression test must
+# not reconstruct the real identifier that the public scanner keeps hash-only.
+LEAK="/Users/syntheticperson/workspace/private/notes.md"
+SCOPE_HASHES="$(mktemp)"
+cp "$REPO_ROOT/scripts/precedent_hashes.txt" "$SCOPE_HASHES"
+printf '%s' syntheticperson | shasum -a 256 | cut -d' ' -f1 >> "$SCOPE_HASHES"
+export PRECEDENT_HASH_FILE="$SCOPE_HASHES"
 
 pass=0
 fail=0
@@ -42,7 +46,7 @@ ck() {
 }
 
 cleanup() { rm -rf "$FIXTURE_DIR"; }
-trap cleanup EXIT
+trap 'cleanup; rm -f "$SCOPE_HASHES"' EXIT
 cleanup
 mkdir -p "$FIXTURE_DIR"/{references,templates,scripts,tests}
 
@@ -50,9 +54,8 @@ cat > "$FIXTURE_DIR/SKILL.md" <<'EOF'
 ---
 name: zz-scope-fixture
 description: Throwaway fixture created and deleted by tests/test_validator_scope.sh.
-triggers: none
-tools: Read
-model: inherit
+metadata:
+  triggers: "none"
 ---
 
 # Fixture
@@ -80,7 +83,7 @@ FIXTURE_NAME="$(basename "$FIXTURE_DIR")"
 # push. `--only` errors out on a name it cannot find, so a typo here fails loudly rather than
 # validating nothing and letting `[ -n "$FLAGGED" ]` be the only thing standing.
 OUT="$(bash "$REPO_ROOT/scripts/validate_skills.sh" --only "$FIXTURE_NAME" 2>&1)"
-FLAGGED="$(printf '%s\n' "$OUT" | grep 'Personal path in' || true)"
+FLAGGED="$(printf '%s\n' "$OUT" | grep -E 'Personal (path|precedent) in' || true)"
 seen() { printf '%s\n' "$FLAGGED" | grep -q "$FIXTURE_NAME/$1"; }
 
 seen 'references/note.md';    ck "references/ is scanned"                    0 "$?"
@@ -96,6 +99,22 @@ seen 'TODO_scratch.md';       ck "a gitignored scratchpad is NOT scanned"     1 
 # spoke at all.
 [ -n "$FLAGGED" ]
 ck "the personal-path rule emitted a verdict at all"                         0 "$?"
+
+# The fixture has no `model:` line. `model` is optional (Claude Code's default is the session's
+# model, and the Agent Skills spec and claude.ai upload reject the field), so the frontmatter rule
+# must pass it rather than report it missing.
+printf '%s\n' "$OUT" | grep -q 'PASS.*Frontmatter (name, description, metadata.triggers)'
+ck "a SKILL.md without model: passes the frontmatter rule"                   0 "$?"
+
+# The verdict names the file and line, never the matched value. CI logs of a public repository
+# are public and outlive a force-push that removes the leaking commit, so a gate that echoes the
+# value it caught republishes it (and the precedent scan's hashed blocklist exists precisely so
+# names are never printed in cleartext).
+# The precedent scan reports the matched token (the name segment), not the whole path, so look
+# for that token: grepping for the full planted path passed against the old validator too.
+LEAK_TOKEN="${LEAK#/Users/}"; LEAK_TOKEN="${LEAK_TOKEN%%/*}"
+printf '%s\n' "$FLAGGED" | grep -qF -- "$LEAK_TOKEN"
+ck "the verdict does not print the matched value"                            1 "$?"
 
 cleanup
 

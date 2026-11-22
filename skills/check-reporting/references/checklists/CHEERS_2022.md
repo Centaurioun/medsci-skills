@@ -3,8 +3,12 @@
 **Consolidated Health Economic Evaluation Reporting Standards 2022**
 Version: CHEERS 2022 (28 items; replaces CHEERS 2013).
 Source: Husereau D, Drummond M, Augustovski F, et al. *BMJ* 2022;376:e067975 (the CHEERS 2022 statement), co-published simultaneously across BMJ, *Value in Health*, *PharmacoEconomics*, *Int J Technol Assess Health Care* and others. CC BY 4.0. https://www.equator-network.org/reporting-guidelines/cheers/ · ISPOR CHEERS Task Force.
+Verification: all 28 items were compared against Table 1 of the published statement (Europe PMC
+full text, PMC8749494); 28/28 match, with no item missing and none invented.
 
 Apply when the manuscript is a **health economic evaluation** — a comparative analysis of costs and consequences of two or more courses of action: cost-effectiveness (CEA), cost-utility (CUA), cost-benefit (CBA), or cost-minimisation analysis, whether trial-based or decision-model-based (decision tree, Markov/state-transition, discrete-event simulation), including budget-impact and HTA submissions. For the design/validity review of the same study, pair with the HE1–HE8 domain probes in `peer-review` / `self-review` `references/domain-probes/health_economic_evaluation.md`; for the analysis, with `analyze-stats` `references/analysis_guides/health_economic_evaluation.md`.
+
+Source: Husereau D, Drummond M, Augustovski F, de Bekker-Grob E, Briggs AH, Carswell C, et al. Consolidated Health Economic Evaluation Reporting Standards 2022 (CHEERS 2022) statement. *BMJ* 2022;376:e067975 (DOI 10.1136/bmj-2021-067975).
 
 ## Checklist Items (28 items)
 
@@ -42,10 +46,10 @@ Apply when the manuscript is a **health economic evaluation** — a comparative 
 | 13 | Valuation of outcomes | Describe the population and methods used to measure and value outcomes. |
 | 14 | Measurement and valuation of resources and costs | Describe how costs were valued. |
 | 15 | Currency, price date, and conversion | Report the dates of the estimated resource quantities and unit costs, plus the currency and year of conversion. |
-| 16 | Rationale and description of model | If modelling is used, describe in detail and why used. Report whether the model is publicly available and where. |
+| 16 | Rationale and description of model | If modelling is used, describe in detail and why used. Report if the model is publicly available and where it can be accessed. |
 | 17 | Analytics and assumptions | Describe any methods for analysing or statistically transforming data, any extrapolation methods, and approaches for validating any model used. |
 | 18 | Characterising heterogeneity | Describe any methods used for estimating how the results of the study vary for subgroups. |
-| 19 | Characterising distributional effects | Describe how impacts are distributed across different individuals or whether adjustments were made to reflect priority populations. |
+| 19 | Characterising distributional effects | Describe how impacts are distributed across different individuals or adjustments made to reflect priority populations. |
 | 20 | Characterising uncertainty | Describe methods to characterise any sources of uncertainty in the analysis. |
 | 21 | Approach to engagement with patients and others affected by the study | Describe any approaches to engage patients or service recipients, the general public, communities, or stakeholders (such as clinicians or payers) in the design of the study. |
 
@@ -54,22 +58,22 @@ Apply when the manuscript is a **health economic evaluation** — a comparative 
 | # | Item | Description |
 |---|------|-------------|
 | 22 | Study parameters | Report all analytic inputs (such as values, ranges, references) including uncertainty or distributional assumptions. |
-| 23 | Summary of main results | Report the mean values for the main categories of costs and outcomes of interest and summarise them in the most appropriate overall measure (e.g. the incremental cost-effectiveness ratio, ICER). |
-| 24 | Effect of uncertainty | Describe how uncertainty about analytic judgments, inputs, or projections affect findings. Report the effect of choice of discount rate and time horizon, if relevant. |
+| 23 | Summary of main results | Report the mean values for the main categories of costs and outcomes of interest and summarise them in the most appropriate overall measure. |
+| 24 | Effect of uncertainty | Describe how uncertainty about analytic judgments, inputs, or projections affect findings. Report the effect of choice of discount rate and time horizon, if applicable. |
 | 25 | Effect of engagement with patients and others affected by the study | Report on any difference patient/service recipient, general public, community, or stakeholder involvement made to the approach or findings of the study. |
 
 ### Discussion
 
 | # | Item | Description |
 |---|------|-------------|
-| 26 | Study findings, limitations, generalisability, and current knowledge | Report key findings, limitations, ethical or equity considerations, and how these could affect patients, policy, or practice. |
+| 26 | Study findings, limitations, generalisability, and current knowledge | Report key findings, limitations, ethical or equity considerations not captured, and how these could affect patients, policy, or practice. |
 
 ### Other relevant information
 
 | # | Item | Description |
 |---|------|-------------|
-| 27 | Source of funding | Describe how the study was funded and the role of the funder in the identification, design, conduct, and reporting of the analysis. Describe other non-monetary sources of support. |
-| 28 | Conflicts of interest | Describe any potential for conflict of interest among study contributors in accordance with journal policy. In the absence of a journal policy, we recommend authors comply with International Committee of Medical Journal Editors (ICMJE) recommendations. |
+| 27 | Source of funding | Describe how the study was funded and any role of the funder in the identification, design, conduct, and reporting of the analysis. |
+| 28 | Conflicts of interest | Report authors conflicts of interest according to journal or International Committee of Medical Journal Editors requirements. |
 
 ---
 

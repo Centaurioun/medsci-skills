@@ -17,12 +17,16 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-SEMVER = re.compile(r"^[0-9]+\.[0-9]+\.[0-9]+$")
+SEMVER = re.compile(r"^[0-9]+\.[0-9]+\.[0-9]+(?:-[0-9A-Za-z.-]+)?$")
 
 
 def citation_version() -> str:
     text = (ROOT / "CITATION.cff").read_text(encoding="utf-8")
-    m = re.search(r'^version:\s*"?([0-9]+\.[0-9]+\.[0-9]+)"?\s*$', text, re.MULTILINE)
+    m = re.search(
+        r'^version:\s*"?([0-9]+\.[0-9]+\.[0-9]+(?:-[0-9A-Za-z.-]+)?)"?\s*$',
+        text,
+        re.MULTILINE,
+    )
     if not m:
         raise ValueError("CITATION.cff: no semver version: field")
     return m.group(1)

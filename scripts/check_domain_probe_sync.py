@@ -95,12 +95,13 @@ DOMAIN_PROBES = (
 )
 
 # The risk-of-bias tools /meta-analysis actually applies during its own RoB step. /check-reporting
-# is the 46-checklist library and is NOT exhaustive here: adding a 47th checklist there must not
+# is the 49-checklist library and is NOT exhaustive here: adding a 50th checklist there must not
 # force it into /meta-analysis.
 ROB_CHECKLISTS = (
     "RoB2.md",
     "NOS.md",
     "ROBINS_I.md",
+    "QUADAS3.md",
     "QUADAS2.md",
     "PROBAST.md",
     "PRISMA_DTA.md",
@@ -132,6 +133,8 @@ VENDOR_SETS: tuple[VendorSet, ...] = (
         # /revise owns other scripts; only the helpers it publishes are vendored.
         canonical_exhaustive=False,
         pattern="_*.py",
+        # Claim evidence is owned by verify-refs, not copied from revise.
+        vendored_local=("_claim_evidence.py",),
     ),
     VendorSet(
         name="quote-match-helper-sync",

@@ -93,7 +93,9 @@ PARTIAL item. Return the scored rubric + edit list to the user.
 15. **Vector format available** — Both PNG (for DOCX embedding) and PDF
     (for journal submission) were produced. If PDF missing, flag.
 16. **Dimensions match journal spec** — Width matches the target journal's
-    single-column or double-column specification (±0.3 in).
+    single-column or double-column specification (±0.3 in). Place the
+    diagram at the venue's actual column width and read the type and the
+    connectors there.
 17. **DPI meets spec** — ≥600 DPI for line-art submissions, ≥300 DPI for
     halftone.
 18. **Policy compliance** — Tool is D2 or a permitted auto-layout engine,
@@ -167,3 +169,14 @@ reviewed venue.
 
 Record `critic_pass: yes | partial | no` and `refine_rounds: N` in the
 `_figure_manifest.md` for this figure after the final round.
+
+---
+
+## Credits
+
+The Critic Loop (SKILL.md Step 4b) is inspired by PaperBanana (Zhu et al., *Automating
+Academic Illustration for AI Scientists*, arXiv:2601.23265, 2025) and by prior self-refinement
+research — Self-Refine (Madaan et al., 2023), Reflexion (Shinn et al., 2023), and Constitutional
+AI (Anthropic, 2022). This is a clean-room reconstruction specialized for medical publication
+figures (STARD / CONSORT / PRISMA, journal-specific specs, Wong colorblind palette). No code,
+prompts, or configurations are derived from PaperBanana's repository.

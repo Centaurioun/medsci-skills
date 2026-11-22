@@ -20,13 +20,13 @@ python3 "${CLAUDE_SKILL_DIR}/scripts/check_rounded_delta.py" \
   --manuscript manuscript.md --out qc/rounded_delta.json
 ```
 
-`ROUNDED_DELTA_MISMATCH` (Minor) fires when e.g. AUCs are shown as `0.70` and `0.73` (a displayed
+`ROUNDED_DELTA_MISMATCH` (Minor) fires when e.g. AUCs are shown as `0.79` and `0.82` (a displayed
 gap of 0.03) while the between-arm difference is stated as `0.02` — self-consistent only on the
 unrounded values. Fix: report components and the delta at one precision, or footnote that the delta
-is computed on unrounded values. A higher-precision component pair (`0.703` vs `0.726`) with a 2-dp
+is computed on unrounded values. A higher-precision component pair (`0.794` vs `0.816`) with a 2-dp
 delta is the legitimate unrounded case and is not flagged.
 
-**Precedent failure pattern:**
+**The failure pattern:**
 > A revision-era comparative meta-analysis reported a safety-outcome 2x2 with the
 > arm-level events direction-reversed relative to the primary-source Table. Internal
 > consistency passed because Abstract, Discussion, Table, and the R script all echoed

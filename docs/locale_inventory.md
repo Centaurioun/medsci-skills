@@ -2,7 +2,7 @@
 
 **Status: migration complete (PR1–PR4).** The English-canonical migration has landed — incidental
 Korean prose is translated (PR2) and the Korean-default skills now default to English with opt-in
-`*_ko` variants (PR3). The rows below are the **steady state**: 50 Korean-bearing files, each a
+`*_ko` variants (PR3). The rows below document the Korean-bearing files, each a
 functional locale feature (A), a Korean-jurisdiction mode (A2), a bilingual trigger (D), or an
 opt-in `*_ko`/locale variant. `check_locale_inventory.py --strict` is clean.
 
@@ -50,6 +50,7 @@ Buckets:
 | `skills/publish-skill/SKILL.md` | A | Language-hardcoding **detection** patterns (`한국어로`, `<한글이름> 교수님`) — the feature. |
 | `skills/publish-skill/scripts/audit_skill.sh` | A | Korean PII/name detection regex. |
 | `skills/publish-skill/references/pii-patterns.md` | A | Korean PII pattern examples for the auditor. |
+| `skills/publish-skill/tests/test_audit_skill.sh` | A | Synthetic Korean name + role fixtures for the auditor's regression test. |
 | `skills/sync-submission/scripts/check_asset_anonymization.py` | A | Korean institution-token **detection** regex (`병원\|의료원\|의과대학\|대학교\|연구윤리`) for the asset-anonymization gate — the feature. |
 | `skills/present-paper/scripts/inject_pronunciation_notes.py` | A | Korean pronunciation dictionary for Korean-presenter speaker notes. |
 | `skills/present-paper/SKILL.md` | A/D | `[ 발음 ]` pronunciation-section header example + bilingual trigger. |
@@ -61,10 +62,12 @@ Buckets:
 | `skills/sync-submission/scripts/author_registry_example.yaml` | A | `성명` as a hangul `native_names` example comment. |
 | `skills/replicate-study/references/harmonization_knhanes_nhanes.csv` | A | KNHANES authoritative Korean variable labels (`개인아이디`, `조사연도`). Notes already English. |
 | `skills/replicate-study/references/harmonization_3country.csv` | A | KNHANES authoritative Korean variable labels. |
+| `skills/replicate-study/tests/fixtures/main_alcohol_rows/harmonization_3country.csv` | A | Test fixture: rows copied from the reference CSV, keeping its KNHANES Korean variable labels. |
+| `skills/replicate-study/tests/fixtures/main_alcohol_rows/harmonization_knhanes_nhanes.csv` | A | Test fixture: rows copied from the reference CSV, keeping its KNHANES Korean variable labels. |
 | `skills/define-variables/SKILL.md` | A/D | KNHANES-style dictionary sheet/row example (`5-1.복부초음파 r12`) + bilingual trigger. |
-| `skills/find-journal/SKILL.md` | A | Bilingual section-heading recognition patterns (`## 추가 필요` / `## Missing`). |
 | `skills/render-pdf-doc/references/pandoc_korean_cheatsheet.md` | A | Korean-PDF rendering reference (the skill renders Korean academic PDFs). +label in PR3. |
 | `skills/render-pdf-doc/references/known_pitfalls.md` | A | Korean-PDF rendering failure-mode demonstrations. +label in PR3. |
+| `skills/render-pdf-doc/tests/test_font_faces.py` | A | Synthetic Hangul glyphs distinguish CJK coverage from Greek coverage across font collection faces. |
 
 ## KEEP — Korean-domain mode (Bucket A2)
 
@@ -100,8 +103,7 @@ Buckets:
 `check-reporting/references/step4d_prisma_figure_audit.md`,
 `write-paper/references/section_guides/step7_1_classical_qc.md`,
 `orchestrate/references/dialogue_nodes.md`, and
-`peer-review/references/reviewer_profiles/RYAI.md` (its ScholarOne field labels were already
-English, so the file is now fully English).
+`peer-review/references/reviewer_profiles/RYAI.md` (now fully English).
 
 Three files originally scoped as B were reclassified during translation and remain
 inventoried under their new bucket:
@@ -135,6 +137,7 @@ English defaults, each with a `_ko` sibling below).
 | `skills/orchestrate/references/report_template_ko.md` | C-ko | Korean REPORT variant; English default is `report_template.md`. |
 | `skills/ma-scout/references/project_readme_template_ko.md` | C-ko | Korean PI-facing README variant; English default is `project_readme_template.md`. |
 | `skills/lit-sync/references/locale/ko/note_templates.md` | C-ko | Korean Obsidian vault layout + note templates; English defaults inline in lit-sync SKILL.md. |
+| `skills/obsidian-paper-vault/references/locale/ko/note_templates.md` | C-ko | Korean Obsidian vault layout + note templates for the PDF-side builder; English defaults inline in obsidian-paper-vault SKILL.md. Mirrors the lit-sync ko locale so both skills write one vault the same way. |
 
 ### Reclassified survivors (Korean is functional; remain inventoried)
 
@@ -144,6 +147,8 @@ English defaults, each with a `_ko` sibling below).
 | `skills/render-pdf-doc/SKILL.md` | D | Body + skill.yml translated; only the `triggers:` line remains. |
 | `skills/orchestrate/SKILL.md` | A | PHI prompts + §-name translated; bilingual routing-table recognition phrases kept (functional, validator-skipped table rows). |
 | `skills/lit-sync/SKILL.md` | D | English-default vault/headings; `triggers:` line + honor-existing Korean-folder examples documenting the detect-and-honor behavior. |
+| `skills/obsidian-paper-vault/SKILL.md` | D | English-default vault/headings; `triggers:` line + one honor-existing Korean-folder example documenting the detect-and-honor behavior. |
+| `skills/obsidian-paper-vault/references/workflow.md` | A | Korean folder names appear as honor-what-exists examples of real vault layouts, not as output prose. |
 | `skills/present-paper/references/generate_pptx_templates.py` | A | Legacy Korean slide-marker parser regex (backward compatibility). |
 | `skills/present-paper/references/slide_visual_styles/nature_lancet.md` | A | Korean-glyph rendering verification grep. |
 | `skills/present-paper/scripts/check_deck_budget.py` | A | Backup-section markers a divider may carry in Korean (백업 / 부록 / 예비), so a Korean deck's Q&A section stops the clock like an English one. Recognition data, not prose. |
@@ -166,3 +171,6 @@ also destroy it: the point of quoting a reviewer verbatim is that it is what the
 | `skills/present-paper/templates/build_pptx_nature_lancet.py` | A | One Korean quote in a comment, explaining why the eyebrow/footer default was removed. |
 | `skills/present-paper/tests/test_builder_no_chrome.py` | A | Same quote, explaining what the test is defending against. |
 | `skills/present-paper/references/presentation_archetypes.md` | A | One verbatim quote from an investor explaining why they tell founders never to use AI for an IR deck — the sentence is the evidence for the archetype's warning, and paraphrasing a quote is not translation. |
+| `skills/present-paper/scripts/check_font_portability.py` | A | The blocklist matches typeface names as a deck writes them, and a Windows Korean face is written `맑은 고딕` in the OOXML as often as `Malgun Gothic`. Translating the key would stop it matching. |
+| `skills/present-paper/scripts/check_font_portability_challenge/make_fixtures.py` | A | The fixture that proves an inherited default fires needs real Korean on the slides — with Latin text the theme's East-Asian fallback is inert and the test would assert nothing. |
+| `skills/present-paper/references/spoken_notes_and_bilingual.md` | A | The failure modes it documents are language-specific and cannot be shown in English. A parallel list that drops its predicate (`맞춰 달라, 만들어 달라`) is grammatical in Korean and unspeakable aloud; the repeated-opener check needs a real opener (`…하고 가겠습니다`); the bilingual-label example (`Reading room / 판독실`) is the defect itself. All headings, rules, and prose are English — the Korean is the specimen. |

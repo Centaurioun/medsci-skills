@@ -43,7 +43,13 @@ domains:
     owner: lit-sync
     overlaps:
       - verify-refs
+      - obsidian-paper-vault
     rule: Synchronizes verified bibliographic records into Zotero and notes.
+  pdf_to_vault_notes:
+    owner: obsidian-paper-vault
+    overlaps:
+      - lit-sync
+    rule: Builds Obsidian literature and concept notes from a folder of PDFs; lit-sync builds the same notes from bibliographic records.
   submission_packaging:
     owner: sync-submission
     overlaps:
@@ -80,6 +86,15 @@ domains:
       Supplies periodontal/dental terminology, measurement, hierarchy, clinical-context,
       and interpretation constraints; delegates general design, statistics, figures,
       writing, review, reporting, and evidence authority to their existing owners.
+
+  periodontology_domain_expertise:
+    owner: periodontology-research
+    overlaps: [design-study, analyze-stats, check-reporting, self-review]
+    rule: Periodontal and peri-implant domain constraints; other methodological owners remain authoritative.
+  psychometrics_pro_measurement_science:
+    owner: psychometrics-pro
+    overlaps: [design-study, analyze-stats, calc-sample-size, check-reporting, self-review]
+    rule: PROM/PRO measurement meaning and psychometric evidence; statistical and source validation remains with existing owners.
 
 # umbrellas group related domains under a single routing name for /orchestrate.
 # An umbrella is a read-only view; edits and ownership still live in `domains:`.
@@ -119,13 +134,13 @@ deprecation:
       - research-fellow   # -> /orchestrate
   project_specific_skills:
     sunset_date: "2026-10-24"
-    # D-4: project-specific skills (e.g., /skullfx-paper2) replaced by
+    # Project-specific skills are replaced by
     # /manage-project + per-project SSOT.yaml config.
     pattern: "^skills/[a-z0-9]+_[a-z0-9_]+$"  # project-id prefixed skills
     replacement: "/manage-project + SSOT.yaml"
     examples:
-      - skullfx-paper2
-      - ck1-submission-build
+      - example-project-writing
+      - example-submission-build
   skills_superseded:
     # Skills replaced during Phase 1~2. Listed here as they are planned;
     # move to `archive` once sunset confirmed.

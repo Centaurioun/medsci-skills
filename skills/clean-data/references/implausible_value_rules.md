@@ -66,18 +66,38 @@ table only to fill silence, and present every hit as a **flag for review**, neve
 
 (Extend per dataset from the codebook; keep the table version-controlled with the project.)
 
+**Self-reported quantities** (alcohol intake, smoking amount, physical activity, sleep and similar
+questionnaire answers) have no row above, and removing sentinel codes does not catch a mistyped
+amount. At profiling, where the questionnaire's instructions or the data owner give a defensible
+plausibility bound, record the bound and its source and report the values beyond it as flags for
+review; where none can be justified, record that. Such a value can sit outside the main analytic subset and only
+cause trouble later, when a different subset of the same data is analysed.
+
 ## 2. Cross-field logical-consistency rules
 
 Single-field bounds miss contradictions *between* fields. Flag a record when:
 
-- **Temporal ordering**: birth date ≤ index/event date ≤ death/last-seen date; admission ≤
-  discharge; surgery date ≤ complication date; first ≤ last visit. Any future date beyond the
+- **Temporal ordering**: dates that break any of these orders — birth date ≤ index/event date ≤
+  death/last-seen date; admission ≤ discharge; surgery date ≤ complication date; first ≤ last visit. Any future date beyond the
   extraction date (except scheduled appointments) is suspect (`cleaning_patterns.md` §4).
-- **Derived-vs-source**: recomputed BMI from height/weight matches the stored BMI (±rounding);
-  age matches (event date − DOB); eGFR consistent with creatinine/age/sex if both stored;
-  a "total" equals the sum of its parts; a subset count ≤ its superset count.
-- **Sex-specific / state-specific**: pregnancy, parity, or gestational fields present for
-  `sex == male`; PSA recorded for females; menopause age < current age; pediatric-only or
+- **Derived-vs-source**: recomputed BMI from height/weight differs from the stored BMI beyond
+  rounding; age differs from (event date − DOB) when the dictionary defines it as age at the event (next item);
+  eGFR inconsistent with creatinine/age/sex under the stated equation and units, if both stored; a
+  "total" differs from the sum of parts defined to make it up; a subset count exceeds its superset count.
+- **Age that does not move with the event date** (raise first as a query about the age definition; a
+  contradiction only once the dictionary defines the column as age at each event): in an extract with several rows per patient
+  (exams, visits, admissions), an `age` in completed years that stays the same across rows whose
+  dates are more than a year apart cannot be exact age at each event. It may be age at a single
+  reference date (extraction, registration) or a banded or top-coded value. Every row still passes
+  the 0–120 bound, but an age filter (≥ 18, ≥ 65) may then select on the wrong time point. Before
+  any age-based filter, confirm what the age means and its reference date (data dictionary, data
+  owner or extract metadata; record it as unconfirmed if none says). Put any age recomputed for the
+  event in a new column, never overwrite the source `age`, and state in the Methods which time
+  point the age refers to. With one row per patient this check cannot fire, so the meaning has to
+  come from those sources.
+- **Sex-specific / state-specific**: a pregnancy, parity, gestational or sex-specific test value
+  that conflicts with the recorded sex as the data dictionary defines both fields (a query, not a
+  correction); menopause age > current age; pediatric-only or
   adult-only fields outside the eligible age.
 - **Mutually exclusive / dependency**: `deceased == no` with a death date populated;
   `smoking_status == never` with `pack_years > 0` (vs the structural-zero case where it is NULL —

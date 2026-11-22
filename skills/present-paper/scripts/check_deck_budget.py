@@ -6,19 +6,25 @@ right for a fifty-minute lecture and fatal for a ten-minute oral abstract. There
 threshold for "too much text" — there is only too much text *for this podium*, which is why this
 takes an archetype instead of pretending one number fits every room.
 
-It checks the three things about a deck that are mechanical, and therefore checkable:
+It checks the things about a deck that are mechanical, and therefore checkable:
 
   DECK_OVER_BUDGET    slides against the clock. A 40-slide deck for a 10-minute oral is not a
                       style choice; it is a talk that will be cut off at the microphone.
   SLIDE_TOO_DENSE     words on a slide, against what this archetype's audience can absorb while
                       also listening to you. A keynote audience is not reading.
   TYPE_TOO_SMALL      the back row exists. Below the floor, the slide is decoration.
+  ZERO_AREA_TEXT      text sitting in a box with no width or no height. Nothing below can measure
+                      it, so the three checks above are unreliable until it is fixed — and a deck
+                      in this state passes them by being unreadable rather than by being right.
 
 The clock stops at the backup section. Nearly every conference deck carries one — the slides you
 do not present, and open only if someone asks. Counting them against the clock told people to
 delete their Q&A preparation, so the check was wrong in the one place a speaker most needs to be
-prepared. A slide whose headline is "Backup", "Appendix", "Q&A", "Reserve" or "Supplementary" ends
-the talk: everything from there on is off the clock.
+prepared. A slide whose headline starts with "Backup", "Appendix", "Q&A", "Reserve" or
+"Supplementary" ends the talk: everything from there on is off the clock. Slides are taken in the
+order they are shown (presentation.xml), and the output says where the clock stopped, because the
+keyword also matches a short finding that opens with one of those words ("Appendix perforation in
+children"); --backup-from N sets the boundary explicitly when the detected one is wrong.
 
 Density and type size still apply to those slides. Anything you might put on a screen has to be
 readable when it gets there; a backup slide is shown under questioning, which is the worst possible
@@ -31,7 +37,8 @@ a pretext, whether the limitation is the one that matters — is judgment, and i
 Stdlib only. Reads the .pptx as the ZIP of XML it is.
 
 Usage:
-    check_deck_budget.py deck.pptx --archetype conference_oral --minutes 10 [--json out.json] [--strict]
+    check_deck_budget.py deck.pptx --archetype conference_oral --minutes 10 [--backup-from N]
+                         [--json out.json] [--strict]
     check_deck_budget.py --list
 """
 
@@ -39,6 +46,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import math
 import re
 import sys
 import zipfile
@@ -48,7 +56,7 @@ from typing import Dict, List, Optional
 from xml.etree import ElementTree as ET
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from check_slide_tells import is_page_number, read_deck  # noqa: E402
+from check_slide_tells import is_page_number, read_deck, unmeasurable_text_shapes  # noqa: E402
 
 DETECTOR = "check_deck_budget"
 
@@ -92,6 +100,11 @@ BUDGETS: Dict[str, Budget] = {
 }
 
 
+# The boundary the last audit() used (0-based index or None), so main() can say where the clock
+# stopped instead of leaving the user to guess why a long deck passed.
+LAST_BOUNDARY: List[Optional[int]] = [None]
+
+
 @dataclass
 class Finding:
     detector: str
@@ -110,9 +123,20 @@ def words_on(shapes) -> int:
     return n
 
 
+# The keyword heuristic is main's, unchanged: a short first line that STARTS with one of these
+# words. It also matches a finding that opens with one ("Appendix perforation in children"), and
+# that is a known limit. Narrowing it to "the whole line is a signpost" needs a list of the nouns
+# real dividers use ("Supplementary figures", "Backup data", ...); a narrower list stopped clearing
+# real dividers, and a longer one is another prose heuristic. The explicit --backup-from N and the
+# printed boundary are the remedy instead.
 _BACKUP_RE = re.compile(
     r"^\W*(back[\s-]?up|appendix|q\s*&\s*a|q\s*and\s*a|reserve|supplement(?:ary)?"
     r"|백업|부록|예비)(?![A-Za-z])", re.I)
+
+
+def is_backup_signpost(line: str) -> bool:
+    head = line.strip()
+    return bool(head) and len(head.split()) <= 6 and bool(_BACKUP_RE.match(head))
 
 
 def find_backup_boundary(slides) -> Optional[int]:
@@ -121,7 +145,9 @@ def find_backup_boundary(slides) -> Optional[int]:
     A backup section opens with a marker slide -- a divider or a heading that says "Backup",
     "Appendix", "Q&A". We look for that *headline*, and we require it to be short: a slide whose
     body happens to discuss "the appendix of the guideline" is not a boundary, and a nine-word
-    sentence containing the word "reserve" is a sentence, not a signpost.
+    sentence containing the word "reserve" is a sentence, not a signpost. A short finding that
+    opens with one of the words ("Appendix perforation in children") still matches -- a known
+    limit; the CLI prints the slide the clock stopped at, and --backup-from N overrides it.
 
     Headline means the shape's FIRST LINE, not its whole text. A section divider normally carries
     its title and its subtitle in one text frame, so the shape reads
@@ -130,16 +156,19 @@ def find_backup_boundary(slides) -> Optional[int]:
 
     and a guard that measured the whole text threw the boundary away for being ten words long.
     That is not hypothetical: it is how this check failed the first real deck it met.
+
+    When a deck's divider says something else, pass --backup-from N instead of renaming it.
     """
     for i, shapes in enumerate(slides):
         for s in shapes:
             head = next((ln.strip() for ln in (s.text or "").splitlines() if ln.strip()), "")
-            if head and len(head.split()) <= 6 and _BACKUP_RE.match(head):
+            if is_backup_signpost(head):
                 return i
     return None
 
 
-def audit(deck: Path, archetype: str, minutes: float) -> List[Finding]:
+def audit(deck: Path, archetype: str, minutes: float,
+          backup_from: Optional[int] = None) -> List[Finding]:
     from check_slide_tells import mark_chrome  # noqa: PLC0415
 
     b = BUDGETS[archetype]
@@ -147,9 +176,34 @@ def audit(deck: Path, archetype: str, minutes: float) -> List[Finding]:
     mark_chrome(slides, h)
     out: List[Finding] = []
 
+    # --- text nothing can measure ------------------------------------------------------------
+    # Reported first, and deliberately so: everything after it is computed from the shapes that
+    # survived parsing, and these did not. A deck with one of these is not a deck that passed.
+    hidden = unmeasurable_text_shapes(deck)
+    if hidden:
+        out.append(Finding(
+            DETECTOR, "ZERO_AREA_TEXT", None,
+            f"{len(hidden)} text block(s) sit in a shape with no measurable geometry. They are in "
+            "the file and not on the slide, and every other verdict below was computed without "
+            "them.",
+            [f"slide {i}: {why} — {txt[:44]!r}" for i, why, txt in hidden[:6]]
+            + ["A placeholder inherits its position and size. Assign one of them and python-pptx "
+               "writes an <a:xfrm> for the whole shape and records the rest as zero or absent — so "
+               "set left, top, width and height together, or none of them.",
+               "Re-run this check after fixing the coordinates. The findings it reports then were "
+               "always there; the silence was the defect talking."],
+        ))
+
     # --- the clock -------------------------------------------------------------------------
     # Backup slides are not part of the talk, so they are not part of its clock.
-    backup_at = find_backup_boundary(slides)
+    if backup_from is not None:
+        if not 1 <= backup_from <= len(slides):
+            raise ValueError(f"--backup-from {backup_from} is outside the deck's "
+                             f"{len(slides)} slide(s)")
+        backup_at: Optional[int] = backup_from - 1
+    else:
+        backup_at = find_backup_boundary(slides)
+    LAST_BOUNDARY[0] = backup_at
     n = backup_at if backup_at is not None else len(slides)
     allowed = max(1, round(minutes * b.slides_per_minute))
     if n > allowed * 1.25:  # 25% of slack: some slides are a divider, some are a single number
@@ -179,13 +233,22 @@ def audit(deck: Path, archetype: str, minutes: float) -> List[Finding]:
                  "going to lose, and it will be you."],
             ))
     if content:
-        median = sorted(c for _i, c in content)[len(content) // 2]
+        ranked = sorted(c for _i, c in content)
+        median = ranked[len(ranked) // 2]
+        p75 = ranked[math.ceil(0.75 * len(ranked)) - 1]  # nearest-rank 75th percentile
         if median > b.words_median:
+            # Report what was measured, not a cause. The median is over the slides that carry
+            # words, so deleting sparse slides (dividers, a title card) raises it while no slide
+            # got any denser — "the deck's habit" was then a wrong diagnosis to act on.
             out.append(Finding(
                 DETECTOR, "SLIDE_TOO_DENSE", None,
-                f"The typical slide carries {median} words (median across {len(content)} content "
-                f"slides). For {b.label.lower()} the working figure is {b.words_median}.",
-                [b.note, "This is the deck's habit, not one bad slide."],
+                f"Median {median} words per slide, 75th percentile {p75}, over the "
+                f"{len(ranked)} slides that carry words. For {b.label.lower()} the working "
+                f"figure is {b.words_median}.",
+                [b.note,
+                 f"Measured over these {len(ranked)} slides only: removing sparse slides raises "
+                 "the median without making any slide denser. Before cutting, check which "
+                 "slides are above the working figure."],
             ))
 
     # --- the back row -----------------------------------------------------------------------
@@ -214,6 +277,9 @@ def main() -> int:
     ap.add_argument("--list", action="store_true", help="show the archetypes and their budgets")
     ap.add_argument("--json", type=Path)
     ap.add_argument("--strict", action="store_true")
+    ap.add_argument("--backup-from", type=int, metavar="N",
+                    help="slide N (1-based, presentation order) opens the backup section; "
+                         "overrides the detected divider")
     a = ap.parse_args()
 
     if a.list:
@@ -231,19 +297,30 @@ def main() -> int:
         return 2
 
     try:
-        findings = audit(a.deck, a.archetype, a.minutes)
+        findings = audit(a.deck, a.archetype, a.minutes, a.backup_from)
     except (zipfile.BadZipFile, ET.ParseError, KeyError) as exc:
         print(f"{a.deck} is not a readable .pptx ({exc})", file=sys.stderr)
+        return 2
+    except ValueError as exc:
+        print(str(exc), file=sys.stderr)
         return 2
 
     if a.json:
         a.json.parent.mkdir(parents=True, exist_ok=True)
         a.json.write_text(json.dumps(
             {"detector": DETECTOR, "deck": str(a.deck), "archetype": a.archetype,
-             "minutes": a.minutes, "findings": [f.__dict__ for f in findings]},
+             "minutes": a.minutes,
+             "backup_from": None if LAST_BOUNDARY[0] is None else LAST_BOUNDARY[0] + 1,
+             "findings": [f.__dict__ for f in findings]},
             indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
 
     b = BUDGETS[a.archetype]
+    if LAST_BOUNDARY[0] is None:
+        print("clock: every slide counts (no backup divider found; --backup-from N sets one)")
+    else:
+        how = "given by --backup-from" if a.backup_from is not None else "detected divider"
+        print(f"clock: stops at slide {LAST_BOUNDARY[0] + 1} ({how}); "
+              "slides from there on are backup, off the clock")
     if not findings:
         print(f"OK: the deck fits {b.label} at {a.minutes:g} minutes.")
         return 0

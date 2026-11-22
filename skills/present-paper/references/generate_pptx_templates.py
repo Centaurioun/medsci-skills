@@ -27,8 +27,7 @@ Mac PowerPoint compatibility — verify before delivery:
      match actual slide count
   4. `<a:srcRect>` values are 1/1000-percent (cap 100000) — never EMU
 
-See `references/workflow-checklist.md` and the user-level rule
-`~/.claude/rules/pptx-mac-compatibility.md` for the full checklist.
+See `references/workflow-checklist.md` for the full checklist.
 """
 
 import os
@@ -51,7 +50,12 @@ BG_BLUE = RGBColor(0xF0, 0xF7, 0xFF)
 BG_YELLOW = RGBColor(0xFF, 0xF8, 0xE1)
 SUB_BLUE = RGBColor(0x7B, 0xB8, 0xE0)
 
-FONT = 'Apple SD Gothic Neo'
+# Present on both macOS and Windows. This used to be 'Apple SD Gothic Neo', which meant every deck
+# built from this library named a macOS-only face and was silently re-metricked the moment it
+# opened on a venue PC -- so the library that exists to make good decks was manufacturing the
+# defect `check_font_portability.py` looks for. For a designed deck prefer Inter + Pretendard, as
+# `templates/build_pptx_nature_lancet.py` does, and embed them (PowerPoint: Save > Embed fonts).
+FONT = 'Arial'
 SW = Inches(13.333)   # slide width
 SH = Inches(7.5)      # slide height
 ML = Inches(0.8)      # margin left

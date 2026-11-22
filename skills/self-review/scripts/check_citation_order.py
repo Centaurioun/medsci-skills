@@ -34,7 +34,7 @@ appearance sequence is not ascending (or, for references, is gapped or overruns 
 Verdicts:
   CITATION_ORDER (Major)  a float series is cited out of numerical order (e.g., Table 3
                           first-cited before Table 1, or Suppl. Tables cited
-                          S4, S9, S16, S12, …). Technical-check-fatal.
+                          S3, S1, S2, …). Technical-check-fatal.
   CITATION_GAP  (Minor)   a float series' cited numbers are not contiguous from 1
                           (a possible missing / mis-numbered float). Report-only.
   REFERENCE_ORDER (Major) in-text reference numbers are cited out of order (e.g. [12]
@@ -59,7 +59,7 @@ Verdicts:
 Fix: renumber the series by first-citation order (and reorder the float/supplement
 document + remap ALL cross-references, expanding ranges like "S12–S15" by hand and
 leaving non-float "S1–S6" sensitivity-spec labels untouched), or rephrase to remove
-the early out-of-order citation. See ~/.claude/rules/journal-technical-check-gate.md.
+the early out-of-order citation.
 
 INPUT
   --manuscript  manuscript markdown/text (required).

@@ -2,9 +2,9 @@
 
 # render-pdf-doc
 
-> Render academic Markdown documents (English or Korean) to publication-quality PDF via pandoc + xelatex. Targets non-bibliography artifacts: research proposals, IRB cover letters, briefing handouts, anchor docs (Q&A grids), and reference tables. Auto-infers pipe-table column widths from content (label column shrinks to fit, data columns share remaining width). CJK-aware font fallback for Korean text (Apple SD Gothic Neo on macOS, Noto Sans CJK KR on Linux). NOT for: manuscripts with bibliography (use /manage-refs render_pandoc.sh), Word form filling (/fill-protocol), figures (/make-figures).
+> Use when rendering a Markdown document (English or Korean) such as a proposal, IRB cover letter, handout or reference table to PDF via pandoc and xelatex, with auto-fitted table widths and CJK fonts. Not for manuscripts with a bibliography (/manage-refs) or Word forms.
 
-**Invoke:** `/render-pdf-doc` · **Tools:** Read, Write, Edit, Bash, Grep, Glob · **Model:** inherit
+**Invoke:** `/render-pdf-doc`
 
 ## When to use
 
@@ -22,13 +22,16 @@
 **Known limitations**
 
 - Output fidelity depends on installed render dependencies (checked by check_deps.sh).
+- Glyph scans cover selected risky classes in one font face; final PDF rendering requires visual verification.
 - Institutional Word forms are out of scope (use fill-protocol).
 
 **Validation**
 
 - `bash scripts/check_deps.sh`
-- `bash scripts/render_pdf.sh <manuscript.md>`
+- `bash scripts/render_pdf.sh -i <manuscript.md>`
 - `bash tests/test_glyph_coverage.sh`
+- `python3 tests/test_font_faces.py`
+- `python3 tests/test_render_pdf.py`
 
 **Evidence** — `bundled_script`
 
@@ -45,6 +48,8 @@
 - `infer_colwidths.py`
 - `render_pdf.sh`
 - `scan_glyph_coverage.py`
+- `xecjk_korean.lua`
+- `xecjk_korean.tex`
 
 **Templates** (`skills/render-pdf-doc/templates/`):
 

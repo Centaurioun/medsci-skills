@@ -4,6 +4,14 @@
 Version: TRIPOD 2015
 Source: Moons KGM et al. Ann Intern Med. 2015;162:55-63. https://www.tripod-statement.org
 
+Source: Collins GS, Reitsma JB, Altman DG, Moons KGM. Transparent reporting of a multivariable prediction model for individual prognosis or diagnosis (TRIPOD). *Ann Intern Med* 2015;162(1):55-63 (DOI 10.7326/M14-0697).
+Licence: *Annals of Internal Medicine* (© American College of Physicians) — no open licence.
+Verification: all 37 sub-items and every D / V / D;V designation were compared against the
+official TRIPOD checklist for prediction-model development **and** validation, distributed at
+tripod-statement.org (`Tripod-Checklist-Prediction-Model-Development-and-Validation-PDF.pdf`).
+37/37 items and 37/37 designations match. Item 17 stated the wrong parenthetical and item 16
+presented our own guidance as though it were the item text; both are corrected.
+
 ## Applicability
 
 Items apply to different study types:
@@ -120,13 +128,13 @@ Items apply to different study types:
 
 | # | Item | Applies | Description |
 |---|------|---------|-------------|
-| 16 | Model performance | DV | Report performance measures (with CIs) for the prediction model. Report discrimination (e.g., C-statistic/AUC) and calibration (e.g., calibration plot, Hosmer-Lemeshow, calibration slope and intercept). |
+| 16 | Model performance | DV | Report performance measures (with CIs) for the prediction model. *(In practice this means discrimination — e.g., C-statistic/AUC — and calibration — e.g., calibration plot, calibration slope and intercept; the item itself does not enumerate them.)* |
 
 #### Model Updating
 
 | # | Item | Applies | Description |
 |---|------|---------|-------------|
-| 17 | Model updating | V | If done, report the results from any model updating (e.g., model recalibration). |
+| 17 | Model updating | V | If done, report the results from any model updating (i.e., model specification, model performance). |
 
 ### Discussion
 
@@ -151,7 +159,7 @@ Items apply to different study types:
 - TRIPOD 2015 applies to **non-AI/ML prediction models only** (logistic regression, Cox regression, etc.). For AI/ML prediction models, use TRIPOD+AI 2024 instead. Do NOT apply both simultaneously.
 - Items 10a, 10b, 14a, 14b, 15a, 15b are specific to **development studies**. Mark as N/A for validation-only studies.
 - Items 10c, 10e, 13c, 17, 19a are specific to **validation studies**. Mark as N/A for development-only studies.
-- Item 16 must include BOTH discrimination (C-statistic/AUC) and calibration (calibration plot, Hosmer-Lemeshow, or calibration slope/intercept). A study reporting only AUC without calibration assessment is PARTIAL on this item.
-- Item 8 (sample size): the events per variable (EPV) ratio should be reported. EPV < 10 should be flagged as a limitation.
+- Item 16 must include BOTH discrimination (C-statistic/AUC) and calibration (calibration plot and/or calibration slope and calibration-in-the-large). A Hosmer-Lemeshow test alone is not calibration evidence (TRIPOD E&E: limited power, sensitive to grouping and sample size, no magnitude or direction); a study reporting only AUC, or AUC plus Hosmer-Lemeshow only, is PARTIAL on this item.
+- Item 8 (sample size): the report must say how the sample size was arrived at. For model development, EPV alone is insufficient: expect the Riley et al. criteria (e.g. `pmsampsize`; Riley et al. 2020, BMJ, doi:10.1136/bmj.m441) or an equivalent justification; for validation, a precision-based size (e.g. `pmvalsampsize`). An EPV-only justification reports the item but is flagged as a methodological limitation (EPV is not an adequate basis for development sample size); EPV < 10 is flagged as well.
 - Item 15a (full model specification): the complete regression equation must be presented, not just significant predictors. Omitting non-significant predictors from the final model presentation is a common gap.
 - For studies that combine development and validation (e.g., internal-external validation), all items apply.

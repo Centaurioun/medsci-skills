@@ -52,6 +52,16 @@ The heavier **Pull Request Checklist**, **Skill Addition Workflow**, and validat
 - Public demo improvements using open or synthetic datasets.
 - Documentation that helps clinicians install, test, or safely adapt the skills.
 
+The bundled reporting checklists under `skills/check-reporting/references/checklists/` treat **the
+table as the only source of their counts**. Prose above a table may summarise it, but every number
+that prose states must name its denominator and reconcile against the rows, because the two obvious
+denominators are not the same number: a guideline's numbered items and the rows they render as
+diverge as soon as items carry sub-items. STARD-AI's header read "Of the 40 items, 22 are UNCHANGED
+from STARD 2015, 4 are MODIFIED, and 14 are NEW" — that 22 is `40 - 4 - 14`, the item denominator
+applied to a 48-row split, where the table itself says 30 (#529). Nothing in the repository reads
+that sentence, so the cheapest version of this rule is to not restate in prose a split the table
+already carries; when a summary is worth writing anyway, give both denominators.
+
 Per-skill documentation under `docs/skills/` is **generated** from each `skills/<skill-name>/SKILL.md` by `scripts/gen_skill_docs.py` — do not hand-edit those pages (a parallel copy drifts). Improve the `SKILL.md` itself, then run `python3 scripts/gen_skill_docs.py` and commit the regenerated `docs/skills/`. CI runs `gen_skill_docs.py --check` and fails the build if the pages are out of sync.
 
 ## Skill Addition Workflow
@@ -89,22 +99,32 @@ push and pull request. The authoritative list of every check is
 [`.github/workflows/validate.yml`](.github/workflows/validate.yml); the whole
 suite uses synthetic fixtures and needs no private data or network access.
 
-To run the same gates CI runs, install the test dependencies and run the mirror:
+**CI is the gate.** It runs every check on your pull request in about seven minutes, and `main`
+accepts a change only after CI has passed on it combined with the latest `main` (a repository
+ruleset; repository admins can bypass it). Before you push, run what your change touches:
 
 ```bash
-pip install pyyaml pandas numpy python-pptx python-docx
+pip install -r .github/requirements-ci.txt   # the versions CI pins (Python 3.11)
+# Also install pandoc, exiftool and poppler with your OS package manager.
+# Render regression tests generate LaTeX with pandoc; CI does not install TeX.
 
-# Runs every gate in the CI `validate` job, in order, locally. The step list is
-# parsed from validate.yml itself, so it can never drift from a hand-copied subset,
-# and each gate's flags (--strict, --check) come along. If this is green, CI's
-# validate job will be too. (--list to see the gates; --fail-fast to stop at the
-# first failure; --only SUBSTR to run one.)
-scripts/run_ci_mirror.sh
+# the tests of the skill you changed (search validate.yml for its name), then:
+bash scripts/validate_skills.sh --only <skill-name>
+python3 scripts/check_phase_budget.py --strict
+python3 scripts/gen_distribution_manifest.py --check   # if you added or edited a shipped file
 ```
 
-Do not maintain a shorter list by hand: a gate added to the workflow, or a `--strict`
-flag, silently drifts out of a copied list and is only caught by a red CI after you
-push. `run_ci_mirror.sh` reads the workflow, so it stays exact.
+That short list is a convenience, not a gate: if it misses something, CI catches it before the
+merge. Copy flags from the workflow, not from memory — several gates exit 0 without `--strict`.
+
+To reproduce the whole CI job locally, for instance to debug a failure the log does not explain,
+run the mirror. It parses the step list from validate.yml itself, flags included, so it cannot
+drift from a hand-copied subset (`--list` shows the gates, `--only SUBSTR` runs one, `--fail-fast`
+stops at the first failure). Expect 15–40 minutes on a laptop.
+
+```bash
+scripts/run_ci_mirror.sh
+```
 
 Deterministic work additionally ships a self-contained `<feature>_challenge/`
 directory — a positive case, a negative control, and a `verify.sh` — so it can be
@@ -115,9 +135,9 @@ bash skills/self-review/scripts/check_reported_p_from_counts_challenge/verify.sh
 ```
 
 New deterministic scripts are expected to add one. Coverage of what already exists
-is **partial, and deliberately stated rather than implied**: 48 challenge directories
-exist against 85 detectors, and they are named after the feature under test — which
-is not always one script — so 26 detectors have a directory bearing their own name.
+is **partial, and deliberately stated rather than implied**: 57 challenge directories
+exist against 93 detectors, and they are named after the feature under test — which
+is not always one script — so 34 detectors have a directory bearing their own name.
 A pull request that adds a challenge directory for a detector that lacks one is a
 welcome contribution on its own. To see which those are:
 
@@ -127,6 +147,36 @@ for d in skills/*/scripts/{check_,detect_,derive_,verify_refs}*.py; do
   find skills -type d -name "${s}_challenge" | grep -q . || echo "$s"
 done
 ```
+
+A new detector reports its result by the shared convention in
+[`docs/detector-conventions.md`](docs/detector-conventions.md), so that a check that could not
+run never reads as a clean one. CI (`scripts/check_detector_envelopes.py`) enforces the part that
+can be read from source: the `"detector"` key, and `summary.verdict` in `OK` / `MAJOR_CANDIDATE` /
+`NOT_ASSESSED`, with existing exceptions grandfathered by name. The summary counts, final-line
+wording and exit codes there are the target for new or modified detectors; many existing ones
+still differ.
+
+Three ways a detector, or its challenge card, stays green without checking anything:
+
+- **An exit-code assertion on a detector that only emits Minor claims.** Under the convention above,
+  `--strict` exits 1 only for a Major claim, so such a detector exits 0 whether it fires or not. Its
+  `verify.sh` asserts the findings themselves: the claim is present on the positive case and absent
+  on the negative control, read from the JSON output or a golden stdout. An exit-code assertion
+  tests something only when the positive case produces a Major claim.
+- **A pattern that matches a name the field already uses.** A short stem chosen for a method or a
+  design feature can also be the name of a public dataset, a challenge or a vendor, or sit inside a
+  longer everyday word, and a sentence about that other thing then satisfies the criterion. Before
+  shipping a pattern, ask what else the token names in the target literature; where it collides,
+  require a functional context near it (the verb or noun that makes it the thing you mean) and put
+  the colliding sentence in the negative control. Check too that each pattern can fire at all: in a
+  raw string `\\b` is a literal backslash followed by `b`, not a word boundary, so a rule written
+  that way does not match the text it was meant for and raises no error.
+- **A summary that reports coverage the loop did not perform.** A gate that looks each item up in a
+  curated map and moves on when there is no entry checks less every time the document gains an
+  item, and running it on a package the map already covers never shows this. Print the items no
+  rule covered, by name; under `--strict` report a non-empty skipped set as `NOT_ASSESSED` (exit 2
+  in the table above) rather than as a pass; and build the summary line from the loop's own counters, not from a separate count of what
+  the document contains.
 
 A green run of `.github/workflows/validate.yml` is required before any release is
 cut.
@@ -158,6 +208,59 @@ MedSci Skills is public. Do not include:
 
 The validator blocklist is intentionally conservative. If it catches a false positive, explain the case in the pull request rather than bypassing the check silently.
 
+**The list above is all literals, and that is its limit.** A 2026-08 audit found the surviving
+leaks in prose that contained none of them — the sentence that grounds a rule in a real case,
+written specifically enough that a reader could identify the case. Rules here are supposed to be
+grounded in things that actually happened, so the fix is never to stop grounding them:
+
+> Keep the grounding, drop the identification.
+
+Read [`docs/grounding_without_identifying.md`](docs/grounding_without_identifying.md) before writing
+a block that opens with *Precedent*, *Why this is here*, *Source*, *Motivation*, or *verified
+&lt;date&gt;*. Its four questions take under a minute, and the third and fourth ("does the number need
+that many digits?", "does the date need the day?") resolve most cases on their own.
+
+Two things it will tell you that are easy to get wrong: a peer review is confidential in **three**
+directions — the manuscript, any co-reviewer's report, and the editor's decision — and an author's
+own submission history, especially a cascade after a decline elsewhere, is not public either.
+
+CI refuses three things outright, because nothing legitimate here does them: describing a
+co-reviewer's report or an editor's decision, a submission ID, or quoted assessment language.
+Everything else is *routed*, not judged — `scripts/check_provenance_blocks.py` narrows the repo to
+the paragraphs worth a second read and stops there. Deciding on those is a person's job.
+
+### Ship the mechanism, keep the coordinates out
+
+A gate here is expected to say which failure it exists for — a detector validated only against
+fixtures authored beside it has no severity, and naming the failure is what gives it any. That is
+worth keeping. What does not belong in a public file is the arithmetic identifying **which paper**
+the failure happened to.
+
+The blocklist cannot help you here: it matches tokens — names, IDs, paths, emails — and a sentence
+naming a word count and a round count contains none of them. It is still the most identifying line
+on the page, because that pair of numbers occurs in exactly one manuscript. (Note what this
+paragraph does not do: quote one. A rule that illustrates itself with a real example publishes the
+example.)
+
+So write the precedent as a **failure pattern**, in the present tense, with the mechanism intact
+and the coordinates removed:
+
+| Keep | Drop |
+|---|---|
+| What goes wrong, and why the obvious check misses it | Word counts, version labels (`v18`, `v2.0.38`), before/after count pairs |
+| The study type, when it changes the failure | Effect sizes, p-values, E-values, κ, AUC from a real analysis |
+| Which artifacts disagree with which | Round numbers, reviewer counts, dates, journal names |
+| The detection move that finds it | An outcome — accepted, rejected, withdrawn, desk-rejected |
+
+Two more places the coordinates travel to, both easy to miss:
+
+- **Test fixtures.** A fixture that reuses a real effect-size pair publishes it. Renumber it — but
+  preserve the property the fixture exists to test (a planted arithmetic error must stay wrong),
+  and re-run the owning test afterwards to prove the detector still fires.
+- **Commit messages and PR bodies.** These are separate storage from the file. A commit that
+  removes a line and then quotes it in its own message has published it, and neither is
+  editable afterwards. Describe the class, never the string.
+
 ## Language Policy
 
 MedSci Skills is **English-canonical**. Write skill mechanics and prose in English so that any
@@ -175,7 +278,7 @@ justified**. Permitted categories:
   Korean-PDF rendering references, Korean PII-detection patterns.
 - **Locale-jurisdiction modes** — e.g. `grant-builder`'s "Korean Government Grant Mode", where the
   prose is English but real Korean program/artifact terms are preserved.
-- **Bilingual `triggers:`** — additive recognition aliases in SKILL.md frontmatter.
+- **Bilingual `triggers:`** — additive recognition aliases in SKILL.md frontmatter (`metadata.triggers`).
 - **Opt-in `*_ko` variants** — a Korean sibling of an English-default file.
 
 Every file containing non-English text must appear in
@@ -205,18 +308,36 @@ For JOSS readiness, contributions should strengthen open-source practice signals
 
 ## Releasing (maintainers)
 
+Before tagging, regenerate the distribution manifest and confirm CI passed on the exact commit you tag.
+The release workflow builds the selected tag, compares the actual ZIP/npm payloads to that
+checkout and runs the existing privacy scanners on the packaged bytes. npm publication uses
+the verified `.tgz`; do not replace it with a fresh directory-based `npm publish`.
+After upload, downloaded ZIP bytes and npm file contents/executable modes must match the
+verified artifacts. Inspect the `release-verification-vX.Y.Z` workflow artifact for hashes and
+coverage; absence of a successful report is not a pass. npm is published through trusted
+publishing (no stored token), and skipped npm steps leave that channel unverified. See [SECURITY.md](SECURITY.md#release-integrity--revocation)
+for inspection limits and recovery behavior.
+
 **A release is an event, not a commit.** Merge to `main` continuously — that is what `main` is for —
 and let the work accumulate into something a person would actually want to read about.
 
 The rule is enforced by `scripts/check_release_cadence.py` (CI):
 
-- **At least 14 days since the last release.**
+- **No minimum gap is enforced.** The 14-day wait was removed in 6.1.0; `--min-days N` restores
+  one, and the hotfix and pinned-reference notes below then waive it.
 - **The release must carry something a user would notice.** Docs, CI and internal changes are fine
   to merge and a poor reason to make a hundred people update; they ride along with the next release
   that has a reason of its own.
 - **Exception — a hotfix.** Something already shipped is broken: it will not install, it loses data,
   it is a security problem, or it produced a wrong result that a user may have believed. Those go out
   immediately. Say so, and the gate stands aside:
+
+  ```markdown
+  ## [5.20.1] - 2026-07-11
+
+  **Hotfix:** `/orchestrate --e2e` halted at step 3 requiring a DOCX only rendered at step 7,
+  so an end-to-end run could not complete.
+  ```
 
 - **Exception — a pinned reference.** An external artifact has to cite an exact version: a paper
   reporting a measurement taken against this toolkit, for instance. A git SHA is a worse coordinate
@@ -227,13 +348,6 @@ The rule is enforced by `scripts/check_release_cadence.py` (CI):
 
   ```markdown
   **Pinned reference:** the held-out validation study must report the exact version it measured.
-  ```
-
-  ```markdown
-  ## [5.20.1] - 2026-07-11
-
-  **Hotfix:** `/orchestrate --e2e` halted at step 3 requiring a DOCX only rendered at step 7,
-  so an end-to-end run could not complete.
   ```
 
 ### Why this is a gate and not a preference

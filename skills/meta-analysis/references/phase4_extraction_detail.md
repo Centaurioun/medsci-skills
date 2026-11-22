@@ -42,11 +42,17 @@ Output `qc/pool_consistency.json`:
   "lock_include_n": 42,
   "tsv_include_n": 43,
   "in_lock_not_tsv": ["UID_007"],
-  "in_tsv_not_lock": ["UID_055"]
+  "in_tsv_not_lock": ["UID_055"],
+  "lock_integrity_errors": ["final_pool_n is 44 but include_uids ∪ mixed_uids has 42 UID(s)"],
+  "tsv_conflicting_uids": {"UID_013": ["EXCLUDE", "INCLUDE"]}
 }
 ```
 
-The gate fails closed: any UID disagreement blocks extraction. To
+The gate fails closed: any UID disagreement blocks extraction. So does a
+lock that contradicts itself (`final_pool_n` / `include_count` /
+`exclude_count` / `mixed_count` not equal to the UID lists, a non-empty
+`sha256` that does not match them, a UID filed under two decisions) and a
+TSV whose rows for one UID disagree on pool membership. To
 resolve, either (a) re-freeze the lock with the corrected set of UIDs
 and propagate to downstream artifacts, or (b) correct the adjudication
 TSV if a row was mis-labeled. Do NOT proceed to Phase 4 with a
@@ -68,7 +74,7 @@ Before opening the extraction form: if a senior mentor or collaborator has share
 - Record any reconciled discrepancy in `extraction_consensus_log.md` with a verbatim quote of the AI-draft value and the corrected value with PDF page coordinate.
 - Trust hierarchy for this phase: **SSOT (source PDF + own analysis stdout) > mentor's direct text (email / track-changes) > attached AI-draft**. Do not promote an AI-draft from tier 3 to tier 2.
 
-Precedent (an active meta-analysis project): Ishikawa 2017 "treatment support 5/70 vs no support 12/33" in Claude-drafted directive → source PDF was 35/68 (single arm). Verbatim absorption would have produced a denominator-hallucinated meta-analysis.
+The failure it prevents: an AI-drafted directive presents a study as a two-arm comparison ("x/n vs y/m") when the source PDF reports a single arm with a different denominator entirely. Verbatim absorption would produce a denominator-hallucinated meta-analysis.
 
 #### 4.0.1 AI-assisted extraction suggestions (optional, suggestions not decisions)
 
@@ -149,9 +155,18 @@ When comparing extraction results between independent reviewers (minimum 2), che
    must equal the percentage reported in the paper's Tables. If it does not match,
    investigate the analysis population definition in the Methods section.
    If denominators differ, return to the original paper's Tables/Flow diagram.
+
+   **Which statistic a summary value is.** When a study-level value such as follow-up
+   duration, sample size or a proportion is stated more than once with different numbers
+   (abstract, Methods, Results, tables), find out which statistic each one is (median, mean,
+   maximum, a range bound) and which population and time point it describes before choosing
+   one, and record the location and the statistic
+   extracted. A phrase such as "during N months of follow-up" can give the longest follow-up or
+   the time of the last event rather than a typical value, so check it against the median or
+   range reported in the Methods or Results before extracting it as the study's follow-up.
 2. **Arithmetic verification**: Back-calculate proportions from event/total counts and cross-check against original text (e.g., 78/91 = 85.7%).
 3. **Kaplan-Meier estimate distinction**: KM curve estimates differ from raw event counts. Always record the data source (Table vs KM curve vs text) during extraction.
-4. **Discrepancy resolution**: List all discrepancies → verify against original text → reach consensus → if consensus fails, use third reviewer. Log all consensus decisions in `{project}/consensus_log.md`.
+4. **Discrepancy resolution**: List all discrepancies → verify against original text → reach consensus → if consensus fails, use third reviewer. Log all consensus decisions in `2_Data/extraction_consensus_log.md`.
 5. **Dataset lock**: After resolving all discrepancies, lock the final dataset. Any subsequent changes require documented justification with date.
 
 #### Phase 4c: Extraction QC & Cohort Overlap Detection

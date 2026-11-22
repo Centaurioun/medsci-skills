@@ -7,16 +7,16 @@ things go wrong there, and neither is caught by reading the draft.
 
   1. THE RECOMMENDATION LEAKS. The recommendation lives only in the editor's box. SKILL.md
      says the blocks "must never be transposed" and Phase 4 asks for a forbidden-word check,
-     both as prose. A transposition is not hypothetical: on an Editorial Manager form the two
-     boxes were swapped and it was caught only by exporting the submission proof, one step
-     from irreversible. Once submitted, the authors read the recommendation grade and the
+     both as prose. A transposition is not hypothetical: the two boxes sit adjacent on the
+     form, a swap looks unremarkable while you are filling it in, and the last place it can
+     be caught is the submission proof — one step from irreversible. Once submitted, the authors read the recommendation grade and the
      confidential remarks, and the editor gets the author-facing text.
 
   2. THE BOXES ARE THE SAME TEXT. A human writes the editor note at a different altitude from
      the author note: decision-oriented and terse for the editor, developmental and explanatory
      for the authors. Pasting the same sentences into both is a machine tell, and it wastes the
-     attention of the one reader who opens both. Measured on a real draft that had passed every
-     other gate: 21 shared 6-grams, including one clause copied verbatim. Rewriting the editor
+     attention of the one reader who opens both. Calibration: on a draft that had passed every
+     other gate, 21 shared 6-grams, including one clause copied verbatim; rewriting the editor
      block in its own register took it to 3.
 
 Technical phrasing always overlaps a little ("every k and Wilcoxon p in the"), so a small
@@ -45,6 +45,7 @@ from pathlib import Path
 AUTHOR_HEAD = re.compile(r"^#{1,6}\s*.*comments?\s+to\s+the\s+authors?\b", re.I)
 EDITOR_HEAD = re.compile(r"^#{1,6}\s*.*(confidential|comments?\s+to\s+the\s+editor)", re.I)
 ANY_HEAD = re.compile(r"^#{1,6}\s+")
+HEAD_HASHES = re.compile(r"^(#{1,6})")
 
 # Recommendation grades. Bare "accept"/"reject" are excluded on purpose: "the authors accept
 # that ..." is ordinary prose, and a gate that fires on it gets switched off.
@@ -62,17 +63,21 @@ NGRAM = 6
 LONG_RUN = 12          # a shared run this long is a copied clause, whatever the total
 
 
-def _block(lines: list[str], head: re.Pattern) -> list[str] | None:
-    start = None
+def _block(lines: list[str], head: re.Pattern, other: re.Pattern) -> list[str] | None:
+    """The section under `head`, ending at the next heading of the same or a higher level,
+    or at the `other` box's heading at any level. A sub-heading such as `### Major
+    Comments` stays inside the block; ending at it hid every comment below it."""
+    start = level = None
     for i, line in enumerate(lines):
         if head.match(line):
-            start = i + 1
+            start, level = i + 1, len(HEAD_HASHES.match(line).group(1))
             break
     if start is None:
         return None
     end = len(lines)
     for j in range(start, len(lines)):
-        if ANY_HEAD.match(lines[j]):
+        if ANY_HEAD.match(lines[j]) and (
+                len(HEAD_HASHES.match(lines[j]).group(1)) <= level or other.match(lines[j])):
             end = j
             break
     return lines[start:end]
@@ -113,7 +118,7 @@ def longest_shared_run(a: list[str], b: list[str], cap: int = 40) -> list[str]:
 
 def audit(path: Path, max_shared: int) -> dict:
     lines = path.read_text(encoding="utf-8", errors="replace").splitlines()
-    auth, edit = _block(lines, AUTHOR_HEAD), _block(lines, EDITOR_HEAD)
+    auth, edit = _block(lines, AUTHOR_HEAD, EDITOR_HEAD), _block(lines, EDITOR_HEAD, AUTHOR_HEAD)
     findings: list[dict] = []
 
     missing = [n for n, b in (("Comments to the Authors", auth),

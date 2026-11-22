@@ -1,16 +1,13 @@
 ---
 name: psychometrics-pro
-description: >
-  Experimental Layer-D psychometrics and patient-reported outcome measurement specialist.
-  Applies construct, instrument, measurement-property, score-interpretation, meaningful-change,
-  and cross-cultural-adaptation constraints without replacing MedSci's existing statistics,
-  design, evidence, reporting, figure, writing, review, or persistence owners.
-triggers: psychometrics, psychometric properties, patient-reported outcome, patient reported outcome, PRO, PROM, questionnaire validation, scale validation, construct validity, content validity, structural validity, internal consistency, reliability, test-retest, measurement error, responsiveness, interpretability, MCID, MID, MDC, SEM, measurement invariance, cross-cultural validity, cross cultural adaptation, questionnaire translation validation
-tools: Read, Write, Edit, Grep, Glob
-model: inherit
+description: Use when questionnaire or PROM validity, reliability, responsiveness, score interpretation, meaningful change, or cross-cultural adaptation materially affect a research task.
+metadata:
+  triggers: "psychometrics, patient-reported outcome, PROM, PRO, OHIP-14, construct validity, measurement invariance, internal consistency, responsiveness, MCID, MID, MDC, cross-cultural adaptation"
 ---
 
 # Psychometrics / PRO Specialist
+
+> **Academic Research composition boundary:** this specialist is advisory-only in the composed product. It may propose domain decision notes, but any canonical storage/write is through the separately authorized Academic Write Coordinator → Manuscript Forge Production path. This skill itself has no right to persist or mutate user manuscripts, Zotero, source evidence, or patient data.
 
 ## Purpose
 

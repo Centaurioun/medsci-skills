@@ -8,7 +8,10 @@
 # cumulative total doubled while per-release downloads collapsed from 32 to 5 — and the cumulative
 # total was about to be cited as evidence of adoption.
 #
-# So the gate must (a) block a too-soon release, (b) let a genuine hotfix straight through, and
+# Since 6.1.0 the wait is off by default (the maintainer removed it); --min-days N restores it,
+# and the cases below that test the wait pass --min-days 14 explicitly.
+#
+# So the gate must (a) block a too-soon release when a wait is set, (b) let a genuine hotfix straight through, and
 # (c) stay silent when no release is being prepared, which is almost every commit.
 #
 # Every fixture date below is derived from TODAY, never written as a literal. The gate measures
@@ -77,9 +80,12 @@ write_release "1.1.0" "
 - Something new.
 "
 python3 scripts/check_release_cadence.py --strict > /dev/null 2>&1
-ck "a release 0 days after the last one is blocked" 1 "$?"
+ck "default (no wait): a same-day substantive release passes" 0 "$?"
 
-OUT="$(python3 scripts/check_release_cadence.py 2>&1)"
+python3 scripts/check_release_cadence.py --strict --min-days 14 > /dev/null 2>&1
+ck "with --min-days 14, a release 0 days after the last one is blocked" 1 "$?"
+
+OUT="$(python3 scripts/check_release_cadence.py --min-days 14 2>&1)"
 echo "$OUT" | grep -q "Hotfix"
 ck "...and the message shows the way out (a hotfix)" 0 "$?"
 
@@ -91,7 +97,7 @@ write_release "1.0.1" "
 
 - The crash.
 "
-python3 scripts/check_release_cadence.py --strict > /dev/null 2>&1
+python3 scripts/check_release_cadence.py --strict --min-days 14 > /dev/null 2>&1
 ck "a declared hotfix ships immediately" 0 "$?"
 
 # 4) a docs-only release is not a release
@@ -135,10 +141,10 @@ write_release "1.1.0" "
 
 - Something a user would notice.
 "
-python3 scripts/check_release_cadence.py --strict > /dev/null 2>&1
+python3 scripts/check_release_cadence.py --strict --min-days 14 > /dev/null 2>&1
 ck "a declared pinned reference ships early" 0 "$?"
 
-OUT="$(python3 scripts/check_release_cadence.py 2>&1)"
+OUT="$(python3 scripts/check_release_cadence.py --min-days 14 2>&1)"
 echo "$OUT" | grep -q "PINNED REFERENCE declared: the held-out validation study"
 ck "...and the reason is printed, so an unjustified use is visible in the log" 0 "$?"
 
@@ -160,8 +166,36 @@ write_release "1.1.0" "
 
 - Something new.
 "
-python3 scripts/check_release_cadence.py 2>&1 | grep -q "Pinned reference"
+python3 scripts/check_release_cadence.py --min-days 14 2>&1 | grep -q "Pinned reference"
 ck "the blocked message offers the pin, not only the hotfix" 0 "$?"
+
+# 11) Staged prerelease source is NOT a published release event.
+#     Accept valid SemVer and retain -rc.0; do not require an invented release
+#     changelog section before the fork has authorized publication.
+printf 'cff-version: 1.2.0\nversion: "6.4.1-rc.0"\n' > CITATION.cff
+printf '# Changelog\n\n## [Unreleased]\n' > CHANGELOG.md
+OUT="$(python3 scripts/check_release_cadence.py --strict 2>&1)"
+ck "unreleased rc source without release event passes" 0 "$?"
+echo "$OUT" | grep -q 'staged unreleased source version 6.4.1-rc.0'
+ck "prerelease remains explicitly identified, not promoted" 0 "$?"
+
+# 12) Declaring a prerelease release event does NOT waive the ordinary
+#     substantive-content requirement or any explicit cadence limit.
+write_release "6.4.1-rc.0" "
+### Docs
+
+- Internal editorial note only.
+"
+python3 scripts/check_release_cadence.py --strict > /dev/null 2>&1
+ck "announced docs-only rc release still blocked" 1 "$?"
+
+write_release "6.4.1-rc.0" "
+### Added
+
+- A user-facing feature in the authorized candidate.
+"
+python3 scripts/check_release_cadence.py --strict > /dev/null 2>&1
+ck "announced substantive rc release is recognized as semver" 0 "$?"
 
 echo "----"
 echo "test_release_cadence: $pass passed, $fail failed"

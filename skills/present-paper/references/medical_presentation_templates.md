@@ -173,6 +173,9 @@ students).
 - **Figures**: Mix of textbook diagrams, original imaging, SMART Servier icons. Reusable
   asset library across lecture series (per `pptx-mac-compatibility` rule — single asset
   source).
+- **Imaging-specialty audiences**: for each imaging finding the audience is expected to
+  recognise, check that a readable example image shows it. Choose own or published cases by
+  the teaching goal, the permission to use them and the de-identification they need.
 - **Recap pattern**: At each section end, a 1-slide recap before moving on. Helps
   trainees with weaker prior knowledge.
 - **Self-assessment**: Use audience-response polling if classroom supports it; otherwise
@@ -220,7 +223,7 @@ anchors the discussion, surrounding papers add nuance.
 ### Design seed
 
 - **Visual style**: Nature/Lancet — see `slide_visual_styles/nature_lancet.md`
-- **Body language**: English only (per `~/.claude/rules/academic-lecture-style.md` §1)
+- **Body language**: English only
 - **Speaker notes**: narrative, in the user's preferred language (English by default; a Korean narrative register is supported for Korean presenters), 150–300 chars / slide
 - **Section dividers**: full-bleed `#121D36` background + coral accent strip + `{N} MIN`
   badge bottom-right
@@ -231,9 +234,9 @@ anchors the discussion, surrounding papers add nuance.
 ### Pre-presentation checklist
 
 - [ ] All `--` em-dashes verified rendering correctly on Mac PowerPoint
-- [ ] TIFF images converted to PNG (per `pptx-mac-compatibility.md` §1)
-- [ ] `<a:sp3d>` 3D bevel = 0 (per `pptx-mac-compatibility.md`)
-- [ ] `app.xml` Slides/Notes counts patched (per `pptx-mac-compatibility.md` §5)
+- [ ] TIFF images converted to PNG
+- [ ] `<a:sp3d>` 3D bevel = 0
+- [ ] `app.xml` Slides/Notes counts patched
 - [ ] Speaker notes parsed for `**bold**` / `*italic*` markdown (per §4)
 - [ ] 40-min timing rehearsal completed (longest section flagged)
 - [ ] Glossary slide present if audience is multidisciplinary
@@ -270,8 +273,7 @@ anchors the discussion, surrounding papers add nuance.
 - `templates/build_pptx_nature_lancet.py` — generic builder for Template #5
 - `critic_rubrics/slide.md` — per-slide quality scoring
 - `workflow-checklist.md` — end-to-end Phase 0 → 4 production checklist
-- `~/.claude/rules/academic-lecture-style.md` — English body + Korean notes + Nature/Lancet (global default)
-- `~/.claude/rules/pptx-mac-compatibility.md` — TIFF / sp3d / app.xml / srcRect / Inches EMU / markdown notes
-- `~/.claude/rules/multidisciplinary-presentation.md` — glossary slide + intuition box pattern
-- `~/.claude/rules/journal-ai-image-policies.md` — AI-image policy (visual abstract /
+- `templates/slide_template/` — medsci template (`new_deck.py`, palette `mono`), the default look for a new deck (SKILL.md); Nature/Lancet (Template #5) is an alternative
+- `skills/make-figures/scripts/validate_pptx_mac_compat.py` — Mac PowerPoint compatibility check (TIFF / sp3d / app.xml / srcRect)
+- `make-figures/SKILL.md` → *Journal AI-Image Policies* — AI-image policy (visual abstract /
   Central Illustration cases)
