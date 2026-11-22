@@ -2,6 +2,17 @@
 
 # MedSci Skills
 
+> **Centaurioun fork — development branch only (not released): `5.25.0-rc.0`.**
+> This fork is extending the existing MedSci skills with QUADAS-3 navigation,
+> systematic-review import and cross-batch records, reviewer issue/anchor tracking,
+> TR/EN evidence-grounded reading notes, paper–code lineage, and slide evidence checks.
+> **The upstream Aperivue release badge, v5.24.0 release notes, citation metadata,
+> and historical documentation below do not certify or publish these fork changes.**
+> Source changes are untested and require exact-pin snapshot regeneration, validation,
+> release metadata updates, and deployment before becoming available to Academic Research.
+> See [the fork development handoff](docs/modernization/5.25.0-rc.0-capability-upgrades.md).
+
+
 [English](README.md) | [简体中文](README.zh-CN.md)
 
 **59 skills that actually work.** Built by a physician-researcher, tested on real publications.
