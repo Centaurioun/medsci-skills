@@ -73,6 +73,10 @@ jobs:
           python3 scripts/build_classroom_release.py --source-root . --output-dir dist \
             --tag "$RELEASE_TAG" --git-sha "$EXPECTED_SOURCE_SHA" --built-at "$BUILT_AT"
 
+      - name: Install the official binary privacy inspectors
+        shell: bash
+        run: sudo apt-get update && sudo apt-get install -y libimage-exiftool-perl poppler-utils
+
       - name: Verify each ZIP against the actual installer and source hashes
         shell: bash
         run: |
