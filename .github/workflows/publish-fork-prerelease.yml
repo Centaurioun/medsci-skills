@@ -1,0 +1,151 @@
+name: Publish MedSci fork v6.4.1-rc.0 prerelease
+
+# One-time, fork-only GitHub prerelease. This does not publish the upstream npm package.
+# Release source is the already-validated MedSci main merge commit, not this automation branch.
+on:
+  push:
+    branches:
+      - automation/publish-medsci-v6.4.1-rc.0
+    paths:
+      - .github/workflows/publish-fork-prerelease.yml
+
+permissions:
+  contents: write
+  actions: read
+
+concurrency:
+  group: medsci-fork-prerelease-v6.4.1-rc.0
+  cancel-in-progress: false
+
+jobs:
+  publish-fork-prerelease:
+    name: Publish only verified Centaurioun fork prerelease
+    if: github.repository == 'Centaurioun/medsci-skills'
+    runs-on: ubuntu-latest
+    environment: release
+    env:
+      RELEASE_TAG: v6.4.1-rc.0
+      EXPECTED_SOURCE_SHA: df6d3e2a38dacf9d91ce0d96d52d9ca0f1834b92
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - name: Checkout exact merged and CI-validated source commit
+        uses: actions/checkout@v4
+        with:
+          ref: df6d3e2a38dacf9d91ce0d96d52d9ca0f1834b92
+          fetch-depth: 0
+
+      - name: Confirm source, tag absence/identity, existing successful CI and three-way version consistency
+        shell: bash
+        run: |
+          set -euo pipefail
+          SOURCE_SHA="$(git rev-parse HEAD)"
+          test "$SOURCE_SHA" = "$EXPECTED_SOURCE_SHA"
+          git fetch --no-tags origin +refs/heads/main:refs/remotes/origin/main
+          git merge-base --is-ancestor "$SOURCE_SHA" refs/remotes/origin/main
+          test "$(python3 -c 'import json; print(json.load(open("package.json"))["version"])')" = "6.4.1-rc.0"
+          python3 scripts/check_version_consistency.py
+          python3 scripts/gen_distribution_manifest.py --check
+
+          RUNS="$(gh api --paginate "repos/$GITHUB_REPOSITORY/actions/workflows/validate.yml/runs?head_sha=$SOURCE_SHA&per_page=100" --jq '.workflow_runs[] | "\(.status) \(.conclusion // "none")"')"
+          if [ -z "$RUNS" ] || [ -n "$(printf '%s\n' "$RUNS" | awk '$1 != "completed" || $2 != "success"')" ]; then
+            echo "::error::The exact main commit has no fully successful Validate workflow run."
+            printf '%s\n' "$RUNS"
+            exit 1
+          fi
+
+          if gh release view "$RELEASE_TAG" >/dev/null 2>&1; then
+            echo "::error::A release already exists for this tag. Do not overwrite published artifacts."
+            exit 1
+          fi
+          if gh api "repos/$GITHUB_REPOSITORY/git/ref/tags/$RELEASE_TAG" >/dev/null 2>&1; then
+            git fetch --tags origin
+            test "$(git rev-list -n 1 "$RELEASE_TAG")" = "$SOURCE_SHA" || {
+              echo "::error::Tag exists but points to another source SHA."; exit 1;
+            }
+          fi
+          echo "Authoritative fork source verified: $SOURCE_SHA"
+
+      - name: Build source-bound classroom ZIP assets
+        shell: bash
+        run: |
+          set -euo pipefail
+          BUILT_AT="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          python3 scripts/build_classroom_release.py --source-root . --output-dir dist \
+            --tag "$RELEASE_TAG" --git-sha "$EXPECTED_SOURCE_SHA" --built-at "$BUILT_AT"
+
+      - name: Verify each ZIP against the actual installer and source hashes
+        shell: bash
+        run: |
+          set -euo pipefail
+          count=0
+          for archive in dist/medsci-skills-classroom-*.zip; do
+            python3 scripts/check_release_zip.py --zip "$archive" \
+              --expect-tag "$RELEASE_TAG" --require-provenance \
+              --expect-sha "$EXPECTED_SOURCE_SHA" --source-root . --privacy \
+              --report "${archive%.zip}-verification.json"
+            count=$((count + 1))
+          done
+          test "$count" -eq 2
+
+      - name: Prepare accurate fork-only prerelease notes
+        shell: bash
+        run: |
+          mkdir -p dist
+          cat > dist/release-notes.md <<'NOTES'
+          # MedSci Skills v6.4.1-rc.0 — Centaurioun fork prerelease
+
+          This is a **prerelease of the Centaurioun fork**, not an official
+          Aperivue MedSci Skills release and **not an npm publication**.
+
+          - Upstream baseline: Aperivue/medsci-skills v6.4.0 plus later upstream main changes.
+          - Fork source: df6d3e2a38dacf9d91ce0d96d52d9ca0f1834b92 (merged main).
+          - Research additions: periodontology-research and psychometrics-pro
+            specialists; source-traceable systematic review screening, reviewer
+            issue continuity, bilingual paper notes, code lineage and slide
+            evidence helpers.
+          - Source catalog: 56 typed scientific skills and 8 redirect-only
+            compatibility aliases.
+          - GitHub Actions source checks passed; the attached two platform ZIPs
+            are generated from the exact source and checked with the MedSci
+            self-updater's ZIP/provenance/hash verifier.
+          - This release is not the upstream-owned `medsci-skills` npm package;
+            installing by `npx medsci-skills` does not select this fork prerelease.
+          - No newly assigned DOI, publication date in CITATION.cff, or claim of
+            scientific validation beyond the recorded tests.
+          - The connected Academic Research runtime pins the underlying fork
+            scientific source commit d426e74477328cdd6ba0effe5aebda887e1e4e9a;
+            the release tag points to its CI-passed merge into fork main.
+
+          Provenance and historical attribution to the upstream project and authors
+          remain in CITATION.cff and the original repository.
+          NOTES
+
+      - name: Create exact tag and publish prerelease with verified assets
+        shell: bash
+        run: |
+          set -euo pipefail
+          if ! gh api "repos/$GITHUB_REPOSITORY/git/ref/tags/$RELEASE_TAG" >/dev/null 2>&1; then
+            gh api -X POST "repos/$GITHUB_REPOSITORY/git/refs" \
+              -f ref="refs/tags/$RELEASE_TAG" \
+              -f sha="$EXPECTED_SOURCE_SHA" >/dev/null
+          fi
+          git fetch --tags origin
+          test "$(git rev-list -n 1 "$RELEASE_TAG")" = "$EXPECTED_SOURCE_SHA"
+          gh release create "$RELEASE_TAG" \
+            --target "$EXPECTED_SOURCE_SHA" \
+            --title "MedSci Skills v6.4.1-rc.0 — Centaurioun fork prerelease" \
+            --notes-file dist/release-notes.md \
+            --prerelease \
+            dist/medsci-skills-classroom-macos.zip \
+            dist/medsci-skills-classroom-windows.zip
+
+      - name: Verify published prerelease, tag and assets without editing the release
+        shell: bash
+        run: |
+          set -euo pipefail
+          INFO="$(gh release view "$RELEASE_TAG" --json tagName,isPrerelease,assets)"
+          test "$(echo "$INFO" | jq -r '.tagName')" = "$RELEASE_TAG"
+          test "$(echo "$INFO" | jq -r '.isPrerelease')" = "true"
+          test "$(echo "$INFO" | jq '.assets | length')" -eq 2
+          echo "$INFO" | jq '{tagName, isPrerelease, files: [.assets[].name]}'
+          echo "GitHub fork prerelease completed. npm publication intentionally omitted."
